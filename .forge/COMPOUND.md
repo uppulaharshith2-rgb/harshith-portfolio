@@ -76,6 +76,15 @@ Parallel research agents (oss-targets, portfolio-polish, new-builds) → impl ag
 - **Defense-in-depth in OSS fixes signals seniority.** The litellm PR didn't just fix `get_supported_openai_params` — it also added guards in `map_openai_params` and set JSON-level flags. Maintainers read multi-layer fixes as "this person understands production failure modes," not "this person changed one line."
 - **A `/oss` page is the artifact a hiring manager actually wants.** Embedding contributions in the chat is good; a dedicated public ledger with diff stats / test counts / "why it matters" paragraphs is what gets screenshot and pasted into recruiter Slack channels. Build this BEFORE filing the second OSS PR so each new PR auto-shows up on a credible page.
 
+### Iteration #6 (2026-05-17) — extension PRs as the recalibration win
+
+The OSS-landscape recalibration in iteration #3 named "extend already-shipped work" as a strategic alternative to chasing fresh-issue PR queue duplicates. Iteration #6 demonstrated it concretely: the Databricks follow-up PR to litellm #28113 became [#28115](https://github.com/BerriAI/litellm/pull/28115) — 4 files, +294/-1, 9 new tests, 81 existing still green, zero regressions.
+
+- **Lesson: extension PRs are almost-always unclaimed.** Fresh issues attract 5-10 contributors within hours; an *adjacent provider adapter for an already-merged fix* attracts zero. The competitive surface is the fresh issue, not the follow-up. Same-author, same-shape, same-week follow-ups are also the *easiest* PRs for maintainers to review — they pattern-match instantly off the prior one.
+- **Lesson: reuse the fork.** The impl agent reused `~/Documents/oss-prs/litellm` from #28113, branching fresh off `upstream/main` rather than re-forking. Saved 30 seconds of setup and avoided the "second fork from same identity" GitHub warning.
+- **Lesson: flag pricing placeholders honestly.** When the Databricks Opus 4.7 JSON entry didn't exist, the agent priced it from `databricks-claude-opus-4-5` and explicitly flagged it as placeholder in both `metadata.notes` and the PR body. This converts "potential maintainer pushback" into "low-effort maintainer correction" — they edit a number, they don't bounce the PR.
+- **Lesson: parallel impl + main-thread post writing is the right shape.** Iteration #6 ran the prompt-contracts impl agent in background, ran a portfolio polish/content research agent in parallel, AND wrote the SecondBrain Kit announcement post in the main thread. Three tracks completing concurrently is the throughput multiplier — but only because each track touches a different file set (impl agent: external repo at `~/Documents/prompt-contracts/`; research agent: read-only; main thread: `lib/posts.ts`). Non-overlapping work is the precondition for parallelism.
+
 ### Iteration #5 (2026-05-17) — coherent-suite framing > scattered tools
 
 After dbt-eval v0 shipped, the iteration #5 research agent surfaced three NEW build candidates and (more importantly) noticed they form a **coherent three-repo governance suite** that extends dbt-eval rather than scattering attention across unrelated tools.

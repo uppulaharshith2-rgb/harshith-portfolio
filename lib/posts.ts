@@ -11,6 +11,76 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "secondbrain-kit-the-vault-that-compounds",
+    title: "SecondBrain Kit: the vault that compounds",
+    excerpt:
+      "Most personal knowledge vaults grow in size but not in quality. The unlock is one operating rule: every ingest rewrites 5-15 existing pages instead of appending one new one. Karpathy called it the LLM Wiki pattern. I built a starter kit around it.",
+    date: "2026-05-17",
+    tags: ["secondbrain", "obsidian", "claude-code", "knowledge-management", "open-source"],
+    readTime: 6,
+    body: `Almost every personal-knowledge vault I've watched grow over time fails in the same way: **it gets bigger but not smarter**. Every new article gets a fresh page. Every meeting note becomes its own file. Six months in, you have 800 notes and no idea which seven of them are the ones that actually matter. The vault is now an indexable graveyard.
+
+The cause is structural. The default editor flow is *append*. Capture a thought → new file. Read an article → new file. Take meeting notes → new file. Each is friction-free. Nothing in the tool ever asks "is there an existing page this belongs inside?" or "should this rewrite three other pages?"
+
+[Andrej Karpathy named the alternative](https://x.com/karpathy/status/1899876370492383450) the **LLM Wiki pattern**: every ingest should *rewrite* affected pages rather than append a new one. Wikis got this right twenty years ago — atomic concepts, ruthless linking, edits over creations. Personal vaults forgot.
+
+I built **[SecondBrain Kit](https://github.com/uppulaharshith2-rgb/secondbrain)** as the starter that bakes this in from day one. PARA folder skeleton, frontmatter schema, naming conventions, tag taxonomy, eleven templates — and an opinionated \`CLAUDE.md\` operating manual that Claude reads at session start to enforce the rule. Drop in your identity, that's the only required customization.
+
+## What's in the box
+
+- **PARA structure**: \`00-Inbox\`, \`01-Projects\`, \`02-Areas\`, \`03-Resources\`, \`04-Archive\`, \`05-Daily\`, \`06-Templates\`, \`07-Attachments\`. The classic Tiago Forte folders, in the canonical order.
+- **9 custom Claude Code slash commands**: \`/today\` (generate today's daily note from yesterday + calendar), \`/weekly-review\` (Friday retrospective + next-week plan), \`/process-inbox\` (triage \`00-Inbox/\` into PARA), \`/research-deep\` (Karpathy-pattern research that rewrites affected pages), \`/spark\` (pattern detection across recent notes), \`/vault-health\` (orphan + contradiction audit), \`/capture\` (smart quick-capture), \`/context\` (load life state at session start).
+- **11 starter templates**: daily, weekly, monthly, project, concept, person, company, book, article, meeting, MOC. Each pre-frontmattered and linked.
+- **A pre-written \`CLAUDE.md\`**: the operating manual Claude reads every session. Frontmatter schema, naming conventions, tag taxonomy (folders for "what is this," tags for "what is this about"), behavior rules ("don't create more than 2 new notes per session without explicit user approval"), and the most important line of all: *Prefer updating existing notes over creating new ones — Karpathy LLM Wiki pattern: every ingest rewrites 5-15 pages, not appends 1*.
+
+## How the rule actually works
+
+When you run \`/research-deep "topic"\`, the skill:
+
+1. **Searches the vault first** for any existing notes that touch the topic. Concepts, MOCs, project notes, daily-note mentions.
+2. **Reads the top 5-15** related notes end-to-end.
+3. **Does external research** (web search, paper lookup, etc.) only after the vault context is loaded.
+4. **Rewrites the affected vault pages** — sharpening claims, updating confidence levels, adding new wikilinks, deleting now-stale assertions. Sometimes merges two pages into one if the research revealed they were the same concept.
+5. **Creates a new atomic note** only if the topic genuinely deserves one and nothing existing could absorb it.
+
+After 50 research sessions, the vault doesn't have 50 new files. It has the *same 200 files*, each sharper. That's compounding.
+
+## Tag taxonomy choice
+
+The rule I'd defend hardest: **folders for "what is this" (type); tags for "what is this about" (theme/domain).** This is what unsticks the "should I have a folder for AI notes or a tag" decision that paralyzes most vaults.
+
+- Folder \`03-Resources/concepts/eventual-consistency.md\` because *the type is concept*.
+- Tags \`domain/engineering\`, \`theme/distributed-systems\` because *the topic is about distributed systems in the engineering domain*.
+
+Same note, two orthogonal axes. Search by either. No category sprawl.
+
+## What this is NOT
+
+- **Not a productivity system.** GTD, BASB, Zettelkasten — pick one or none, the kit doesn't care. The structure is opinionated; the workflow on top isn't.
+- **Not a knowledge-graph tool.** No fancy embedding indexes, no AI search. Plain Markdown + wikilinks + frontmatter. Anything you'd want as graph is computable from the file tree.
+- **Not yet-another Obsidian theme.** Works in any Markdown editor (Obsidian, VSCode, neovim, nb). The skills are Claude Code, the structure is Markdown.
+
+## Try it
+
+\`\`\`bash
+curl -fsSL https://raw.githubusercontent.com/uppulaharshith2-rgb/secondbrain/main/install.sh | bash
+\`\`\`
+
+Clones to \`~/Documents/SecondBrain\` (or \`SECONDBRAIN_DIR\` if set). Detaches \`origin\` → \`upstream\` so your private vault doesn't accidentally push back to the public skeleton. Then:
+
+1. Edit \`CLAUDE.md\` → fill in your Identity and Active Efforts sections (the rest can stay as-is).
+2. Open the folder in Obsidian (Vault → Open Folder).
+3. Start Claude Code in the directory and try \`/context\` or \`/today\`.
+
+Repo: [github.com/uppulaharshith2-rgb/secondbrain](https://github.com/uppulaharshith2-rgb/secondbrain). MIT. Issues + PRs welcome — especially around more slash commands and PARA-adjacent conventions.
+
+## The lesson worth stealing
+
+If you're building any system that grows over time — a vault, a wiki, a codebase, a customer support knowledge base — bake the **rewrite-don't-append** rule into the *tool itself*, not into a discipline you have to remember. The reason most vaults rot isn't the user's willpower. It's that the default flow rewards creation and silently penalizes editing.
+
+SecondBrain Kit's bet is that **one operating rule encoded into the tool beats a hundred best-practice posts**. The CLAUDE.md is doing the heavy lifting; the folder structure is just the scaffolding around it.`,
+  },
+  {
     slug: "research-agents-that-abandon-discipline-as-a-feature",
     title: "Research agents that abandon: discipline as a feature",
     excerpt:

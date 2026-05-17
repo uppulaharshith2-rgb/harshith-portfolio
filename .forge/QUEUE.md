@@ -44,7 +44,7 @@ up: "[[index]]"
 
 - [x] `OSS_PR` **BerriAI/litellm #26444** — drop unsupported `temperature` param for Claude Opus 4.7 → https://github.com/BerriAI/litellm/pull/28113 (6 files, +346/−0, 21 new tests, 976 existing tests still green). Read 2 prior closed PRs first to understand maintainer rejection patterns. 2026-05-17.
 
-- [ ] `OSS_PR` **BerriAI/litellm Databricks follow-up** — mirror the Opus 4.7 fix into `DatabricksConfig.get_supported_openai_params` and add the JSON flags on `databricks-claude-opus-4-7` entries. Same shape as #28113, smaller scope. Per @Kontinuation's comment on the original issue. ~2h.
+- [x] `OSS_PR` **BerriAI/litellm #28115** — Databricks Opus 4.7 follow-up to #28113. 4 files, +294/-1, 9 new tests, 81 existing tests still green. Reused fork. Flagged Databricks pricing placeholder proactively. 2026-05-17.
 
 - [ ] `OSS_PR` **BerriAI/litellm #28067** — Anthropic streaming `KeyError: 'text'` on `content_block_start` when upstream omits optional field. `chunk["text"]` → `chunk.get("text", "")` in `litellm/llms/anthropic/chat/handler.py:789` + streaming test. 1.5h. Filed yesterday, zero comments = wide open.
 
@@ -91,7 +91,7 @@ up: "[[index]]"
 - ~~`ADD_PROJECT` Build one fresh micro-tool this week~~ → addressed by dbt-eval (shipped 2026-05-17)
 - ~~Airflow Claude operator~~ → **Astronomer Data Agents plugin shipped first-party with Apache 2.0**, crowds out the build. Pivoted to the three-repo governance suite above which occupies less-crowded space.
 - [x] `WRITE_POST` **"Research agents that abandon: discipline as a feature"** — shipped 2026-05-17 at /blog/research-agents-that-abandon-discipline-as-a-feature (~1100 words). Walks the 3 abandonments concretely (claude-agent-sdk #899, MCP python-sdk #1933, litellm #28067), explains the 30-second pre-flight that makes the abandon path explicit and rewarded, names the compound-learning-as-team-culture pattern, closes with "if your agent never abandons, your agent is shipping bad work."
-- [ ] `WRITE_POST` **"SecondBrain Kit: the vault that compounds"** — Karpathy LLM Wiki rule explained, PARA structure for AI-native work, why "rewrite-don't-append" is the unlock. Source from public repo README. 800 words.
+- [x] `WRITE_POST` **"SecondBrain Kit: the vault that compounds"** — shipped 2026-05-17 at /blog/secondbrain-kit-the-vault-that-compounds (~900 words). Karpathy LLM Wiki rule as the load-bearing observation, walks PARA + 9 slash commands + 11 templates + the CLAUDE.md operating manual, names the "folders for what / tags for about" choice, closes with the generalizable lesson: bake the rewrite-don't-append rule into the tool, not into willpower.
 - [ ] `WRITE_POST` **"Why my portfolio is a chat (and what it taught me about AI UX)"** — meta post about THIS site, with the streaming-first-message decision, the embedded-cards token pattern, the canned-fallback graceful degradation. Honest about what didn't work. 900 words.
 
 ### Content compounding (rotate through these)

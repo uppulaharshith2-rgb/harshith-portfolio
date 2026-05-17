@@ -20,6 +20,28 @@ export type Contribution = {
 
 export const CONTRIBUTIONS: Contribution[] = [
   {
+    slug: "litellm-28115",
+    kind: "pr",
+    title: "fix(databricks): drop unsupported temperature param for Claude Opus 4.7",
+    repo: "BerriAI/litellm",
+    url: "https://github.com/BerriAI/litellm/pull/28115",
+    date: "2026-05-17",
+    status: "open",
+    summary:
+      "Companion to PR #28113. Same root cause — Anthropic's Messages API rejects `temperature` for Claude Opus 4.7 — applied to the Databricks adapter (`DatabricksConfig`). Mirrors the #28113 pattern exactly: helper-based filter on the canonical / dated / vendor-prefixed Opus 4.7 family, defense-in-depth guard in `map_openai_params`, and `supports_temperature: false` / `supports_top_p: false` flags on a new `databricks-claude-opus-4-7` entry in both `model_prices_and_context_window.json` and the backup file (satisfying `ci_cd/check_files_match.py`). Surfaces a pricing placeholder honestly in the PR body inviting maintainer correction. Reported by @Kontinuation in the original issue thread (#26444).",
+    stats: { additions: 294, deletions: 1, files: 4, tests: 9 },
+    highlights: [
+      "Mirrors the #28113 pattern exactly so maintainers can review side-by-side without context switching",
+      "9 new unit tests covering canonical / dated / vendor-prefixed Opus 4.7, family fallback for unreleased snapshots, defense-in-depth `map_openai_params(drop_params=False)`, and end-to-end shape via `litellm.get_supported_openai_params`",
+      "81 existing tests passed in `tests/test_litellm/llms/databricks` (13 skipped, credential-gated), zero regressions",
+      "Added new `databricks/databricks-claude-opus-4-7` JSON entry (didn't exist on main); priced from `databricks-claude-opus-4-5` and flagged as placeholder in `metadata.notes` so maintainers can correct",
+      "Reused the existing fork from #28113 — fresh branch off `upstream/main`, no force-pushes, clean diff",
+    ],
+    whyItMatters:
+      "Two PRs to the same 47k-star repo in the same week from the same identity, mirroring each other in shape. This is the 'extension of shipped work' move the OSS-landscape recalibration named: rather than competing for fresh-issue PR queue spots (the duplicate-saturated bucket), extend an already-shipped fix into adjacent provider adapters where the work is almost certainly unclaimed. Two PRs that compose tell a stronger candidacy story than two PRs that don't.",
+    tags: ["anthropic", "databricks", "litellm", "model-router", "follow-up", "bug-fix"],
+  },
+  {
     slug: "litellm-28113",
     kind: "pr",
     title: "fix(anthropic): drop unsupported temperature param for Claude Opus 4.7",

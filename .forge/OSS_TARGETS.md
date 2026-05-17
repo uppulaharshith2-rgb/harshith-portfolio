@@ -117,6 +117,15 @@ Priority = Visibility + Relevance - Effort.
 - **Why this matters for the candidacy**: lives at the intersection of data engineering (the entire YAML shape mirrors `dbt schema.yml`) and AI infra (LLM-as-judge with offline mock for CI). Exact "AI Data Engineer" pitch the role bands at top labs are asking for.
 - **Strategic note**: this is the FIRST result of the OSS-landscape recalibration that said "stop competing for PR queue spots, build in uncrowded space." Within 6 hours of the recalibration, a real public artifact landed. Pattern confirmed.
 
+### 2026-05-17 — litellm Databricks Opus 4.7 temperature follow-up
+
+- **PR**: https://github.com/BerriAI/litellm/pull/28115 (status: open)
+- **Stats**: 4 files, +294/-1, 9 new tests, 81 existing tests still green (13 skipped, credential-gated)
+- **Issue**: BerriAI/litellm#26444 (the same issue #28113 addressed for the Anthropic + Bedrock adapters; @Kontinuation noted the Databricks gap in a comment)
+- **Approach**: mirrored #28113 exactly — helper-based filter on the Opus 4.7 family, defense-in-depth guard in `map_openai_params`, new `databricks-claude-opus-4-7` JSON entry with `supports_temperature: false` / `supports_top_p: false` in both the main and backup files to satisfy `check_files_match.py`. Pricing placeholder honestly flagged in `metadata.notes` and the PR body.
+- **Pattern**: the **"extension of shipped work"** move the recalibration named — rather than chasing fresh-issue PR queue spots (duplicate-saturated), extend already-shipped fixes into adjacent provider adapters where the work is almost certainly unclaimed. Same author identity, two PRs that compose, one coherent story for a hiring panel.
+- **Fork reuse**: same `~/Documents/oss-prs/litellm` fork from #28113, fresh branch off `upstream/main`.
+
 ## Skipped — duplicate work avoided
 
 ### 2026-05-17 — anthropics/claude-agent-sdk-python #899 (list-form system_prompt)
