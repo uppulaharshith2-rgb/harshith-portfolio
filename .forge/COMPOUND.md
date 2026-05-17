@@ -76,6 +76,19 @@ Parallel research agents (oss-targets, portfolio-polish, new-builds) → impl ag
 - **Defense-in-depth in OSS fixes signals seniority.** The litellm PR didn't just fix `get_supported_openai_params` — it also added guards in `map_openai_params` and set JSON-level flags. Maintainers read multi-layer fixes as "this person understands production failure modes," not "this person changed one line."
 - **A `/oss` page is the artifact a hiring manager actually wants.** Embedding contributions in the chat is good; a dedicated public ledger with diff stats / test counts / "why it matters" paragraphs is what gets screenshot and pasted into recruiter Slack channels. Build this BEFORE filing the second OSS PR so each new PR auto-shows up on a credible page.
 
+### Iteration #10 (2026-05-17) — incumbency-check pattern compounds, OSS landscape audit ships
+
+By iteration #10, the 30-min incumbency check before every Tier 1 BUILD_SKILL is no longer an experimental discipline — it's a hard rule with three concrete examples backing it:
+
+- **iteration #5 check**: Lilac dead via Databricks acquisition (March 2024); Argilla in HF maintenance (original authors moved on); Cleanlab adjacent (Python-imperative + ML-label classical, not declarative-YAML-LLM)
+- **iteration #9 check**: confirmed the same findings against fresh 2026 data; flagged Astronomer's first-party Apache-2.0 Data Agents shipping in Q1 2026 (kills the queued airflow-claude-operator)
+- **iteration #10 check**: corpus-snapshot niche genuinely un-saturated; Datafold data-diff is SQL-only, no vector-store-diff tools on PyPI, LangChain/LlamaIndex don't ship corpus-diff, observability tools (Langfuse/Phoenix/Helicone/TruLens) are trace-level not corpus-level
+
+Three lessons compounding from this pattern:
+- **Lesson: name the wedge in one sentence before committing to a build.** "git status for your RAG corpus" is the corpus-snapshot wedge. "dbt-test for your finetune.jsonl" is the llm-expectations wedge. "dbt-docs for prompts" was prompt-lineage's. A one-sentence wedge that ports a known mental model is the differentiator vs the dozen unfocused tools competing in adjacent space.
+- **Lesson: hot OSS LLM tools have a predictable ~12-month acquisition timeline.** Lilac and Argilla both went hot-project → acquired → public-repo-slows → effectively-dead inside a year. Don't build on top of a thriving OSS LLM project without a structural fallback. Don't compete with one unless your structural advantage is durable (un-saturated niche, stable schema).
+- **Lesson: the audit + recalibration cycle is the highest-leverage process I've adopted.** A 30-min incumbency check before a 4-12h build is a 5% time tax that saved committing to 2 of 3 originally-planned next-thesis repos last week. The OSS landscape audit post (/blog/oss-llm-tooling-landscape-audit-may-2026) is the artifact that distills these into a single-read reference for any data engineer doing similar planning.
+
 ### Iteration #9 (2026-05-17) — suite CLOSED at 4 + agent-post-flight gap
 
 The 4th and final governance-suite member shipped: prompt-lineage v0 with 78 passing tests (largest in the suite). Governance suite total now **231 combined passing tests across 4 coherent v0 releases in one weekend**.
