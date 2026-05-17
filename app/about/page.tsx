@@ -66,27 +66,74 @@ export default function AboutPage() {
         </ul>
 
         <h2 className="mono-label" style={{ color: "var(--accent)", marginTop: 32 }}>
-          · What makes me different
+          · Receipts, not adjectives
         </h2>
+        <p style={{ color: "var(--text-secondary)", fontSize: 14.5, margin: "0 0 14px" }}>
+          Every claim below is checkable in 30 seconds. No vibes.
+        </p>
         <ul>
           <li>
-            <strong>Practitioner credibility</strong> — I do the work in production at Meta-scale,
-            not just write about it.
-          </li>
-          <li>
-            <strong>Founder bandwidth</strong> — I built and run PipeCode (DE interview prep) solo.
-            Real product, real users, real revenue.
-          </li>
-          <li>
-            <strong>AI-native operating model</strong> — Claude is in every workflow, not bolted
-            on. Forge, SecondBrain, and Cockpit are evidence.
-          </li>
-          <li>
-            <strong>Velocity</strong> — I shipped three full UI iterations of Claude Hub in one
-            session.{" "}
-            <Link href="/projects/claude-hub" style={{ color: "var(--accent)" }}>
-              Receipts here.
+            <strong>OSS contribution to a 47k-star repo with zero regressions.</strong>{" "}
+            <a
+              href="https://github.com/BerriAI/litellm/pull/28113"
+              target="_blank"
+              rel="noreferrer"
+            >
+              litellm PR #28113
+            </a>{" "}
+            — 6 files, +346 / −0, 21 new tests, 976 existing tests still green. Read the
+            two prior closed PRs first to learn why maintainers rejected them, then shipped
+            a defense-in-depth fix that doesn't repeat their mistakes.{" "}
+            <Link href="/blog/shipping-litellm-pr-by-reading-the-two-that-didnt" style={{ color: "var(--accent)" }}>
+              Postmortem.
             </Link>
+          </li>
+          <li>
+            <strong>Multi-agent dev on the Claude Max plan I already pay for.</strong>{" "}
+            <a
+              href="https://github.com/uppulaharshith2-rgb/forge"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Forge
+            </a>{" "}
+            — 11 role personas (Builder, Critic, CSO, QA, Designer, Eng Manager, Investigator,
+            Innovator, Bug Hunter, Doc Engineer, Leader), Opus 4.7 leader, file-based
+            message bus, budget guard, install in one curl. Zero extra spend.
+          </li>
+          <li>
+            <strong>Daily-use AI products I shipped solo.</strong>{" "}
+            <Link href="/projects/cockpit" style={{ color: "var(--accent)" }}>
+              Cockpit
+            </Link>{" "}
+            (12 daemons score Staff+ DE roles against my embedding, queues applications —
+            emails me at 6am, 12 weeks running);{" "}
+            <Link href="/projects/claude-hub" style={{ color: "var(--accent)" }}>
+              Claude Hub
+            </Link>{" "}
+            (181 curated resources across 8 types, AI semantic search via Haiku);{" "}
+            <Link href="/projects/pipecode" style={{ color: "var(--accent)" }}>
+              PipeCode
+            </Link>{" "}
+            (real SaaS I founded — DE interview prep that runs your SQL/PySpark code).
+          </li>
+          <li>
+            <strong>Velocity that compounds, not bursts.</strong> Three full UI iterations
+            of Claude Hub in one session.{" "}
+            <Link href="/projects/claude-hub" style={{ color: "var(--accent)" }}>
+              The v1 → v3 build log
+            </Link>{" "}
+            is the receipt — including what was rejected each time and why.
+          </li>
+          <li>
+            <strong>I run my own AI infra in public.</strong> This portfolio's content,
+            blog posts, and OSS contributions all ship from a self-built forge loop —
+            parallel research agents scout, an implementation agent ships one atomic
+            commit per cycle, the build must be green before commit. See{" "}
+            <Link href="/oss" style={{ color: "var(--accent)" }}>
+              /oss
+            </Link>{" "}
+            for the live ledger.
           </li>
         </ul>
 

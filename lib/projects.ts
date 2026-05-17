@@ -18,7 +18,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "claude-hub",
     name: "Claude Hub",
-    tagline: "Curated registry of Claude tools for data teams",
+    tagline: "181 hand-curated Claude resources across 8 types. AI search via Haiku. Three full UI iterations in one session.",
     oneLiner:
       "Editorial, opinionated marketplace of MCPs, skills, agents, and architectures, hand-picked by a practicing data engineer.",
     description:
@@ -40,7 +40,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "cockpit",
     name: "Cockpit",
-    tagline: "AI job-application copilot — autopilot for the senior IC job hunt",
+    tagline: "12 daemons watch Staff+ DE roles, score each against my embedding, queue high-fit applications. Self-hosted, daily use, 12 weeks running.",
     oneLiner:
       "Watches every relevant Staff+ data role across major job boards, scores each against my profile via embeddings, and queues high-fit applications.",
     description:
@@ -61,7 +61,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "pipecode",
     name: "PipeCode",
-    tagline: "Real interview prep for data engineers",
+    tagline: "Solo-founded SaaS. DE interview prep that actually runs your PySpark / SQL / dbt code instead of multiple-choice.",
     oneLiner:
       "Question bank + judge for SQL, PySpark, Snowflake, Airflow, dbt — the only DE interview prep that runs your code.",
     description:
@@ -82,7 +82,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "secondbrain",
     name: "SecondBrain (personal vault)",
-    tagline: "My private compounding knowledge vault — the system behind the kit",
+    tagline: "My personal Obsidian vault running 9 custom Claude skills daily. The public kit is extracted from this.",
     oneLiner:
       "The actual vault I use daily. PARA structure + every custom Claude skill, applied to my real life and work. The public starter kit (SecondBrain Kit) is extracted from this.",
     description:
@@ -103,7 +103,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "ai-cost-calculator",
     name: "AI Cost Calculator",
-    tagline: "Stop guessing your LLM bill — calculate it",
+    tagline: "1,225 pairwise LLM comparison pages (50 models, programmatic SEO). Planned. Pure static, compounds over 12-18 months.",
     oneLiner:
       "Pairwise model comparison + cost calculator for every Claude / GPT / Gemini / open-source model. Programmatic SEO play.",
     description:

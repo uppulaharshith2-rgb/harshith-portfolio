@@ -76,9 +76,20 @@ Parallel research agents (oss-targets, portfolio-polish, new-builds) → impl ag
 - **Defense-in-depth in OSS fixes signals seniority.** The litellm PR didn't just fix `get_supported_openai_params` — it also added guards in `map_openai_params` and set JSON-level flags. Maintainers read multi-layer fixes as "this person understands production failure modes," not "this person changed one line."
 - **A `/oss` page is the artifact a hiring manager actually wants.** Embedding contributions in the chat is good; a dedicated public ledger with diff stats / test counts / "why it matters" paragraphs is what gets screenshot and pasted into recruiter Slack channels. Build this BEFORE filing the second OSS PR so each new PR auto-shows up on a credible page.
 
+### Iteration #2 (2026-05-17) — duplicate-PR discipline + production deploy gotcha
+
+- **Vercel git auto-deploy is NOT wired on this project.** Every push to `main` requires a manual `vercel --prod` from the repo root to actually go live. The polish-v2 research agent caught this when it hit production `/oss` and got a 404 while local code was correct — Vercel still showed the 46-min-old initial deployment because no auto-deploy hook fired. Until git integration is wired (queued as Tier 2 ADD_FEATURE), the impl agent / forge tick MUST run `vercel --prod` after every push.
+- **Always `gh pr list --state open --search "<keyword>"` BEFORE forking.** Two consecutive impl agents (claude-agent-sdk-python #899, MCP python-sdk #1933) correctly abandoned because the target issues each had 2+ and 7+ open PRs respectively. The 30-second check is the difference between a candidacy-grade contribution and spam.
+- **Read PR REVIEWS, not just PR diffs, to learn maintainer preference.** On MCP #1933, the maintainer (@maxisbey) explicitly preferred `open(sys.stdin.fileno(), "rb", closefd=False)` over `os.dup()` because the former has no fd to clean up. Three closed PRs used `os.dup()` and were not merged — the pattern lives in PR review comments, not in the diffs. Future OSS_PR ticks should `gh pr view <closed-PR> --comments` to extract maintainer preferences before writing code.
+- **Falsifiable claims beat adjectives, every time.** "Practitioner credibility" / "Velocity" / "AI-native operating model" read as table stakes to a hiring panel. "Filed a 6-file +346/−0 PR to litellm with 21 new tests and zero regressions across 976 existing — [PR #28113](url)" reads as a specification a stranger can verify. Replaced the entire `/about` "What makes me different" section with linked, checkable claims.
+- **Project taglines are 8-second elevator pitches.** "Curated registry of Claude tools for data teams" tells you nothing concrete. "181 hand-curated Claude resources across 8 types. AI search via Haiku. Three full UI iterations in one session." gives a stranger four falsifiable facts in one line. Rewrote all 5 project taglines on this principle.
+
 ### Operating principles (refined this iteration)
 
 - **Atomic ticks.** One action → one commit → one push. Bundling hides what compounded vs noise.
 - **Source from the vault and the repo before the web.** Most material exists; rewriting is faster and more accurate than searching.
 - **Build green before commit.** Red builds are worse than no tick.
+- **Push + deploy.** `git push` is NOT sufficient — run `vercel --prod` after every push until git integration is wired.
+- **Pre-check duplicates.** `gh pr list --state open --search "<keyword>"` BEFORE any OSS fork. Read closed prior PRs' REVIEW comments, not just diffs.
 - **Quality bar: Anthropic / OpenAI hiring panel.** If the diff is sloppy, the tests are weak, or the prose has marketing fluff, downgrade or abandon — never ship low quality.
+- **Falsifiable claims, never adjectives.** Every line on the portfolio should be checkable in 30 seconds.

@@ -53,17 +53,19 @@ export const CANNED_REPLIES: Array<{ match: RegExp; reply: string }> = [
   },
   {
     match: /shipped|built|projects|work|recent|portfolio/i,
-    reply: `Three things I'm using daily right now, plus a few in flight:
+    reply: `Three live, daily-use products + a fresh OSS PR landed this week:
 
 [[PROJECT:claude-hub]]
 [[PROJECT:cockpit]]
 [[PROJECT:pipecode]]
 
-All three are real, live, daily-use products. **Cockpit** runs my own job search. **Claude Hub** is the curated tool registry I wished existed when I started building with Claude. **PipeCode** is the SaaS I founded — interview prep for data engineers that actually runs your code.
+**Cockpit** runs my own Staff+ DE job search — 12 daemons, scored against my embedding, daily use for 12 weeks. **Claude Hub** is the curated Claude registry I wished existed — 181 resources, AI search via Haiku, three UI iterations in one session. **PipeCode** is the SaaS I founded — DE interview prep that actually runs your code.
 
-> what stack do you use?
-> show me something more experimental
-> are you open to roles?`,
+Plus a real OSS contribution shipped this week: **[litellm PR #28113](https://github.com/BerriAI/litellm/pull/28113)** — fixed the Opus 4.7 \`temperature\` drop_params bug. 21 new tests, 976 existing tests still green. The full ledger lives at [/oss](/oss).
+
+> Walk me through the litellm PR — what made the difference?
+> Show me your most ambitious project (Cockpit)
+> What stack do you use to ship this fast?`,
   },
   {
     match: /stack|tech|tools|languages|framework/i,
