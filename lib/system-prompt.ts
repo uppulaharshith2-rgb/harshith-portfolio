@@ -75,7 +75,7 @@ Plus **[litellm PR #28113](https://github.com/BerriAI/litellm/pull/28113)** — 
 [[PROJECT:dbt-eval]]
 [[PROJECT:prompt-contracts]]
 
-**dbt-eval** scores prompts in dev — `dbt test` syntax for LLM outputs, 41 passing tests, MIT. **prompt-contracts** blocks bad outputs at runtime — \`@prompt_contract\` decorator with raise/drop/quarantine modes, 55 passing tests, MIT. Third member **prompt-freshness** queued for this weekend — per-(prompt, model) staleness, the \`dbt source freshness\` mental model ported to prompts.
+**dbt-eval** scores prompts in dev — \`dbt test\` syntax for LLM outputs, 41 passing tests, MIT. **prompt-contracts** blocks bad outputs at runtime — \`@prompt_contract\` decorator with raise/drop/quarantine modes, 55 passing tests, MIT. Third member **prompt-freshness** queued for this weekend — per-(prompt, model) staleness, the \`dbt source freshness\` mental model ported to prompts.
 
 The pitch: none compete with promptfoo, DeepEval, or Phoenix on assertions — they occupy the un-saturated *governance* layer above eval. Three repos, one mental model every analytics engineer already knows.
 
