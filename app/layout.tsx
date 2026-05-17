@@ -24,37 +24,47 @@ const display = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://harshith-portfolio.vercel.app"),
+  metadataBase: new URL("https://harshith-portfolio-khaki.vercel.app"),
   title: {
     default: "Harshith Uppula — AI builder, Claude-native projects",
     template: "%s · Harshith Uppula",
   },
   description:
-    "I build with Claude. Ask me what I've shipped — Cockpit, Claude Hub, PipeCode, AI skills, open source.",
+    "Senior data engineer, indie AI builder. Shipping with Claude — Cockpit, Claude Hub, PipeCode, Forge, SecondBrain Kit. Ask the site what I've built.",
   keywords: [
     "Harshith Uppula",
     "AI Engineer",
+    "Staff Data Engineer",
     "Claude",
     "Anthropic",
-    "Data Engineer",
-    "Cockpit",
+    "Claude Code",
+    "MCP",
+    "Multi-agent systems",
+    "AI Data Engineer",
+    "Forge",
     "Claude Hub",
+    "Cockpit",
     "PipeCode",
     "open source",
   ],
-  authors: [{ name: "Harshith Uppula" }],
+  authors: [{ name: "Harshith Uppula", url: "https://github.com/uppulaharshith2-rgb" }],
   creator: "Harshith Uppula",
+  alternates: { canonical: "/" },
   openGraph: {
     title: "Harshith Uppula — AI builder",
-    description: "Ask me what I've shipped.",
+    description: "Ask the site what I've built. Chat-first portfolio for an AI data engineer.",
+    url: "https://harshith-portfolio-khaki.vercel.app",
+    siteName: "harshith.dev",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: "Harshith Uppula — AI builder",
-    description: "Ask me what I've shipped.",
+    description: "Ask the site what I've built.",
+    creator: "@uppulaharshith",
   },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -75,6 +85,38 @@ export default function RootLayout({
                 } catch(e) {}
               })();
             `,
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: "Harshith Uppula",
+              url: "https://harshith-portfolio-khaki.vercel.app",
+              image: "https://harshith-portfolio-khaki.vercel.app/apple-icon.svg",
+              jobTitle: "Senior Data Engineer · Indie AI Builder",
+              email: "mailto:uppula.harshith2@gmail.com",
+              sameAs: [
+                "https://github.com/uppulaharshith2-rgb",
+                "https://linkedin.com/in/uppulaharshith",
+              ],
+              knowsAbout: [
+                "Anthropic Claude",
+                "Claude Code",
+                "Model Context Protocol",
+                "Multi-agent systems",
+                "Data engineering",
+                "PySpark",
+                "dbt",
+                "Snowflake",
+                "Vector databases",
+                "RAG infrastructure",
+                "Eval pipelines",
+              ],
+              worksFor: { "@type": "Organization", name: "PipeCode" },
+            }),
           }}
         />
       </head>

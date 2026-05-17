@@ -32,15 +32,38 @@ up: "[[index]]"
 
 ## Pending (drained top-down by `/portfolio-tick`)
 
-### High-leverage immediate (do these in the first 5 ticks)
+### Tier 1 — bar-raising signal for Anthropic / OpenAI hiring panels (do these FIRST)
 
-- [ ] `WRITE_POST` Announce the Forge public release — sourced from github.com/uppulaharshith2-rgb/forge README + Session 0 build log. Target audience: AI builders, indie devs, multi-agent curious. 800-1000 words.
-- [ ] `WRITE_POST` Announce the SecondBrain Kit public release — frame as "the vault that compounds." Source from the new repo README. 700-900 words.
-- [ ] `OSS_PR` Pull the next target from `.forge/OSS_TARGETS.md` Tier 1. Start with `anthropic-cookbook` DE example notebook (highest visibility × relevance).
-- [ ] `ADD_FEATURE` Add ⌘K command palette — fuzzy search across projects + posts + chat starters. Major UX moat for the chat-first surface.
-- [ ] `ADD_FEATURE` OG image generation per project/post via `next/og` — better social sharing.
-- [ ] `POLISH_UI` Light-mode visual QA — every page screenshotted in both themes, fix contrast issues.
-- [ ] `OSS_PR` Tier 1 #2 — add Forge + SecondBrain Kit entries to `awesome-claude-code` (or equivalent awesome-list).
+> Research-grade specificity. Each item names exact files, repos, issues, or design briefs. No vague "improve the UI."
+
+- [ ] `OSS_PR` **anthropics/claude-agent-sdk-python #899** — subprocess CLI rejects list-form `system_prompt` (API supports it). First-party Anthropic repo = single highest hiring signal. Fix in `src/claude_agent_sdk/_internal/transport/subprocess_cli.py` L209-220 + pytest cases for str / dict-file / dict-preset / list forms. Est 2.5h.
+
+- [ ] `BUILD_SKILL` **dbt-eval** — `dbt test` syntax for LLM outputs. Public OSS repo + PyPI. 8 assertions: `regex_match`, `json_schema`, `cosine_similarity`, `factual_consistency`, `tool_call_shape`, `latency_p95`, `cost_per_call`, `no_pii`. HTML report mirroring dbt-docs. GitHub Action for PR diffs ("prompt v3→v4 regressed 2 assertions"). 10-12h. Pitch: "I made LLM eval boring like dbt tests." Becomes a blog post + portfolio entry.
+
+- [ ] `BUILD_SKILL` **claude-warehouse-mcp** — one MCP, four warehouses (Snowflake/BigQuery/Databricks/DuckDB), governed SQL. Tools: `list_tables`, `describe`, `sample`, `query`, `estimate_cost`, `lineage_for_column`. Per-warehouse adapters, read-only enforcement, LIMIT injection, scanned-bytes ceiling, `claude_warehouse.yml` policy. Demo notebook: "Claude analyzes 1TB BigQuery for $0.14." 10-12h. Fills the governed-multi-warehouse-MCP gap.
+
+- [ ] `OSS_PR` **BerriAI/litellm #28067** — Anthropic streaming `KeyError: 'text'` on `content_block_start` when upstream omits optional field. `chunk["text"]` → `chunk.get("text", "")` in `litellm/llms/anthropic/chat/handler.py:789` + streaming test. 1.5h. Filed yesterday, zero comments = wide open.
+
+- [ ] `OSS_PR` **BerriAI/litellm #27944** — Anthropic batch costs always 0; `transform_file_content_request` routes `msgbatch_*` IDs to wrong endpoint. Branch on `file_id` prefix in `litellm/llms/anthropic/files/transformation.py`. 4h. Cost-tracking bug = DE-adjacent signal.
+
+- [ ] `OSS_PR` **modelcontextprotocol/python-sdk #1933** — stdio transport closes real fds, `ValueError` after server exits. Wrap stdio takeover in context that restores `os.dup`'d copies on exit. 3h. Canonical MCP repo (23k stars), labeled `good first issue`+`bug`+`P3`.
+
+### Tier 2 — portfolio polish (Anthropic-grade taste signals)
+
+- [ ] `POLISH_UI` **Monogram project tiles** — replace solid-color squares with brand-color gradient tiles containing the project name's first 1-2 chars in Geist Mono. Bump to 28×28, `border-radius: 6px`, white 600 mono at 11px. `app/page.tsx:94-104` + `components/projects/project-card.tsx`. Visually differentiates the 4 live cards. 25min.
+- [ ] `POLISH_UI` **Stagger prompt chips on first paint** — `animation-delay: calc(var(--i) * 60ms)` via inline `style={{ "--i": i }}`. New `@keyframes chipPop { from { opacity: 0; transform: translateY(6px) scale(0.96); } to { opacity: 1; transform: none; } }` on `.prompt-chip`. 360ms total stagger. `components/chat/chat.tsx:280-291` + `app/globals.css:268-287`. 15min.
+- [ ] `CONTENT_PASS` **Sharpen the CTA card** — replace "Hiring for AI infra, data, or eval?" with `"7 shipped projects. 12 weeks of nights. Available Monday."` and subhead with `"Senior/Staff data eng. Currently shipping multi-agent infra solo on the Claude Max plan. Avg response < 6h."`. `app/page.tsx:164-186`. 8min. Specific numbers + Monday-availability hook out-perform generic hiring copy.
+- [ ] `ADD_FEATURE` **Static `og.png` (1200×630)** — design in Figma: "Hi, I'm Harshith." + accent underline on "shipped" + status dot + 4 small project monograms. Place at `public/og.png`. Wire into `metadata.openGraph.images`. 45min.
+- [ ] `ADD_FEATURE` **⌘K command palette** — fuzzy search across projects + posts + chat starters via Fuse.js. Major UX moat for the chat-first surface. 90min.
+- [ ] `ADD_FEATURE` **OG image generation** via `next/og` — per project/post dynamic OG with project name + accent + tagline. 60min.
+- [ ] `POLISH_UI` **Light-mode visual QA** — screenshot every page in both themes; fix contrast issues. The `html.light` vars exist but no live verification yet. 45min.
+- [ ] `ADD_FEATURE` **`/oss` page** — public ledger of every OSS contribution shipped through this portfolio (PRs filed + merged, OSS repos published, skills released). Tracks the actual hiring artifact. 60min once first PR lands.
+
+### Tier 3 — announcement posts (write only AFTER each ships)
+
+- [ ] `WRITE_POST` **"Forge: multi-agent dev on Claude Max only"** — full architecture writeup with the DAG diagram, complexity rubric, role matrix, budget guard explanation, real numbers from RUN_1. Sourced from github.com/uppulaharshith2-rgb/forge README + ~/forge/RUN_1_COMPLETE.md. 1000-1200 words. Aim: HN/r/programming front page.
+- [ ] `WRITE_POST` **"SecondBrain Kit: the vault that compounds"** — Karpathy LLM Wiki rule explained, PARA structure for AI-native work, why "rewrite-don't-append" is the unlock. Source from public repo README. 800 words.
+- [ ] `WRITE_POST` **"Why my portfolio is a chat (and what it taught me about AI UX)"** — meta post about THIS site, with the streaming-first-message decision, the embedded-cards token pattern, the canned-fallback graceful degradation. Honest about what didn't work. 900 words.
 
 ### Content compounding (rotate through these)
 
