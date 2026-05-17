@@ -76,6 +76,15 @@ Parallel research agents (oss-targets, portfolio-polish, new-builds) → impl ag
 - **Defense-in-depth in OSS fixes signals seniority.** The litellm PR didn't just fix `get_supported_openai_params` — it also added guards in `map_openai_params` and set JSON-level flags. Maintainers read multi-layer fixes as "this person understands production failure modes," not "this person changed one line."
 - **A `/oss` page is the artifact a hiring manager actually wants.** Embedding contributions in the chat is good; a dedicated public ledger with diff stats / test counts / "why it matters" paragraphs is what gets screenshot and pasted into recruiter Slack channels. Build this BEFORE filing the second OSS PR so each new PR auto-shows up on a credible page.
 
+### Iteration #5 (2026-05-17) — coherent-suite framing > scattered tools
+
+After dbt-eval v0 shipped, the iteration #5 research agent surfaced three NEW build candidates and (more importantly) noticed they form a **coherent three-repo governance suite** that extends dbt-eval rather than scattering attention across unrelated tools.
+
+- **The framing flip:** "I built dbt-eval" is a single-artifact pitch. "I'm building the dbt-style governance suite for prompts (eval + contracts + diff + freshness)" is a *thesis* pitch that mirrors a mental model every analytics engineer already has. Three repos that tell one story beat seven repos that tell seven stories — for recruiter calls, blog posts, and SEO.
+- **Lesson: research agents should ask "do these picks compose?" not just "are each high-leverage?"** The iteration #5 agent rejected the queued `airflow-claude-operator` (Astronomer just shipped Apache-2.0 first-party tooling for this) and replaced it with `prompt-contracts` / `golden-diff` / `prompt-freshness` — each individually 4-12h, all three pointing at the same un-saturated *governance* layer above existing eval frameworks. The composition is the moat.
+- **Lesson: removed-from-queue items deserve explicit notes.** Adding `~~strikethrough~~ + reason` to the queue (e.g., "Airflow Claude operator → Astronomer shipped first-party") is cheaper than silently dropping items. Future research agents reading the queue learn what the loop has explicitly chosen NOT to do, and why — same compound-learning pattern as the OSS abandonment log.
+- **Lesson: external-incumbency check belongs in every BUILD_SKILL research.** A 2-minute "has $vendor shipped this?" sweep saves 8-10 hours of building something already eaten by a first-party tool. Add to the research agent persona as a hard rule.
+
 ### Iteration #4 (2026-05-17) — first OSS BUILD post-recalibration
 
 After three OSS_PR ticks correctly abandoned in iteration #3, pivoted to *building* in uncrowded space. dbt-eval v0 shipped within 6 hours of the recalibration decision. Lessons:

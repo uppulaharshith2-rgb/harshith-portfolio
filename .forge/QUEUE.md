@@ -73,6 +73,23 @@ up: "[[index]]"
 - [ ] `BUILD_SKILL` **dbt-eval `cost_per_call` + `latency_p95` assertions** — first two of the eight named-roadmap assertions. Both need the v0.2 runtime to land first. Est 2h after v0.2.
 
 - [ ] `OSS_PR` **dbt-eval to awesome-claude-code / awesome-llm-eval lists** — once v0 has a star or two, file the PR adding dbt-eval to relevant awesome-lists. Free distribution, low effort. Est 30min.
+
+### Tier 1.5 — three-repo dbt-style governance suite for prompts (companion to dbt-eval)
+
+> Research agent's iteration #5 finding: extend dbt-eval into a **coherent governance suite** (define a contract → diff changes in CI → track freshness over time) rather than competing with promptfoo / DeepEval / Phoenix on assertions. The pitch becomes one sentence at every recruiter call: "I'm building the dbt-style governance layer for prompts."
+
+- [ ] `BUILD_SKILL` **`prompt-contracts` (HIGHEST priority, score 9/10)** — dbt contracts for LLM JSON outputs. Fail the pipeline, not the dashboard. Python decorator `@prompt_contract(schema=..., on_violation="raise|drop|quarantine")` wrapping any Claude/OpenAI call. JSON Schema + Pydantic adapters + `coerce` mode for trivially-fixable outputs. Airflow `PromptContractOperator` and a declarative `prompt_contracts.yml`. End-to-end example: classifier → contract → Snowflake table with `_rejected` quarantine populated by a bad prompt. **8-10h. Publishes to PyPI as `prompt-contracts`.** Anchor post: "Your LLM is a producer in a data contract — start treating it like one."
+
+- [ ] `BUILD_SKILL` **`golden-diff` (score 8/10)** — Visual JSON-output diff bot for prompt PRs. GitHub Action posts a sticky PR comment with structured diff between `main` and PR branch eval results: added keys, removed keys, value drift, count of regressed cases. Severity coloring (green / amber / red). Adapters for dbt-eval, promptfoo, raw JSONL. Worked example: bumping temperature regresses 3/20 cases, bot calls it out. **6-8h. GitHub Marketplace Action + `pip install golden-diff`.** Anchor post: "Prompt PRs need preview comments, not test logs."
+
+- [ ] `BUILD_SKILL` **`prompt-freshness` (score 8/10)** — `dbt source freshness` for prompt templates. CLI checks per-(prompt, model) staleness via `prompts.yml` manifest with `warn_after / error_after` thresholds. Re-evaluation only counts against the *current* model alias — so a Sonnet 4.0 → 4.7 model bump invalidates the freshness clock. GitHub Action opens an issue when a prompt goes stale. **5-7h.** Integrates with dbt-eval (`prompt-freshness mark-evaluated --suite examples/`). Anchor post: "Your prompts are sources. Treat them like sources."
+
+**Why ship all three**: Recruiter call pitch goes from "I built dbt-eval" to "I'm building the dbt-style governance suite for prompts" — coherent three-repo story that mirrors a mental model every analytics engineer already has. None compete with existing eval frameworks (they occupy the un-saturated *governance* layer above eval). All three shippable in 4-12 hours each, so all three could be built in one weekend with the forge loop.
+
+### REMOVED FROM QUEUE (already addressed externally)
+
+- ~~`ADD_PROJECT` Build one fresh micro-tool this week~~ → addressed by dbt-eval (shipped 2026-05-17)
+- ~~Airflow Claude operator~~ → **Astronomer Data Agents plugin shipped first-party with Apache 2.0**, crowds out the build. Pivoted to the three-repo governance suite above which occupies less-crowded space.
 - [x] `WRITE_POST` **"Research agents that abandon: discipline as a feature"** — shipped 2026-05-17 at /blog/research-agents-that-abandon-discipline-as-a-feature (~1100 words). Walks the 3 abandonments concretely (claude-agent-sdk #899, MCP python-sdk #1933, litellm #28067), explains the 30-second pre-flight that makes the abandon path explicit and rewarded, names the compound-learning-as-team-culture pattern, closes with "if your agent never abandons, your agent is shipping bad work."
 - [ ] `WRITE_POST` **"SecondBrain Kit: the vault that compounds"** — Karpathy LLM Wiki rule explained, PARA structure for AI-native work, why "rewrite-don't-append" is the unlock. Source from public repo README. 800 words.
 - [ ] `WRITE_POST` **"Why my portfolio is a chat (and what it taught me about AI UX)"** — meta post about THIS site, with the streaming-first-message decision, the embedded-cards token pattern, the canned-fallback graceful degradation. Honest about what didn't work. 900 words.
