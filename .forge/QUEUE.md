@@ -34,11 +34,13 @@ up: "[[index]]"
 
 ### High-leverage immediate (do these in the first 5 ticks)
 
+- [ ] `WRITE_POST` Announce the Forge public release — sourced from github.com/uppulaharshith2-rgb/forge README + Session 0 build log. Target audience: AI builders, indie devs, multi-agent curious. 800-1000 words.
+- [ ] `WRITE_POST` Announce the SecondBrain Kit public release — frame as "the vault that compounds." Source from the new repo README. 700-900 words.
+- [ ] `OSS_PR` Pull the next target from `.forge/OSS_TARGETS.md` Tier 1. Start with `anthropic-cookbook` DE example notebook (highest visibility × relevance).
 - [ ] `ADD_FEATURE` Add ⌘K command palette — fuzzy search across projects + posts + chat starters. Major UX moat for the chat-first surface.
 - [ ] `ADD_FEATURE` OG image generation per project/post via `next/og` — better social sharing.
 - [ ] `POLISH_UI` Light-mode visual QA — every page screenshotted in both themes, fix contrast issues.
-- [ ] `BUILD_SKILL` Author `secondbrain-skills` repo on GitHub (the 10 vault skills extracted from `~/Documents/SecondBrain/.claude/skills/`). Public, MIT, README with install instructions. Link from `/projects/secondbrain`.
-- [ ] `OSS_PR` Identify one real issue on `anthropic-cookbook` or `awesome-claude-code` and file a meaningful PR.
+- [ ] `OSS_PR` Tier 1 #2 — add Forge + SecondBrain Kit entries to `awesome-claude-code` (or equivalent awesome-list).
 
 ### Content compounding (rotate through these)
 

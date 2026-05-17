@@ -58,4 +58,12 @@ up: "[[index]]"
 
 ## Lessons from tick history
 
-(none yet — first tick hasn't fired)
+### Session 0 (2026-05-16) — pre-tick groundwork
+
+Built v0 portfolio + opened two companion public repos in a single session.
+
+- **Open-source as portfolio leverage.** Private projects (Cockpit, PipeCode) signal commercial intent, not OSS contribution. Putting Forge and SecondBrain Kit on public GitHub creates star-able, fork-able, link-able artifacts that work as portfolio assets even when the portfolio site isn't being viewed.
+- **Skeleton-extraction beats redaction.** For SecondBrain, instead of scrubbing the user's personal vault into a public version, built a parallel `secondbrain-public/` directory with the *structure* (PARA folders, templates, slash commands, CLAUDE.md template) and gitignored actual notes. Cleaner outcome than line-by-line redaction.
+- **Install scripts are a credibility multiplier.** A `curl | bash` installer signals "the author thought through how a stranger uses this." Took ~15 min per repo, paid off immediately.
+- **Cap research on OSS_PR ticks.** Remote scheduler prompt caps research at 5 WebFetch/WebSearch calls per tick. Downgrades to a different action type rather than going down a rabbit hole — preserves tick atomicity.
+- **`.forge/` lives in the repo, not the vault.** Remote agents can't reach local paths. Canonical queue state in the repo means both local and remote ticks share it.
