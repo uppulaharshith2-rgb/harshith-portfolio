@@ -11,6 +11,97 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "forge-multi-agent-dev-zero-extra-spend",
+    title: "Forge: multi-agent dev that adds nothing to my Claude bill",
+    excerpt:
+      "Most multi-agent dev frameworks lock you to a runtime or add per-token billing on top of your Claude subscription. Forge does neither. 11 personas, a file-system bus, git worktrees, and the Max plan you already pay for.",
+    date: "2026-05-17",
+    tags: ["multi-agent", "claude-code", "forge", "open-source", "architecture"],
+    readTime: 8,
+    body: `Every multi-agent dev framework I tried failed one of two tests.
+
+**Test 1: do I have to learn a new runtime?** Devin, OpenHands, Cline, half a dozen others — each is its own product surface. New CLI, new auth, new project format, new mental model. The blast radius for a side-project orchestrator is too big.
+
+**Test 2: does it add to my bill?** Most agent frameworks layer a router or proxy on top of your provider, which means new per-request costs. I already pay $200/mo for Claude Max. Stacking another usage-based bill on top of that — to get an agent loop I could write in bash — felt wrong.
+
+[Forge](https://github.com/uppulaharshith2-rgb/forge) is my answer. It's the smallest interesting version of a multi-agent dev orchestrator: a directory of role-persona markdown files, a file-system message bus, git worktrees for isolation, and a Leader process (Claude Opus 4.7, interactive via Claude Code) that routes tasks to specialists. Zero new runtime. Zero extra spend.
+
+## The shape
+
+\`\`\`
+LEADER (Opus 4.7) ──┬── reads task queue
+                    ├── decides role (gstack matrix)
+                    ├── scores complexity (1-10)
+                    ├── routes model (Opus / Sonnet / Haiku)
+                    ├── scaffolds GSD project per task
+                    └── spawns subagent in a git worktree
+                                │
+                                ▼
+                  [Builder | Critic | CSO | QA | Designer | …]
+                    operates under Superpowers (TDD)
+                    communicates via forge/bus/
+\`\`\`
+
+11 role personas: Builder, Critic, CSO, QA, Designer, Eng Manager, Investigator, Innovator, Bug Hunter, Doc Engineer, plus the Leader. Each is a markdown file under \`personas/\`. The Leader reads the file, decides whether the next task needs a Builder or a Critic, and spawns that persona into a fresh git worktree.
+
+Subagents communicate by writing markdown files into \`bus/inbox/\` and \`bus/outbox/\`. No queue server, no RPC, no JSON-over-stdio dance. \`tail -f bus/master_log\` is the entire observability layer. If a subagent hangs, the budget guard kills it after a timeout. If it succeeds, the Leader merges its PR and runs compound learning — appending what the agent learned into \`compound/AGENTS.md\` (Karpathy LLM Wiki rule: rewrite affected sections, don't blindly append).
+
+## Why this works on the Max plan
+
+The Max plan gives you Claude Opus 4.7 access through Claude Code, capped by message rate and not by per-request billing. The expensive part of multi-agent dev is parallel inference. If you can structure parallelism as **separate Claude Code sessions in separate worktrees**, each session draws from the same flat-rate subscription. No router proxy, no per-token meter.
+
+The trick is making "separate Claude Code sessions" cheap to spawn. \`bin/spawn_subagent.sh\` creates a git worktree, symlinks a per-task \`CLAUDE.md\`, and launches a fresh \`claude\` process there. [Conductor.build](https://conductor.build/) handles the Mac UI for switching between them. Total cost to add a 12th persona: one new markdown file.
+
+## What the role matrix actually does
+
+The Leader scores each incoming task on complexity 1-10 and routes by role. The scoring lives in \`config/complexity_rubric.md\` — it's not magic, it's a checklist. "Touches more than three files" +1. "Requires schema migration" +2. "Production-facing" +2. Anything ≥ 8 goes to Opus. 5-7 goes to Sonnet. ≤ 4 goes to Haiku.
+
+The role matrix in \`config/role_matrix.md\` maps task shape to persona: bug → Bug Hunter, security review → CSO, UI polish → Designer, refactor → Builder + Critic in sequence. Most tasks need 1-2 personas. A small minority need 5+.
+
+## What the budget guard does
+
+\`bin/budget_guard.sh\` runs as a launchd cron every 5 minutes. It enforces three caps:
+
+1. **Concurrency cap** — no more than N subagents active at once (default 4)
+2. **Daily message cap** — kills all subagents if today's Max usage exceeds 90%
+3. **Weekly message cap** — same, weekly window
+
+If you blow past the cap, every spawned subagent finds a \`STOP\` flag in \`bus/broadcast/\` and exits cleanly. State persists in \`STATE.md\` per task, so resuming after rate-limit reset is just \`forge run --resume <task-id>\`.
+
+This is what makes the loop responsible. Without the guard, an unbounded Leader could chew through your daily Max allotment in an hour.
+
+## The single biggest design choice
+
+**File-system message bus, not a queue server.** Every other multi-agent framework I looked at uses Redis, NATS, or some bespoke RPC. Forge uses directories.
+
+The trade-off: throughput is bounded by file-system contention (fine for ≤ 10 concurrent agents), and you lose features like message replay or ordered delivery. The wins: zero infra to stand up, every message is a file you can \`cat\`, every state is a directory you can \`ls\`, the entire system survives the box rebooting, and debugging is just \`find\` + \`grep\`.
+
+For a solo-dev orchestrator, that's the right point on the curve. The 10-agent ceiling matches what one human can attend to anyway.
+
+## What Forge is not
+
+- **Not a CI/CD replacement.** It's interactive — the Leader is you, plus Opus. Agents run while you watch.
+- **Not a substitute for code review.** Critic personas do *first-pass* review; the Leader (you) merges.
+- **Not multi-user.** State is per-checkout. Two people sharing a Forge install will collide on \`bus/\` files.
+- **Not battle-tested at scale.** I use it on side projects. The patterns are inspired by production multi-agent work (Devin, OpenHands, Voyager, Reflexion, Gas Town) but Forge itself is solo-dev grade.
+
+## Install
+
+\`\`\`bash
+curl -fsSL https://raw.githubusercontent.com/uppulaharshith2-rgb/forge/main/install.sh | bash
+\`\`\`
+
+Adds \`~/forge/bin\` to your PATH. Run \`forge run <repo> "<goal>"\` to start a Leader session on any git repo. \`forge status\` for active tasks, \`forge kill\` to stop everything.
+
+[Repo here](https://github.com/uppulaharshith2-rgb/forge). MIT. Issues and PRs welcome — especially around the complexity rubric and role matrix, which I'm still tuning.
+
+## Why I wrote this
+
+Most "build your own agent framework" posts handwave the actual hard parts — budget, concurrency, persistence, retry, the difference between fan-out and parallelism. The hard parts are also the boring parts. Forge tries to make them as boring as possible: bash scripts, markdown files, git worktrees. Things a solo dev can debug at 2am.
+
+The lesson I'd extract: **multi-agent dev doesn't need a multi-agent platform**. It needs role-clarity (gstack), per-task isolation (worktrees), explicit budget (cron guard), and a way for agents to talk that you can read with your eyes (the file bus). Everything else is detail.`,
+  },
+  {
     slug: "why-claude-hub",
     title: "Why I'm building Claude Hub",
     excerpt:

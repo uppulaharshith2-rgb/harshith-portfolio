@@ -63,9 +63,11 @@ up: "[[index]]"
 - [ ] `POLISH_UI` **Light-mode visual QA** — screenshot every page in both themes; fix contrast issues. The `html.light` vars exist but no live verification yet. 45min.
 - [ ] `ADD_FEATURE` **`/oss` page** — public ledger of every OSS contribution shipped through this portfolio (PRs filed + merged, OSS repos published, skills released). Tracks the actual hiring artifact. 60min once first PR lands.
 
-### Tier 3 — announcement posts (write only AFTER each ships)
+### Tier 3 — announcement + extraction posts
 
-- [ ] `WRITE_POST` **"Forge: multi-agent dev on Claude Max only"** — full architecture writeup with the DAG diagram, complexity rubric, role matrix, budget guard explanation, real numbers from RUN_1. Sourced from github.com/uppulaharshith2-rgb/forge README + ~/forge/RUN_1_COMPLETE.md. 1000-1200 words. Aim: HN/r/programming front page.
+- [x] `WRITE_POST` **"Forge: multi-agent dev that adds nothing to my Claude bill"** — full architecture writeup with the DAG, role matrix, budget guard, file-bus design choice, "what Forge is not" anti-section. Aim was HN-grade; shipped 2026-05-17 at /blog/forge-multi-agent-dev-zero-extra-spend (~1100 words).
+- [ ] `WRITE_POST` **"Making LLM evaluations boring with dbt-eval"** — announcement post for the new dbt-eval public repo. Lead with the "exciting eval frameworks are the bug, not the feature" thesis; show the 30-second YAML example mirroring `schema.yml`; close with the 8-assertion roadmap. Write AFTER dbt-eval v0 is published so screenshots and links are real. 900-1100 words.
+- [ ] `WRITE_POST` **"Research agents that abandon: discipline as a feature"** — meta post on the forge loop pattern. Lead: of the last 4 OSS impl ticks, 3 abandoned (claude-agent-sdk #899, MCP python-sdk #1933, litellm #28067) because `gh pr list --state open --search` found duplicates. The metric isn't PRs filed; it's PRs *not* filed. Show the actual agent pre-flight prompts. 900-1200 words.
 - [ ] `WRITE_POST` **"SecondBrain Kit: the vault that compounds"** — Karpathy LLM Wiki rule explained, PARA structure for AI-native work, why "rewrite-don't-append" is the unlock. Source from public repo README. 800 words.
 - [ ] `WRITE_POST` **"Why my portfolio is a chat (and what it taught me about AI UX)"** — meta post about THIS site, with the streaming-first-message decision, the embedded-cards token pattern, the canned-fallback graceful degradation. Honest about what didn't work. 900 words.
 
