@@ -117,6 +117,15 @@ Priority = Visibility + Relevance - Effort.
 - **Why this matters for the candidacy**: lives at the intersection of data engineering (the entire YAML shape mirrors `dbt schema.yml`) and AI infra (LLM-as-judge with offline mock for CI). Exact "AI Data Engineer" pitch the role bands at top labs are asking for.
 - **Strategic note**: this is the FIRST result of the OSS-landscape recalibration that said "stop competing for PR queue spots, build in uncrowded space." Within 6 hours of the recalibration, a real public artifact landed. Pattern confirmed.
 
+### 2026-05-17 — llm-expectations v0 public release (NEW THESIS, 1st repo)
+
+- **Repo**: https://github.com/uppulaharshith2-rgb/llm-expectations (MIT)
+- **Stats**: 25 files, ~2,591 LOC (1,669 src + 922 tests + 223-line README), **78 tests passing in 0.15s**
+- **Pitch**: `dbt-test` for your `finetune.jsonl`. Declarative YAML data quality checks for LLM training files. 9 expectation types: schema, type, required, in-set, distribution, duplicates, PII (regex), token-count (char/4 approx), language-detect.
+- **New thesis opened**: training-data quality (Great Expectations port). Sister to the governance suite for prompts, same DE-mental-model-port shape, different un-saturated niche. corpus-snapshot ("git status for your RAG corpus") is incumbency-confirmed and queued as repo #2.
+- **Honest design trade-off — PII output doesn't itself leak PII**: matched values are masked (`j***@example.com`, `***66`) before they hit terminal or JSON output. The report is safe to paste in Slack / CI / email. This is the v0 analog of dbt-eval's faithful-scoring, prompt-contracts' coerce-counter, prompt-freshness' binary-alias-check, prompt-lineage's body-string heuristic — five v0 releases in one week, five honest design trade-offs documented.
+- **Iteration #9 lesson applied successfully**: brief explicitly required a post-push `gh repo view` verification step. Agent ran it, pasted the output in the final report ("name: uppulaharshith2-rgb/llm-expectations… default_branch=main, html_url=…"), and confirmed the silent-no-push failure mode (which broke prompt-lineage's flow) did not recur. The lesson held.
+
 ### 2026-05-17 — prompt-lineage v0 public release (4th / SUITE CLOSED)
 
 - **Repo**: https://github.com/uppulaharshith2-rgb/prompt-lineage (MIT)

@@ -11,6 +11,131 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "llm-expectations-dbt-test-for-your-finetune-jsonl",
+    title: "llm-expectations: dbt-test for your finetune.jsonl",
+    excerpt:
+      "Every team fine-tuning a model in 2026 is hand-rolling JSONL validation scripts. Lilac is dead, Argilla is in maintenance, Great Expectations has no LLM primitives. Today I'm shipping the thing nobody built.",
+    date: "2026-05-17",
+    tags: ["llm-expectations", "training-data", "open-source", "great-expectations-port"],
+    readTime: 7,
+    body: `Every team fine-tuning a model in 2026 is doing the same dance: glob for nulls in the JSONL, count labels with a one-off Python script, regex for PII, hope you didn't miss anything. Then you upload to the trainer and find out two epochs later that 8% of your records were duplicates of \`"I want my money back"\` because customer-support data is what it is.
+
+Nobody owns this. The names you'd expect to fill the niche aren't here:
+
+- **Lilac**: dormant since the [Databricks acquisition in March 2024](https://www.databricks.com/blog/lilac-joins-databricks-simplify-unstructured-data-evaluation-generative-ai). If you're not on Databricks, Lilac is a tab in your browser history.
+- **Argilla**: in HuggingFace maintenance mode. The README says the original authors have moved on. Was always a labeling tool, not a data-quality CI tool.
+- **Cleanlab**: actively maintained but Python-imperative, classical-ML-focused (label errors, outliers, duplicates on PyTorch/TF/XGBoost). No declarative YAML surface, no JSONL-native primitive.
+- **Great Expectations itself**: still pandas/SQL-centric through 2026. No LLM features.
+- **DeepChecks**: pivoted to enterprise platform. The OSS arm is still classical-ML.
+
+I ran [a full incumbency audit](/blog/oss-llm-tooling-landscape-audit-may-2026) before committing to this build. The niche is genuinely un-saturated.
+
+So [**llm-expectations**](https://github.com/uppulaharshith2-rgb/llm-expectations) just shipped — dbt-test for your finetune.jsonl. 78 passing tests in 0.15s. 1669 LOC source. MIT. pip install ready.
+
+## The shape
+
+\`\`\`yaml
+# suite.yml — declare expectations once, run forever
+name: sft_quality
+input: finetune.jsonl
+expectations:
+  - type: expect_record_has_fields
+    fields: [prompt, completion, label]
+  - type: expect_field_in_set
+    field: label
+    accepted_values: [refund, bug, feature, other]
+  - type: expect_field_value_distribution_within
+    field: label
+    bounds:
+      refund: [0.15, 0.35]
+      bug: [0.20, 0.40]
+  - type: expect_no_duplicates
+    key_field: prompt
+  - type: expect_no_pii
+    field: prompt
+  - type: expect_field_token_count_within
+    field: prompt
+    max: 2048
+  - type: expect_field_language_in
+    field: prompt
+    accepted: [en]
+\`\`\`
+
+If you've used Great Expectations or dbt-test, the shape feels familiar — that's the point. The mental model is **port Great Expectations' \`expectation_suite.yml\` to JSONL training files as first-class inputs**.
+
+\`\`\`
+$ llm-expectations check finetune.jsonl --suite suite.yml
+
+  Suite: sft_quality  (20 records scanned)
+
+  [PASS] expect_record_has_fields           20/20 records have all required fields
+  [FAIL] expect_field_in_set[label]         18/20 in accepted set, 2 violations
+     -> record 6:  value='urgent' (not in accepted set)
+     -> record 13: value='refund_request' (not in accepted set)
+  [PASS] expect_field_value_distribution    refund 0.25, bug 0.25, feature 0.25
+  [FAIL] expect_no_duplicates[prompt]       1 duplicate by prompt found
+  [FAIL] expect_no_pii[prompt]              2 PII matches across 20 records
+     -> record 13: value='j***@example.com' (matched email pattern)
+     -> record 17: value='***66' (matched credit_card pattern)
+  [PASS] expect_field_token_count_within    max approx-token count was 487
+  [FAIL] expect_field_language_in[prompt]   19/20 detected as en
+     -> record 16: value='sv' (detected sv, not in accepted)
+
+20 records   9 expectations   5 passed   4 failed   0 skipped
+exit 1
+\`\`\`
+
+## The unexpected design choice — PII output that doesn't itself leak PII
+
+The natural way to write the PII report is:
+
+> "found credit card 4532015112830366 in record 18"
+
+…which makes the report itself a PII liability. Paste that in a Slack channel and now you've moved sensitive data out of your fine-tuning corpus into your team chat history.
+
+So the report **masks** matched values before they ever appear in terminal or JSON output:
+
+- Emails → \`j***@example.com\` (preserve the leading character + domain so it's identifiable but not enumerable)
+- Credit cards / SSN / phone → \`***66\` (preserve last 2-4 chars for traceability)
+- The *category* of match is preserved (you still see "email" vs "credit_card"), but the *value* is sanitized
+
+This means the JSON output is safe to:
+- Post as a sticky PR comment
+- Drop into a Slack channel
+- Pipe to a CI dashboard
+- Email to your team
+
+If your data-quality tool's report becomes a PII liability, you don't actually have a data-quality tool. You have an exfiltration script that lints.
+
+This is the v0 analog of dbt-eval's faithful-mock-scoring, prompt-contracts' coerce-counter, prompt-freshness' binary-alias check, and prompt-lineage's body-string heuristic. Each repo in [the four-repo governance suite](/oss) shipped one honest design trade-off in v0; llm-expectations is doing the same on its first day in the new thesis.
+
+## Two zero-deps choices I made on purpose
+
+**char/4 for token counting.** It's ~10-15% off vs tiktoken on real text. But it's deterministic, zero-dep, and catches the actual failure mode you care about: 10x-over-budget records that will OOM your trainer. Real tiktoken backend named in the v0.2 roadmap; if you need it before then, it's a 30-line plug-in.
+
+**Regex for PII.** No model downloads in v0. Four highest-signal syntactic categories (SSN, email, phone, credit card) with Luhn validation on cards to cut false positives. Anyone who wants Presidio-grade detection can wrap it; the v0.2 hook is named in the README. The 90% of the value (catch the obviously-leaking records before they hit the trainer) lives in the regex path.
+
+Both choices follow the same principle: **ship the schema, defer the engine, name the upgrade path**. Same v0 discipline as [the prompt governance suite](/blog/ship-the-schema-before-the-engine).
+
+## The thesis this opens
+
+llm-expectations is the first repo of a new coherent thesis. The roadmap shape:
+
+| Repo | Role | Status |
+|---|---|---|
+| **llm-expectations** | dbt-test for your finetune.jsonl | **shipped today** |
+| **corpus-snapshot** | git status for your RAG corpus | incumbency-confirmed, queued |
+| **fixture-lineage** | provenance for eval fixtures | v2 territory |
+
+Same shape as [the governance suite for prompts](/oss) — port a known DE mental model into an un-saturated AI infra niche. Same v0 discipline. Different domain.
+
+Pip install: \`pip install llm-expectations\` (or clone the repo and \`pip install -e .\`). The README has a 30-second example. The roadmap is honest about what's next.
+
+If you're hand-rolling JSONL validation today, try it and tell me what's missing.
+
+Repo: [github.com/uppulaharshith2-rgb/llm-expectations](https://github.com/uppulaharshith2-rgb/llm-expectations). MIT.`,
+  },
+  {
     slug: "oss-llm-tooling-landscape-audit-may-2026",
     title: "OSS LLM tooling landscape, May 2026: what's dead, what's absorbed, what's still open",
     excerpt:

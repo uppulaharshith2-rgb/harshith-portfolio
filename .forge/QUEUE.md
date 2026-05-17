@@ -84,7 +84,7 @@ up: "[[index]]"
 
 > Incumbency check ran 2026-05-17. Verdict: **BUILD, NARROW THE NICHE**. Lilac is dead (Databricks acquired March 2024, OSS dormant). Argilla is in HF maintenance mode (labeling tool, not data-quality CI). Cleanlab is Python-imperative + ML-label focused. Great Expectations has no LLM features through 2026. MLflow is ops-side. dbt-llm-evals is warehouse-native. **No incumbent owns "great_expectations.yml for your finetune.jsonl + your RAG corpus snapshot diff" as a single pip-installable CLI.**
 
-- [ ] `BUILD_SKILL` **llm-expectations (HIGHEST priority — Tier 1, score 9-10/10)** — declarative YAML data quality checks for JSONL training/SFT/DPO files. Schema drift, label distribution, duplicate prompts, PII detection, max-token ceilings, language-detect. Same YAML-shape ergonomics as the governance suite (mental-model port from dbt-eval). Borrows from Great Expectations' `expectation_suite.yml` shape. CLI: `llm-expectations check finetune.jsonl --suite expectations.yml`. ~8h. Anchor post: "dbt-test for your finetune.jsonl — no warehouse, no SaaS, just YAML and pip install."
+- [x] `BUILD_SKILL` **llm-expectations v0 SHIPPED** — github.com/uppulaharshith2-rgb/llm-expectations, 25 files, 2,591 LOC (1669 src + 922 tests + 223 README), 78 tests passing in 0.15s. 9 expectation types working. Post-push `gh repo view` verification confirmed (iteration #9 lesson applied successfully). Honest trade-off: PII output masks matched values so report doesn't itself leak PII. Char/4 token approximation + regex PII chosen for zero-deps determinism (presidio + tiktoken named in v0.2 roadmap). Anchor post live at /blog/llm-expectations-dbt-test-for-your-finetune-jsonl. 2026-05-17.
 
 ### Tier 2 — deferred until llm-expectations gets traction
 

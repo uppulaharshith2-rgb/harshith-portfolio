@@ -69,6 +69,22 @@ Plus **[litellm PR #28113](https://github.com/BerriAI/litellm/pull/28113)** — 
 > What stack do you use to ship this fast?`,
   },
   {
+    match: /llm.?expectations|training.?data|finetune|sft|dpo|jsonl|data.?quality/i,
+    reply: `[[PROJECT:llm-expectations]]
+
+First repo of a new thesis — sister to the governance suite for prompts, different domain (LLM training data, not LLM outputs).
+
+The bet: every team fine-tuning a model in 2026 is hand-rolling JSONL validation scripts. Lilac is dead (Databricks acquired March 2024). Argilla is in HF maintenance mode (was always a labeling tool). Cleanlab is Python-imperative ML-classical. Great Expectations has no LLM primitives. Nobody owns *"\`great_expectations.yml\` for your \`finetune.jsonl\`"* as a single pip-installable CLI.
+
+**llm-expectations v0** ships **78 passing tests in 0.15s** across 9 expectation types: schema, type, required, in-set, distribution, duplicates, PII, token count, language detect. PII output is masked so the report doesn't itself leak the PII it found.
+
+Sequel repo \`corpus-snapshot\` ("git status for your RAG corpus") is incumbency-confirmed and queued — Datafold is SQL-only, no vector-store-diff tools on PyPI, observability tools (Langfuse/Phoenix) are trace-level not corpus-level.
+
+> Why a new thesis instead of more governance-suite repos?
+> Tell me about the PII-doesn't-leak-PII trade-off
+> Are you open to roles?`,
+  },
+  {
     match: /governance|suite|three.?repos|four.?repos|coherent|prompt.?contracts|prompt.?freshness|prompt.?lineage|lineage|contract/i,
     reply: `**The dbt-style governance suite for prompts — closed at four.** All public, all MIT, all with passing CI:
 

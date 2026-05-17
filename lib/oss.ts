@@ -16,13 +16,17 @@ export type Contribution = {
   highlights: string[];
   whyItMatters: string;
   tags: string[];
-  collection?: "governance-suite" | "orchestration" | "upstream-prs" | "vault";
+  collection?: "governance-suite" | "training-data-quality" | "orchestration" | "upstream-prs" | "vault";
 };
 
 export const COLLECTION_LABELS: Record<NonNullable<Contribution["collection"]>, { label: string; tagline: string }> = {
   "governance-suite": {
     label: "dbt-style governance suite for prompts",
     tagline: "Eval + contracts + diff + freshness. The thesis: port the dbt mental model to LLM outputs.",
+  },
+  "training-data-quality": {
+    label: "Training-data quality (Great Expectations port)",
+    tagline: "Declarative YAML data quality for JSONL training files + RAG corpora. The thesis: dbt-test for your finetune.jsonl.",
   },
   orchestration: {
     label: "Multi-agent orchestration",
@@ -105,6 +109,29 @@ export const CONTRIBUTIONS: Contribution[] = [
       "litellm is the de-facto OSS router for LLM apps (47k stars, multiple new external PRs merged daily). This bug bricks `drop_params=True` for anyone routing through Opus 4.7 — the model I personally use most. The PR is small in spirit (one config bug) but the diff demonstrates the production rigor maintainers actually want: read prior attempts, scope tightly, regression-test the matrix, anticipate pushback.",
     tags: ["anthropic", "litellm", "model-router", "first-party-claude", "bug-fix"],
     collection: "upstream-prs",
+  },
+  {
+    slug: "llm-expectations-v0",
+    kind: "repo",
+    title: "llm-expectations — dbt-test for your finetune.jsonl (v0)",
+    repo: "uppulaharshith2-rgb/llm-expectations",
+    url: "https://github.com/uppulaharshith2-rgb/llm-expectations",
+    date: "2026-05-17",
+    status: "published",
+    summary:
+      "First repo of a new thesis after the governance suite closed. Declarative YAML data quality checks for JSONL training/SFT/DPO files. CLI: `llm-expectations check finetune.jsonl --suite expectations.yml`. 9 expectation types in v0 — schema, type, required, in-set, distribution, duplicates, PII (regex baseline), token count, language detect. No warehouse, no SaaS, no model downloads — just pip install and a YAML file. The niche was un-saturated when this shipped: Lilac is dead (Databricks acquired March 2024), Argilla is in HF maintenance mode, Cleanlab is Python-imperative ML-classical, Great Expectations has no LLM features.",
+    stats: { additions: 2591, files: 25, tests: 78 },
+    highlights: [
+      "78 tests passing in 0.15s — under the 1800-LOC ceiling at 1669 source",
+      "9 working expectation types in v0; v0.2 names real PII model (presidio), semantic dedup, custom-expectation plugin API, multi-file diff",
+      "Honest design trade-off — 'PII output that doesn't itself leak PII': matched values are masked (`j***@example.com`, `***66`) so reports are safe to paste in CI comments or Slack without becoming a PII liability of their own",
+      "Conscious choice — char/4 token approximation (≈10-15% off vs tiktoken) buys zero deps + deterministic + catches the actual smell (10x-over-budget records). Real tiktoken backend deferred to v0.2",
+      "Mental-model port from Great Expectations' expectation_suite.yml shape, applied to JSONL training files as first-class inputs — the first of a new uncrowded thesis",
+    ],
+    whyItMatters:
+      "Every team fine-tuning a model in 2026 is hand-rolling JSONL validation scripts: glob for nulls, count labels, regex for PII, hope for the best. None of the major incumbents fill the gap (Lilac is dead post-acquisition, Argilla is a labeling tool not a data-quality CI, Cleanlab is classical-ML imperative). This is the first repo of a new coherent thesis that ports the Great Expectations mental model to LLM training data — sister thesis to the governance suite for prompts, same shape (mental model port, un-saturated niche, declarative YAML), different domain (training data, not prompts).",
+    tags: ["llm-training-data", "great-expectations", "jsonl", "yaml-config", "ai-data-engineering", "open-source-release", "new-thesis"],
+    collection: "training-data-quality",
   },
   {
     slug: "prompt-lineage-v0",
@@ -263,6 +290,7 @@ export function contributionStats() {
 const COLLECTION_ORDER: NonNullable<Contribution["collection"]>[] = [
   "upstream-prs",
   "governance-suite",
+  "training-data-quality",
   "orchestration",
   "vault",
 ];

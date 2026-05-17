@@ -12,7 +12,7 @@ export type Project = {
   highlights: string[];
   year: string;
   accentColor?: string;
-  collection?: "governance-suite" | "orchestration";
+  collection?: "governance-suite" | "training-data-quality" | "orchestration";
 };
 
 export const PROJECTS: Project[] = [
@@ -219,6 +219,30 @@ export const PROJECTS: Project[] = [
     collection: "governance-suite",
   },
   {
+    slug: "llm-expectations",
+    name: "llm-expectations",
+    tagline: "`dbt test` for your `finetune.jsonl`. Declarative YAML data quality checks for LLM training files — no warehouse, no SaaS, no model downloads.",
+    oneLiner:
+      "First repo of a new thesis: port Great Expectations' mental model to JSONL training files. The un-saturated niche after Lilac died and Argilla went into HF maintenance.",
+    description:
+      "Public Python package. CLI: `llm-expectations check finetune.jsonl --suite expectations.yml`. 9 working expectation types in v0 — schema, type, required, in-set, distribution, duplicates, PII (regex baseline with Luhn validation on cards), token count (char/4 deterministic approximation), and language detect via langdetect. Report output masks matched PII values (`j***@example.com`, `***66`) so the report itself is safe to paste in CI or Slack without becoming a PII liability. JSON output schema is what locks in; HTML / hosted dashboards / semantic dedup are v0.2 territory.",
+    status: "live",
+    category: "library",
+    liveUrl: "https://github.com/uppulaharshith2-rgb/llm-expectations",
+    repoUrl: "https://github.com/uppulaharshith2-rgb/llm-expectations",
+    techStack: ["Python 3.10+", "Click", "PyYAML", "jsonschema", "langdetect", "pytest"],
+    highlights: [
+      "78 tests passing in 0.15s — 1669 LOC source under the 1800-LOC ceiling",
+      "9 working expectation types in v0 (schema / type / required / in-set / distribution / duplicates / PII / tokens / language)",
+      "Honest design trade-off — `_mask()` ensures the report doesn't itself leak the PII it found. Matched values become `j***@example.com` or `***66` before they hit terminal / JSON output. Categorisation preserved; report is safe to share",
+      "Conscious zero-deps choice — char/4 token approximation (≈10-15% off vs tiktoken) keeps install trivially small and deterministic; real tiktoken backend deferred to v0.2",
+      "First of the new training-data-quality thesis — sister to the governance suite for prompts, same DE-mental-model-port shape, different un-saturated niche",
+    ],
+    year: "2026",
+    accentColor: "#06b6d4",
+    collection: "training-data-quality",
+  },
+  {
     slug: "forge",
     name: "Forge",
     tagline: "Multi-agent dev orchestrator — Claude Code on Max plan, zero extra spend",
@@ -286,6 +310,7 @@ const MONOGRAM_OVERRIDES: Record<string, string> = {
   "prompt-contracts": "PC",
   "prompt-freshness": "PF",
   "prompt-lineage": "PL",
+  "llm-expectations": "LE",
 };
 
 export function projectMonogram(slug: string, name: string): string {

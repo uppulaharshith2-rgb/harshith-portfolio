@@ -76,6 +76,14 @@ Parallel research agents (oss-targets, portfolio-polish, new-builds) → impl ag
 - **Defense-in-depth in OSS fixes signals seniority.** The litellm PR didn't just fix `get_supported_openai_params` — it also added guards in `map_openai_params` and set JSON-level flags. Maintainers read multi-layer fixes as "this person understands production failure modes," not "this person changed one line."
 - **A `/oss` page is the artifact a hiring manager actually wants.** Embedding contributions in the chat is good; a dedicated public ledger with diff stats / test counts / "why it matters" paragraphs is what gets screenshot and pasted into recruiter Slack channels. Build this BEFORE filing the second OSS PR so each new PR auto-shows up on a credible page.
 
+### Iteration #10 closure — new thesis opens, post-push verification gate works
+
+llm-expectations v0 shipped clean: 78 tests, post-push `gh repo view` verification ran successfully (iteration #9 lesson held — agent pasted the output in its final report, no silent-no-push regression).
+
+- **Lesson: the post-push gh-repo-view verification gate is now standard.** Add to every impl-agent brief that produces a public OSS repo. The iteration #9 silent-no-push failure (prompt-lineage built locally but never pushed) did not recur in iteration #10, suggesting the gate works as designed. Keep it.
+- **Lesson: five v0s, five honest design trade-offs documented.** dbt-eval (faithful-mock scoring), prompt-contracts (coerce-counter), prompt-freshness (binary model-alias check), prompt-lineage (body-string heuristic for contract→prompt linkage), llm-expectations (mask PII in PII reports). Each agent shipped one specific honest constraint in the v0 README that turned an obvious-feature-cut into a documented engineering decision. The pattern is reproducible — make "name one unexpected design trade-off" a required field in every impl-agent's final report.
+- **Lesson: the second thesis opens cleanly after the first closes.** Closing the governance suite at 4 (not 5) and immediately pivoting to a new coherent thesis (training-data quality) preserved narrative momentum. The /about bullet now lists "four repos, governance suite closed" + "new thesis, llm-expectations + corpus-snapshot incoming" — two coherent stories side by side, instead of seven scattered repos.
+
 ### Iteration #10 (2026-05-17) — incumbency-check pattern compounds, OSS landscape audit ships
 
 By iteration #10, the 30-min incumbency check before every Tier 1 BUILD_SKILL is no longer an experimental discipline — it's a hard rule with three concrete examples backing it:
