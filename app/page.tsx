@@ -1,5 +1,5 @@
 import { Chat } from "@/components/chat/chat";
-import { PROJECTS } from "@/lib/projects";
+import { PROJECTS, projectMonogram } from "@/lib/projects";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -93,15 +93,25 @@ export default function HomePage() {
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                 <span
+                  className="mono"
                   style={{
-                    width: 22,
-                    height: 22,
-                    borderRadius: 5,
+                    width: 28,
+                    height: 28,
+                    borderRadius: 6,
                     background: `linear-gradient(135deg, ${p.accentColor}, ${p.accentColor}55)`,
-                    display: "inline-block",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     boxShadow: `0 0 10px ${p.accentColor}33`,
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#fff",
+                    letterSpacing: "0.04em",
+                    flexShrink: 0,
                   }}
-                />
+                >
+                  {projectMonogram(p.slug, p.name)}
+                </span>
                 <span style={{ fontSize: 16, fontWeight: 600, color: "var(--text-primary)" }}>
                   {p.name}
                 </span>

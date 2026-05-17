@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Project } from "@/lib/projects";
+import { Project, projectMonogram } from "@/lib/projects";
 
 const STATUS_COPY: Record<Project["status"], { label: string; color: string }> = {
   live: { label: "Live", color: "var(--success)" },
@@ -33,15 +33,25 @@ export function ProjectCard({ project, embedded = false }: { project: Project; e
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span
+            className="mono"
             style={{
-              width: 28,
-              height: 28,
+              width: 32,
+              height: 32,
               borderRadius: 6,
               background: `linear-gradient(135deg, ${accent}, ${accent}55)`,
-              display: "inline-block",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
               boxShadow: `0 0 12px ${accent}33`,
+              fontSize: 12,
+              fontWeight: 600,
+              color: "#fff",
+              letterSpacing: "0.04em",
+              flexShrink: 0,
             }}
-          />
+          >
+            {projectMonogram(project.slug, project.name)}
+          </span>
           <Link
             href={href}
             style={{

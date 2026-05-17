@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { PROJECTS } from "@/lib/projects";
+import { PROJECTS, projectMonogram } from "@/lib/projects";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -102,14 +102,25 @@ export default function ProjectsPage() {
                   }}
                 >
                   <span
+                    className="mono"
                     style={{
-                      width: 26,
-                      height: 26,
+                      width: 32,
+                      height: 32,
                       borderRadius: 6,
                       background: `linear-gradient(135deg, ${p.accentColor}, ${p.accentColor}55)`,
                       boxShadow: `0 0 12px ${p.accentColor}33`,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: "#fff",
+                      letterSpacing: "0.04em",
+                      flexShrink: 0,
                     }}
-                  />
+                  >
+                    {projectMonogram(p.slug, p.name)}
+                  </span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div
                       style={{

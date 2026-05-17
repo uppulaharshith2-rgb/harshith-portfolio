@@ -175,3 +175,20 @@ export function getProject(slug: string): Project | undefined {
 export function getLiveProjects(): Project[] {
   return PROJECTS.filter((p) => p.status === "live");
 }
+
+const MONOGRAM_OVERRIDES: Record<string, string> = {
+  "claude-hub": "CH",
+  cockpit: "CK",
+  pipecode: "PC",
+  secondbrain: "SB",
+  "secondbrain-kit": "SK",
+  "ai-cost-calculator": "AI",
+  forge: "F",
+};
+
+export function projectMonogram(slug: string, name: string): string {
+  if (MONOGRAM_OVERRIDES[slug]) return MONOGRAM_OVERRIDES[slug];
+  const parts = name.replace(/[()]/g, "").trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return name.slice(0, 2).toUpperCase();
+}

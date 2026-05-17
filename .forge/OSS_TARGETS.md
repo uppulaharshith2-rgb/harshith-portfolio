@@ -113,6 +113,25 @@ Priority = Visibility + Relevance - Effort.
 ## Skipped — duplicate work avoided
 
 ### 2026-05-17 — anthropics/claude-agent-sdk-python #899 (list-form system_prompt)
-- **Skipped because**: two viable PRs already open: [#900 by zion-off](https://github.com/anthropics/claude-agent-sdk-python/pull/900) (104 lines, transport+types+tests, most thorough) and [#947 by zuhabul](https://github.com/anthropics/claude-agent-sdk-python/pull/947) (22 lines, transport-only). Both use the JSON-temp-file approach. Maintainer bandwidth is the bottleneck, not the solutions.
-- **Higher-value alternative**: file a thoughtful technical comment on #900 (e.g., does it handle the argv-limit edge case? does cleanup-on-error cover SIGKILL?) — gets the GitHub handle in front of the same maintainer-reviewer pair without adding duplicate-PR noise. Queued as a `OSS_COMMENT` follow-up.
-- **Lesson**: always `gh pr list --search "<keyword>" --state open` BEFORE forking. The 30 seconds it takes saves the candidacy-grade quality bar.
+- **Skipped because**: two viable PRs already open: [#900 by zion-off](https://github.com/anthropics/claude-agent-sdk-python/pull/900) (104 lines, transport+types+tests, most thorough) and [#947 by zuhabul](https://github.com/anthropics/claude-agent-sdk-python/pull/947) (22 lines, transport-only). Both use the JSON-temp-file approach.
+- **Higher-value alternative**: file a thoughtful technical comment on #900 (e.g., does it handle the argv-limit edge case? does cleanup-on-error cover SIGKILL?) — gets the GitHub handle in front of the same maintainer-reviewer pair without adding duplicate-PR noise. Queued as `OSS_COMMENT`.
+
+### 2026-05-17 — modelcontextprotocol/python-sdk #1933 (stdio fd leak)
+- **Skipped because**: **seven** open PRs already address this — #2040 (most advanced, maintainer-reviewed by @maxisbey, author applied requested change), plus #2391, #2505, #2528, #2538, #2568. Three more closed (#2244, #2172, #2142) used `os.dup()` and were rejected.
+- **Critical lesson captured**: maintainer @maxisbey explicitly prefers `open(sys.stdin.fileno(), "rb", closefd=False)` over `os.dup()` because there's no fd to clean up. Pattern lives in PR review comments, not in the diffs themselves. Future OSS_PR ticks should read closed-PR review comments to extract maintainer preferences.
+- **Higher-value alternative**: comment on #2040 once it rebases — small technical observation gets visibility.
+
+### 2026-05-17 — BerriAI/litellm #28067 (Anthropic streaming KeyError)
+- **Skipped because**: two PRs filed yesterday by other contributors — [#28068](https://github.com/BerriAI/litellm/pull/28068) (+33/-1, under Copilot review) and [#28069](https://github.com/BerriAI/litellm/pull/28069) (+26/-1, uses exact `.get("text", "")` shape, regression test included). Both pre-date my impl-agent dispatch by a day.
+- **Higher-value alternative**: tool_use content-block hardening (the broader generalization #28069 didn't cover) — if both upstream PRs stall, revisit with that wider scope.
+
+## Strategic recalibration (2026-05-17)
+
+After 1 PR successfully landed and 3 correctly abandoned as duplicates, the picture is clear: **easy first-PR targets in popular Anthropic-ecosystem repos are mostly claimed within hours of issue filing**. Maintainer review bandwidth is the bottleneck, not contributor supply. New strategy:
+
+1. **Build new OSS, don't compete for PR queue spots.** Ship `dbt-eval` (Tier 1 BUILD_SKILL item) as a new public repo — uncrowded space, full ownership, becomes its own portfolio anchor + blog post + future Claude skill.
+2. **Databricks follow-up to litellm #28113** — natural extension of the work already shipped, almost certainly unclaimed, leverages prior context. Quick win.
+3. **Thoughtful technical comments on the open PRs** above (`OSS_COMMENT` action type) — same maintainer eyeballs without PR queue noise.
+4. **Less-trafficked repos with real bugs**: Anthropic-adjacent but not first-party — `langchain-anthropic`, `BerriAI/litellm` cost-tracking issues, MCP servers other than the reference SDK.
+
+Don't add new Tier 1 `OSS_PR` items targeting big-name Anthropic-org repos without pre-checking the open-PR queue first. Confirmation rule: `gh pr list --state open --search "<issue keyword>"` returns ≤ 0 open PRs.
