@@ -11,6 +11,76 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "oss-llm-tooling-landscape-audit-may-2026",
+    title: "OSS LLM tooling landscape, May 2026: what's dead, what's absorbed, what's still open",
+    excerpt:
+      "I ran three incumbency checks on the OSS LLM tooling space in the past week. Several names data engineers would assume are alive aren't. Here's the audit, the pattern, and what it means for anyone planning their tool stack.",
+    date: "2026-05-17",
+    tags: ["oss", "landscape-audit", "llm-tooling", "data-engineering", "strategy"],
+    readTime: 8,
+    body: `Over the past week, while shipping [a four-repo governance suite for prompts](/oss) and [opening a new thesis on LLM training data quality](/projects/llm-expectations), I ran three structured incumbency checks across the OSS LLM tooling space. Several findings would surprise most data engineers — including engineers who use these tools today.
+
+This post is the audit. If you're planning your team's LLM tool stack in 2026, the names you trust may not be where you left them.
+
+## Dead or effectively absorbed
+
+**Lilac (Databricks-acquired, March 2024).** Lilac was the closest thing to JSONL-native LLM data exploration. The OSS repo is dormant — last meaningful commit predates the acquisition by months. Databricks folded the team in to ["supercharge data quality for gen AI apps"](https://www.databricks.com/blog/lilac-joins-databricks-simplify-unstructured-data-evaluation-generative-ai), which is corporate-speak for "the technology now lives behind our platform."
+
+If you're not on Databricks, Lilac is a tab in your browser history. The gap it left — declarative JSONL inspection without a warehouse — is what \`llm-expectations\` is starting to fill.
+
+**Argilla (HuggingFace-acquired, in maintenance mode).** Argilla's GitHub README explicitly says the original authors have moved on. The repo is at v2.8.0 (March 2025) and getting routine maintenance — but the product surface is locked: text classification + NER + preference tuning UI, all via Python imperative API. It was always a labeling tool, not a data-quality CI tool, and post-acquisition it isn't growing toward the latter.
+
+This pattern — VC-backed OSS gets acquired, the active development moves into the parent's commercial product, the public repo becomes a museum exhibit — is structural. It's worth assuming it will repeat for every well-funded OSS LLM tool you depend on. Plan for it.
+
+## Adjacent but not overlapping
+
+**Cleanlab (11.5k stars, actively maintained).** Python-imperative API. Classical-ML focused (label errors, outliers, duplicates across PyTorch/TF/XGBoost). No declarative YAML surface. No JSONL-native validation. No RAG corpus story. **It's an excellent ML data quality tool that does not address LLM training data as a first-class input.**
+
+When I see Cleanlab compared to LLM eval frameworks, the comparison usually misses that they don't overlap in scope. Cleanlab finds label errors in a classification dataset. LLM eval frameworks score model outputs. These are different problems.
+
+**Great Expectations (the engine, not the wrapper).** Still pandas/SQL-centric through the 2026 changelog. No LLM-specific primitives. No JSONL native reader. Useful for tabular data validation; not the tool for "did my SFT dataset drift between v3 and v4?"
+
+This was the most surprising finding for me — given how often "Great Expectations for LLM data" comes up in design discussions, I expected the project itself to have shipped something. It hasn't.
+
+**DeepChecks.** Pivoted to enterprise platform (LLM observability + monitoring). The OSS arm is still classical-ML. The path forward is hosted, not pip-installable.
+
+## First-party tooling that ate adjacent space
+
+**Astronomer Data Agents (Apache 2.0, shipped Q1 2026).** First-party AI tooling for Airflow. This crowds out third-party Airflow-Claude operators — the obvious next-build that several agent loops would have produced is now table stakes inside the official platform. I had \`airflow-claude-operator\` queued in my own forge loop; I removed it after this finding.
+
+The lesson: **before committing to a 4-12 hour OSS build, do a 30-minute sweep for first-party announcements.** Vendors moving into a niche during the period between issue-filing and PR-merging is increasingly common in the AI tooling space.
+
+## Still open, genuinely
+
+The niches that survived the audit and remain genuinely un-saturated as of this week:
+
+1. **Declarative-YAML data quality assertions for JSONL training files**, runnable in CI without a warehouse or SaaS. This is the \`llm-expectations\` gap. Lilac is dead, Argilla is the wrong shape, Cleanlab is imperative + ML-classical, GE has no LLM. The niche is genuinely open.
+
+2. **The governance layer above eval frameworks.** Promptfoo, DeepEval, Phoenix, and Ragas all compete on assertions. None of them ship the *governance* primitives — declare-and-enforce contracts at runtime, source-freshness across model upgrades, dbt-style lineage navigation. That's the niche my [governance suite for prompts](/oss) just closed at four repos.
+
+3. **OSS\_COMMENT as an action type** — calibrated technical reviews on existing open PRs in popular Anthropic-ecosystem repos. The queue is saturated for fresh-issue PRs; it's not saturated for *substantive comments* that demonstrate the reviewer read the diff. See [my MCP python-sdk #2040 comment](https://github.com/modelcontextprotocol/python-sdk/pull/2040#issuecomment-4469902482) for the shape.
+
+## The pattern worth naming
+
+Every wave of OSS tooling that VC funds and big labs hire from will produce a predictable sequence: hot project → acquisition → public repo slows → public repo becomes maintenance → public repo is effectively dead.
+
+You can almost time this. Lilac took ~12 months from "rising star" to "Databricks press release." Argilla took similar from HF acquisition to "original authors have moved on."
+
+**For builders**: this means a strategy. Don't build on top of a hot OSS project unless you're prepared for the OSS layer to thin out post-acquisition. Don't compete with a thriving project unless you have a structural advantage (Anthropic / OpenAI / Databricks pricing is not your differentiator; un-saturated niches and stable schemas are).
+
+**For users**: this means an investment thesis. The OSS tools likely to compound are the ones with no acquirer in sight — usually because the niche is too narrow for VC ($10M ARR ceiling, not $1B) or too unsexy (declarative YAML for training-data quality is genuinely boring). Boring is the moat.
+
+## What I changed about my own loop
+
+After running three of these checks in seven days:
+
+- **30-minute incumbency check before every \`BUILD_SKILL\` ticket.** A hard rule now. Saved me from building two of three originally-planned repos last week.
+- **\`OSS_COMMENT\` is a first-class action type.** Same maintainer eyeballs as a PR, doesn't compete in saturated PR queues.
+- **The "stop at the right number" rule.** My governance suite was supposed to be three repos; we [closed at four](/blog/dbt-docs-for-prompts) but stopped before five. Knowing when to *not* ship the next adjacent build is half the strategy.
+
+The audit takes 30 minutes per niche. The repos it saves you from building take 8-12 hours each. Even being wrong about one niche pays for the entire process.`,
+  },
+  {
     slug: "dbt-docs-for-prompts",
     title: "dbt-docs for prompts: the navigation surface that turns three CLIs into a platform",
     excerpt:

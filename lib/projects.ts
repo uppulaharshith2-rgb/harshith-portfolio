@@ -211,6 +211,7 @@ export const PROJECTS: Project[] = [
       "Schema-first v0: `lineage.json` is the part that locks in, HTML rendering is deferred-engine territory",
       "`diff main..HEAD` subcommand subsumes the queued `golden-diff` GitHub Marketplace Action — one repo does both navigation AND PR review",
       "Zero JS framework — vanilla `<script>` for sort/filter, ≤100 lines inline. Static HTML opens in any browser",
+      "Honest design trade-off: contract→prompt linkage is inferred via body-string match for `.md` path literals (with explicit `prompt=` kwarg as the forward-compat escape hatch) — not silent or fragile-execution-based",
       "Suite-completing — the navigation surface that retroactively turns dbt-eval + prompt-contracts + prompt-freshness from three CLIs into one platform",
     ],
     year: "2026",
