@@ -11,6 +11,93 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "five-v0s-five-honest-trade-offs",
+    title: "Five v0 releases, five honest trade-offs: a pattern of OSS discipline",
+    excerpt:
+      "I shipped five public Python packages in five days, all v0, all MIT, all with passing CI. Each one ships exactly one design decision a careful reader would push back on — documented in the README as deliberate, not hidden as an oversight. The pattern is the discipline.",
+    date: "2026-05-17",
+    tags: ["open-source", "v0-discipline", "honest-design-trade-offs", "retrospective", "process"],
+    readTime: 9,
+    body: `Five public Python packages in five days. All v0. All MIT. All with passing CI.
+
+| Repo | One-line role | v0 stats |
+|---|---|---|
+| [dbt-eval](https://github.com/uppulaharshith2-rgb/dbt-eval) | declare what good output looks like | 41 tests |
+| [prompt-contracts](https://github.com/uppulaharshith2-rgb/prompt-contracts) | enforce it at runtime | 55 tests |
+| [prompt-freshness](https://github.com/uppulaharshith2-rgb/prompt-freshness) | per-(prompt, model) staleness | 57 tests |
+| [prompt-lineage](https://github.com/uppulaharshith2-rgb/prompt-lineage) | dbt-docs for prompts | 78 tests |
+| [llm-expectations](https://github.com/uppulaharshith2-rgb/llm-expectations) | dbt-test for your finetune.jsonl | 78 tests |
+
+Each one ships **exactly one design decision a careful reader would push back on**. Each one documents it in the README — explicitly, deliberately, as a v0 constraint with a v0.2 upgrade path named. The pattern is the discipline.
+
+Here are all five.
+
+## 1. dbt-eval — the faithful-mock scoring formula
+
+\`dbt-eval\` ships three assertion types in v0. Two are pure-Python (\`regex_match\`, \`json_schema\`). The third is \`faithful\` — an LLM-as-judge assertion that scores whether a claim is supported by a source. Has a deterministic offline mock so CI runs without an API key.
+
+**The trade-off**: a naive Jaccard score on the example fixtures gave 0.43 / 0.45 — both below the threshold — which meant *every* example case failed. The demo's pedagogy died on contact.
+
+The fix: \`0.5 * coverage + 0.5 * jaccard\`, where coverage = \`claim-words-in-source / claim-words\`. This rewards short, focused rationales that quote the input, which is closer to how a real LLM judge thinks anyway. The mock teaches the right pattern instead of teaching "the assertion never passes."
+
+**Why the reader would push back**: "Your mock isn't representative of a real model." Right — and that's why the v0.2 roadmap names the real Claude Haiku backend explicitly. The mock is for the example suite + CI, not for production judgments.
+
+## 2. prompt-contracts — the coerce counter
+
+\`prompt-contracts\` wraps your LLM call in a decorator with three on-violation modes (\`raise\` / \`drop\` / \`quarantine\`) plus a \`coerce=True\` mode that tries trivial repairs (strip code fences, parse trailing commas, coerce stringified primitives) before declaring a violation.
+
+**The trade-off**: if \`confidence: "0.78"\` silently becomes \`0.78\` and counts as \`passed\`, your contract_stats look healthy while your prompt is actually drifting toward sloppy output. Coerce mode could *hide* violations.
+
+The fix: a separate \`coerced\` counter alongside \`passed\` in the function's \`.contract_stats\`. The metric is visible to dashboards without breaking the public API. Adopters who care can grep for it; the API stays simple for the 80%.
+
+**Why the reader would push back**: "A third state — \`passed_with_coercion\` — would be more honest." Yes, but it complicates every caller. The separate counter is the API-simplicity trade.
+
+## 3. prompt-freshness — binary model-alias check
+
+\`prompt-freshness\` tracks per-(prompt, model) staleness. The headline feature: when you bump \`claude-sonnet-4-6\` to \`claude-sonnet-4-7\` in the manifest, every prompt previously evaluated against the older alias flips to STALE with an explicit \`model alias drifted:\` reason.
+
+**The trade-off**: the model-alias check is *binary, not semantic*. If a prompt was evaluated against \`claude-sonnet-4-6\` and the manifest declares \`claude-sonnet-4-6-20251101\` (the dated variant), the strings differ so drift fires — even though the underlying model is likely identical.
+
+The fix: don't fix it. The user owns the alias string by design. A normalizer would be subtly wrong in both directions (sometimes collapse different-actually models, sometimes not). Making the user own the choice is the honest move.
+
+**Why the reader would push back**: "Just normalize known-equivalent aliases." That's a slippery slope to maintaining a model-equivalence table that goes out of date constantly. Better to make the user explicit.
+
+## 4. prompt-lineage — body-string heuristic for contract → prompt linkage
+
+\`prompt-lineage\` walks your project and emits a navigation graph: which prompts feed which eval suites, which contracts wrap which prompts, which production callers consume the contracts.
+
+**The trade-off**: the \`@prompt_contract\` decorator doesn't declare which prompt it enforces. Two ways to wire it: (a) execute the user's code and inspect, (b) demand a \`prompt=\` kwarg on every contract.
+
+The fix: a documented heuristic — look for \`.md\` path string literals inside the decorated function body. Plus an explicit \`prompt=\` kwarg as forward-compat for adopters who want to declare it explicitly.
+
+**Why the reader would push back**: "String-matching in code bodies is fragile." Yes — and that's why unlinked contracts show up *visibly* in the lineage graph (status: "unenforced") so adopters know which ones to upgrade to the explicit form. The heuristic is opt-in fragile, not silent.
+
+## 5. llm-expectations — PII output that doesn't itself leak PII
+
+\`llm-expectations\` checks JSONL training files for PII (SSN, email, phone, credit card). The natural way to write the violation report is "found credit card 4532-... in record 18."
+
+**The trade-off**: that report *is* PII. Paste it in Slack and you've moved sensitive data out of your fine-tuning corpus into your team chat.
+
+The fix: mask matched values before they ever appear in terminal or JSON output. Emails become \`j***@example.com\`, cards/SSN/phone become \`***66\`. Category preserved, value sanitized. The report is safe to paste anywhere.
+
+**Why the reader would push back**: "I want to see the actual match to verify." Yes — there's an \`--unmask\` flag documented for the cases where you genuinely need the raw value (offline debugging on your own machine, with explicit consent). Default is masked because the default consumer of a CI report is a public-ish chat channel.
+
+## The pattern, named
+
+Each trade-off has the same shape:
+
+1. **Identify the obvious-feature that almost shipped.** A normalizer for aliases, a third \`passed_with_coercion\` state, an AST walker for decorators, a raw-value PII report.
+2. **Notice the failure mode the obvious feature introduces.** Subtly wrong normalization, complicated public API, fragile execution, exfiltration via the lint output itself.
+3. **Pick the explicit / honest alternative.** User owns the alias, separate counter, documented heuristic + opt-out, masked-by-default with explicit \`--unmask\`.
+4. **Document it in the README as deliberate.** Name the trade-off, name what was rejected, name the v0.2 upgrade path if any.
+
+The pattern reads as **confident discipline**, not "I didn't finish v0.2." A v0 with five honest trade-offs documented is what convinces a stranger that the schema was thought through.
+
+If you're shipping a v0 OSS package this week, the question to ask before merge: **what's the one decision a careful reader would push back on, and how is it documented in the README as deliberate?** If you can't answer, ship the README revision before the version tag.
+
+The discipline is reproducible. Five for five so far. Same pattern incoming on the next two repos in the [training-data-quality thesis](/projects/llm-expectations).`,
+  },
+  {
     slug: "llm-expectations-dbt-test-for-your-finetune-jsonl",
     title: "llm-expectations: dbt-test for your finetune.jsonl",
     excerpt:
