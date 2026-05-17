@@ -66,7 +66,13 @@ up: "[[index]]"
 ### Tier 3 — announcement + extraction posts
 
 - [x] `WRITE_POST` **"Forge: multi-agent dev that adds nothing to my Claude bill"** — full architecture writeup with the DAG, role matrix, budget guard, file-bus design choice, "what Forge is not" anti-section. Aim was HN-grade; shipped 2026-05-17 at /blog/forge-multi-agent-dev-zero-extra-spend (~1100 words).
-- [ ] `WRITE_POST` **"Making LLM evaluations boring with dbt-eval"** — announcement post for the new dbt-eval public repo. Lead with the "exciting eval frameworks are the bug, not the feature" thesis; show the 30-second YAML example mirroring `schema.yml`; close with the 8-assertion roadmap. Write AFTER dbt-eval v0 is published so screenshots and links are real. 900-1100 words.
+- [x] `WRITE_POST` **"dbt-eval: making LLM evaluations boring"** — announcement post with the full YAML example, terminal report, all 3 v0 assertions explained, 8-assertion roadmap, "what v0 doesn't do (yet)" honesty, and the "boring is the feature" closer. Shipped 2026-05-17 at /blog/dbt-eval-making-llm-evaluations-boring (~1100 words). → commit 1a7738a (surfacing) + this commit (post).
+
+- [ ] `BUILD_SKILL` **dbt-eval v0.2 — real \`model:\` blocks** — extend the YAML schema to declare a model + prompt template + sampling params; swap `EvalCase.output()` from stub to real Anthropic/OpenAI call. Lift the example to actually invoke Claude Haiku on the support fixtures. Lock the v0 schema first, then add the runtime. Est 4-6h.
+
+- [ ] `BUILD_SKILL` **dbt-eval `cost_per_call` + `latency_p95` assertions** — first two of the eight named-roadmap assertions. Both need the v0.2 runtime to land first. Est 2h after v0.2.
+
+- [ ] `OSS_PR` **dbt-eval to awesome-claude-code / awesome-llm-eval lists** — once v0 has a star or two, file the PR adding dbt-eval to relevant awesome-lists. Free distribution, low effort. Est 30min.
 - [ ] `WRITE_POST` **"Research agents that abandon: discipline as a feature"** — meta post on the forge loop pattern. Lead: of the last 4 OSS impl ticks, 3 abandoned (claude-agent-sdk #899, MCP python-sdk #1933, litellm #28067) because `gh pr list --state open --search` found duplicates. The metric isn't PRs filed; it's PRs *not* filed. Show the actual agent pre-flight prompts. 900-1200 words.
 - [ ] `WRITE_POST` **"SecondBrain Kit: the vault that compounds"** — Karpathy LLM Wiki rule explained, PARA structure for AI-native work, why "rewrite-don't-append" is the unlock. Source from public repo README. 800 words.
 - [ ] `WRITE_POST` **"Why my portfolio is a chat (and what it taught me about AI UX)"** — meta post about THIS site, with the streaming-first-message decision, the embedded-cards token pattern, the canned-fallback graceful degradation. Honest about what didn't work. 900 words.

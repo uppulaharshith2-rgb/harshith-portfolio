@@ -11,6 +11,117 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "dbt-eval-making-llm-evaluations-boring",
+    title: "dbt-eval: making LLM evaluations boring",
+    excerpt:
+      "Every LLM eval framework I tried invents new vocabulary. Data engineers already have all of this and call it `dbt test`. So I ported the pattern.",
+    date: "2026-05-17",
+    tags: ["llm-eval", "dbt", "data-engineering", "open-source", "dbt-eval"],
+    readTime: 7,
+    body: `Every LLM eval framework I looked at invents new vocabulary. **Trace.** **Span.** **Judge.** **Rubric.** **Metric.** **Scorer.** Each tool has its own dashboard, its own YAML-or-Python schema, its own way to wire CI.
+
+Data engineers already have all of this. They call it \`dbt test\`.
+
+So I built [**dbt-eval**](https://github.com/uppulaharshith2-rgb/dbt-eval) — same YAML shape, same pass / warn / error severities, same "run from CI, diff in your PR" ergonomics every analytics engineer already knows. v0 just shipped: three assertions, 41 tests passing in half a second, MIT, public, installable today.
+
+The whole bet is that **LLM evaluation is broken because it's exciting** — bespoke harnesses, novel metrics, custom dashboards per team. The fix is the most boring, most successful pattern in data engineering. If you've shipped dbt to production, you can use dbt-eval the day you read the README. That's the entire pitch.
+
+## The shape
+
+\`\`\`yaml
+# examples/evals/support_classifier.yml
+name: support_classifier
+description: Classify incoming support messages into {refund, bug, feature}
+fixtures: examples/fixtures/support_messages.jsonl
+cases:
+  - id: refund_request
+    input: "I want my money back"
+    expected_category: refund
+    assertions:
+      - regex_match:
+          field: category
+          pattern: "^(refund|bug|feature)$"
+      - json_schema:
+          schema:
+            type: object
+            required: [category, confidence]
+            properties:
+              category: { type: string }
+              confidence: { type: number, minimum: 0, maximum: 1 }
+      - faithful:
+          to: input
+          claim_field: rationale
+          threshold: 0.7
+\`\`\`
+
+If that looks like \`dbt schema.yml\`, that's the point.
+
+\`\`\`
+$ DBT_EVAL_MOCK=1 dbt-eval run examples/
+
+dbt-eval: examples/evals/support_classifier.yml
+
+  ✓ refund_request          regex_match · json_schema · faithful(0.51)
+  ✗ bug_report              regex_match · json_schema · faithful(0.00)  FAIL threshold=0.7
+  ✓ feature_request         regex_match · json_schema · faithful(0.52)
+
+3 cases · 9 assertions · 8 passed · 1 failed · 0 skipped
+exit 1
+\`\`\`
+
+The \`bug_report\` case fails by design — the rationale talks about an analytics dashboard while the input was a 500 error on the login page. That's exactly the kind of drift you want a faithfulness assertion to catch.
+
+## Three assertions in v0
+
+- **\`regex_match\`** — checks a string field against a pattern. Pure-Python, no deps. The boring foundation every other assertion is going to lean on.
+- **\`json_schema\`** — validates a dict field against a JSON Schema. Use this for structured-output validation (and you should be using structured output for anything Claude is producing for downstream code).
+- **\`faithful\`** — LLM-as-judge via Claude Haiku 4.5. Scores 0-1 on whether a \`claim_field\` is supported by a \`to\` field; passes if score ≥ \`threshold\`. Has a deterministic offline mock triggered by \`DBT_EVAL_MOCK=1\` so the whole suite runs in CI without an API key. This is the part that actually requires taste.
+
+## What v0 doesn't do (yet)
+
+**The example doesn't call a real model.** It uses the \`expected\` block as the model's "output" and runs assertions against it. Real \`model:\` blocks — Anthropic / OpenAI / vLLM, prompt templating, sampling params — is v0.2 work. Adding it now would have doubled scope and locked the YAML schema before it's been used in anger.
+
+I made a deliberate choice to ship the *schema* before the *runtime*. The seam is already pre-built: \`EvalCase.output()\` is the single function that needs to swap from "return the stub" to "call the model." When v0.2 lands, the YAML you wrote today still runs.
+
+This is the v0 discipline I'd recommend for any builder shipping early: **ship the API surface, defer the engine**. If the YAML is wrong, all the runtime work is wasted. If the YAML is right, the runtime is a 200-line file.
+
+## The eight assertions on the roadmap
+
+Named so adopters know what's coming:
+
+- \`cosine_similarity\` — semantic distance to a reference output
+- \`tool_call_shape\` — assert the tool-use blocks Claude emitted match what you expected (which tool, with what args)
+- \`latency_p95\` — assert p95 stays under a budget
+- \`cost_per_call\` — assert dollar cost stays under a budget
+- \`no_pii\` — assert no detectable PII in the output (regex baseline; can hook a real detector)
+- \`factual_consistency_v2\` — citation-aware faithfulness, scoring per-claim against an evidence list
+- \`length_constraint\` — output stays within \`min_words / max_words\` (the boring assertion that prevents the production-incident "Claude wrote a 4,000-word email")
+- \`accepted_values\` — drop-in for dbt's own \`accepted_values\` — output must be in an enum
+
+If you've used dbt for more than a sprint, you can guess what each of these is going to feel like.
+
+## Why "boring" is the feature
+
+The story of LLM tooling in 2025 was that every framework wanted to feel like a new paradigm. New abstractions, new vocabulary, new mental models. The result is that adopting any one of them costs a week of team conversations about which concepts map to which existing workflows.
+
+Adopting **dbt-eval** costs five minutes because there are no new concepts. \`schema.yml\` shape, \`pass / warn / error\` severities, \`pytest\`-like exit codes, a terminal report that looks like \`dbt test\`. Every step is the step you'd already do.
+
+The lesson I'd extract — and this generalizes beyond eval — is that **the highest-leverage move in tooling is usually copying a working ergonomic from a neighboring domain**, not inventing a new one. AI tooling keeps trying to invent. Data tooling figured out a lot of this years ago. The translation tax is the only real work left.
+
+## Try it
+
+\`\`\`bash
+git clone https://github.com/uppulaharshith2-rgb/dbt-eval ~/dbt-eval
+cd ~/dbt-eval
+pip install -e .
+DBT_EVAL_MOCK=1 dbt-eval run examples/
+\`\`\`
+
+Filed an issue or PR if it breaks. The current state is **v0.1, public alpha** — explicitly labeled. The schema isn't frozen yet; this is the right week to push back on naming and structure.
+
+The repo: [github.com/uppulaharshith2-rgb/dbt-eval](https://github.com/uppulaharshith2-rgb/dbt-eval). MIT. 41 tests. Three working assertions. Eight more named on the roadmap. Boring on purpose.`,
+  },
+  {
     slug: "forge-multi-agent-dev-zero-extra-spend",
     title: "Forge: multi-agent dev that adds nothing to my Claude bill",
     excerpt:
