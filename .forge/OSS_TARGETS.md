@@ -109,3 +109,10 @@ Priority = Visibility + Relevance - Effort.
 ### 2026-05-17 — SecondBrain Kit public release
 - **Repo**: https://github.com/uppulaharshith2-rgb/secondbrain (MIT)
 - PARA vault skeleton + 9 custom Claude slash commands + 11 templates + pre-written CLAUDE.md operating manual.
+
+## Skipped — duplicate work avoided
+
+### 2026-05-17 — anthropics/claude-agent-sdk-python #899 (list-form system_prompt)
+- **Skipped because**: two viable PRs already open: [#900 by zion-off](https://github.com/anthropics/claude-agent-sdk-python/pull/900) (104 lines, transport+types+tests, most thorough) and [#947 by zuhabul](https://github.com/anthropics/claude-agent-sdk-python/pull/947) (22 lines, transport-only). Both use the JSON-temp-file approach. Maintainer bandwidth is the bottleneck, not the solutions.
+- **Higher-value alternative**: file a thoughtful technical comment on #900 (e.g., does it handle the argv-limit edge case? does cleanup-on-error cover SIGKILL?) — gets the GitHub handle in front of the same maintainer-reviewer pair without adding duplicate-PR noise. Queued as a `OSS_COMMENT` follow-up.
+- **Lesson**: always `gh pr list --search "<keyword>" --state open` BEFORE forking. The 30 seconds it takes saves the candidacy-grade quality bar.

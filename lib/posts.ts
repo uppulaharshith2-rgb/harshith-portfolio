@@ -52,6 +52,67 @@ Three full UI iterations in a single session — v1 was maximalist glassmorphism
 The standing instruction in my vault: **keep building until told to stop.**`,
   },
   {
+    slug: "shipping-litellm-pr-by-reading-the-two-that-didnt",
+    title: "How I shipped a litellm PR by reading the two PRs that didn't",
+    excerpt:
+      "The Opus 4.7 temperature bug in litellm had two closed PRs and an open issue. Reading the closed ones for ten minutes was the difference between a third rejection and an open PR.",
+    date: "2026-05-17",
+    tags: ["open-source", "claude", "litellm", "process"],
+    readTime: 7,
+    body: `Anthropic's Messages API rejects \`temperature\` on Claude Opus 4.7. Only \`top_p\` works for sampling. This isn't subtle — it's in the model migration docs and the API returns a hard 400.
+
+[litellm](https://github.com/BerriAI/litellm) — the 47k-star OSS router most LLM apps use to abstract providers — still listed \`temperature\` as a supported OpenAI param for Opus 4.7. So anyone routing Opus 4.7 through litellm with \`drop_params=True\` (the flag that's supposed to strip unsupported params automatically) silently failed and got a hard API error in production.
+
+The bug was filed as [issue #26444](https://github.com/BerriAI/litellm/issues/26444). Two contributors had already tried to fix it. **Both PRs were closed unmerged.** No maintainer left a comment explaining why on either one. The issue was still open.
+
+My PR shipped this week and is now [#28113](https://github.com/BerriAI/litellm/pull/28113). 6 files, +346 lines, 21 new tests, 976 existing tests still green.
+
+The thing that made the difference was not technical. It was **reading both closed PRs end-to-end before writing a single line of code.**
+
+## What the first PR got wrong
+
+[PR #26445](https://github.com/BerriAI/litellm/pull/26445) over-stripped. It treated *every* reasoning-family model the same — Opus 4.7, Sonnet's reasoning mode, future o-series equivalents. The author reasoned: "this is a reasoning-model thing, so apply the filter to the reasoning family."
+
+But Anthropic's deprecation is **Opus-4.7-specific**, not reasoning-family-wide. Sonnet 4.6 still accepts \`temperature\` perfectly. The PR would have broken \`temperature\` for a much larger user base than it fixed.
+
+Greptile flagged this as P2 on the diff. Maintainer closed it without merging or commenting. Nobody followed up.
+
+## What the second PR got wrong
+
+[PR #26246](https://github.com/BerriAI/litellm/pull/26246) had the gating right — filter only for Opus 4.7. But it bundled the fix with a 256-line rewrite introducing a new \`ProviderSpecificModelInfo\` TypedDict and rerouting how the model-info path resolves capabilities.
+
+This is the classic "while I'm here, let me refactor the surrounding code" trap. The refactor wasn't wrong — but it wasn't necessary for the bug, and it forced the maintainer to context-switch into evaluating a small architecture change at the same time as a small bug fix. Two reviews for the price of one is not a deal maintainers want to make.
+
+Closed without comment.
+
+## What worked the third time
+
+Read both prior diffs. Internalize the failure modes. Then:
+
+1. **Scope ruthlessly.** Only Opus 4.7. Substring check on the model id (so dated variants like \`claude-opus-4-7-20251201\` and vendor-prefixed forms like \`anthropic/claude-opus-4-7\` are all covered). Sonnet, Haiku, Opus 4.6, and 3.x untouched and regression-tested.
+2. **Use the existing helper, don't invent new plumbing.** The codebase already has \`_is_explicitly_disabled_factory\` which reads raw \`model_info.get(key)\`. The fix wires into that. No TypedDict, no new class hierarchy.
+3. **Defense in depth.** Filter in \`get_supported_openai_params\` *and* guard \`temperature\` / \`top_p\` in \`map_openai_params\` *and* set \`supports_temperature: false\` / \`supports_top_p: false\` on all 10 Opus 4.7 entries in \`model_prices_and_context_window.json\` (Anthropic direct + 5 Bedrock variants + Azure AI + 2 Vertex AI). Three layers so the next person upgrading these models can't accidentally regress one.
+4. **Mirror into Bedrock.** Bedrock's \`AmazonConverseConfig.get_supported_openai_params\` had the same bug. Fixed in the same PR. Noted Databricks in the PR body as a follow-up since the same shape applies there too.
+5. **Anticipate pushback in the PR body, don't make maintainers ask.** Three callouts documented up front: the backup-file drift constraint (a pre-existing JSON-sync convention I had to satisfy), why both the JSON flag *and* the static fallback (the family check covers unreleased dated snapshots before anyone updates JSON), and why I didn't fold Databricks into this PR (separate provider, easy follow-up).
+
+## The pattern
+
+Most OSS PR advice is about how to write the diff. The actually-load-bearing skill is **how to read what didn't ship**.
+
+A closed PR is signal. If two prior attempts on the same issue both died without comment, that doesn't mean the maintainers don't care — it means each PR gave the maintainer a reason to bounce that the contributor didn't see. Finding those reasons takes ten minutes of reading. Not finding them costs you the PR.
+
+This generalizes:
+
+- **Before you start**: \`gh pr list --search "<issue keyword>" --state closed\`. Read every closed PR linked to the issue.
+- **Look for the unstated reason.** Maintainers rarely write "this PR was over-scoped." They just stop responding. Your job is to infer what scope they would have accepted.
+- **Match their conventions exactly.** Read the most recent 3-5 merged PRs to the same area. Match the test style, the commit message format, the type annotations, the doc string voice.
+- **Anticipate the pushback in the PR body.** Maintainers are time-poor. A PR description that pre-answers the obvious questions earns goodwill that a PR description full of marketing fluff burns.
+
+The 10 minutes I spent reading PR #26445 and PR #26246 was the highest-leverage time of the whole contribution. The actual fix was an afternoon. Anyone could have written it. The reason this one is open and the prior two are closed is the ten minutes before the code.
+
+If you're contributing to OSS and your PR keeps not landing — read what didn't ship. It's almost always there.`,
+  },
+  {
     slug: "colophon",
     title: "Colophon",
     excerpt: "How this site is built, and why.",
