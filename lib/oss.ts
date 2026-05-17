@@ -107,6 +107,29 @@ export const CONTRIBUTIONS: Contribution[] = [
     collection: "upstream-prs",
   },
   {
+    slug: "prompt-lineage-v0",
+    kind: "repo",
+    title: "prompt-lineage — dbt-docs for prompts (v0, suite-closer)",
+    repo: "uppulaharshith2-rgb/prompt-lineage",
+    url: "https://github.com/uppulaharshith2-rgb/prompt-lineage",
+    date: "2026-05-17",
+    status: "published",
+    summary:
+      "The 4th and final member of the dbt-style governance suite for prompts. Walks a project directory and parses prompts.yml + dbt-eval suites + prompt-contracts decorator usage + prompt-freshness state into a structured lineage graph. CLI emits `lineage.json` (the schema that locks in — adopters parse this into CI dashboards and compliance audits) + a static HTML site in the dbt-docs aesthetic. Vanilla JS for sort/filter, no framework, opens in any browser. `prompt-lineage diff main..HEAD` subcommand subsumes most of the value of the queued golden-diff GitHub Marketplace Action — one repo does both navigation AND PR review.",
+    stats: { additions: 0, files: 30, tests: 78 },
+    highlights: [
+      "78 tests passing in 0.93s — largest test count in the governance suite",
+      "Schema-first v0 — `lineage.json` shape is locked, HTML rendering is in the deferred-engine bucket (v0.2 adds the force-directed graph)",
+      "diff subcommand subsumes golden-diff — one repo does navigation + PR review, removes a queued item by absorbing its value",
+      "Zero JS framework, vanilla <script> for sort/filter (≤100 lines inline), static HTML opens in any browser without a build step",
+      "Closes the suite at 4 — the navigation surface that retroactively makes three CLIs feel like a platform",
+    ],
+    whyItMatters:
+      "Before dbt-docs, dbt was a command-line tool that compiled SQL. After dbt-docs, dbt was a data platform. The CLIs hadn't changed — the navigation surface had. prompt-lineage is that same move for the governance suite: the day it shipped, the prior three repos stopped feeling like a collection of CLIs and started feeling like a platform. Suite-completing.",
+    tags: ["dbt-docs", "lineage", "navigation", "python", "ai-data-engineering", "open-source-release", "suite-closer"],
+    collection: "governance-suite",
+  },
+  {
     slug: "prompt-freshness-v0",
     kind: "repo",
     title: "prompt-freshness — `dbt source freshness` for prompts (v0)",

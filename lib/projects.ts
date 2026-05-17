@@ -194,6 +194,30 @@ export const PROJECTS: Project[] = [
     collection: "governance-suite",
   },
   {
+    slug: "prompt-lineage",
+    name: "prompt-lineage",
+    tagline: "dbt-docs for prompts. Lineage graph: prompts → eval suites → contracts → callers. CLI emits `lineage.json` + a static HTML navigation site.",
+    oneLiner:
+      "The 4th and final governance-suite member. The navigation surface that retroactively turns three CLIs into a platform.",
+    description:
+      "Public Python package. Walks a project directory, finds `prompts.yml` manifests + dbt-eval suite YAMLs + `@prompt_contract` decorator usage + prompt-freshness state, and emits two artifacts: (1) `lineage.json` — the structured graph that locks in the schema (the part adopters integrate against in CI dashboards and compliance audits), (2) a static HTML site in the dbt-docs aesthetic with vanilla JS for sort/filter, light/dark via `prefers-color-scheme`. `prompt-lineage diff main..HEAD` subcommand subsumes most of the queued golden-diff Action's value. GitHub Action workflow posts sticky PR comment with the diff. v0 ships the schema; v0.2 adds the force-directed graph, dbt-style column lineage view, Slack notifications.",
+    status: "live",
+    category: "library",
+    liveUrl: "https://github.com/uppulaharshith2-rgb/prompt-lineage",
+    repoUrl: "https://github.com/uppulaharshith2-rgb/prompt-lineage",
+    techStack: ["Python 3.10+", "Click", "Jinja2", "PyYAML", "pytest", "vanilla JS"],
+    highlights: [
+      "78 tests passing in 0.93s — the largest test count in the governance suite",
+      "Schema-first v0: `lineage.json` is the part that locks in, HTML rendering is deferred-engine territory",
+      "`diff main..HEAD` subcommand subsumes the queued `golden-diff` GitHub Marketplace Action — one repo does both navigation AND PR review",
+      "Zero JS framework — vanilla `<script>` for sort/filter, ≤100 lines inline. Static HTML opens in any browser",
+      "Suite-completing — the navigation surface that retroactively turns dbt-eval + prompt-contracts + prompt-freshness from three CLIs into one platform",
+    ],
+    year: "2026",
+    accentColor: "#4f46e5",
+    collection: "governance-suite",
+  },
+  {
     slug: "forge",
     name: "Forge",
     tagline: "Multi-agent dev orchestrator — Claude Code on Max plan, zero extra spend",
@@ -260,6 +284,7 @@ const MONOGRAM_OVERRIDES: Record<string, string> = {
   "dbt-eval": "DE",
   "prompt-contracts": "PC",
   "prompt-freshness": "PF",
+  "prompt-lineage": "PL",
 };
 
 export function projectMonogram(slug: string, name: string): string {

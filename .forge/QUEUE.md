@@ -78,16 +78,20 @@ up: "[[index]]"
 
 > Iteration #8 research agent recommendation, score 10/10 across all four axes (coherence, differentiation, build leverage, hiring signal): ship ONE more repo (prompt-lineage) that closes the suite narratively at 4, then PIVOT to a new thesis.
 
-- [ ] `BUILD_SKILL` **prompt-lineage** — `dbt docs` for prompts. Parses `prompts.yml` + dbt-eval suites + prompt-contracts decorators + git history into a lineage graph. CLI emits a static HTML site (dbt-docs aesthetic — searchable table + clickable DAG). GitHub Action posts sticky PR comment: "this PR touches 3 prompts → 7 eval cases → 2 production callers." **Builds the navigation/observability surface that retroactively turns the 3 existing suite repos into a platform.** Subsumes most of golden-diff's value via `lineage diff main..HEAD` subcommand — so remove golden-diff from Tier 1.5 (it's subsumed). 6h target — ship v0 as sortable table + collapsible details, defer the force-directed graph to v0.2. Same v0 discipline as the other three: lock the `lineage.json` schema, defer the engine. Anchor post: "dbt-docs for prompts — the navigation surface that retroactively turns three CLIs into a platform."
+- [x] `BUILD_SKILL` **prompt-lineage v0 SHIPPED — SUITE CLOSED AT 4** — github.com/uppulaharshith2-rgb/prompt-lineage, 30 files, **78 tests passing in 0.93s** (largest in the suite). schema-first v0: `lineage.json` locks in, HTML deferred-engine. `diff main..HEAD` subcommand subsumes the queued golden-diff Action. Governance suite total: **231 combined passing tests across 4 repos**. The impl agent built locally but didn't complete the git workflow — completed myself by `git init` + commit + `gh repo create --push`. Recovery cost: 90s. 2026-05-17.
 
-### Tier 2 — open the NEXT thesis (iteration #10+)
+### Tier 1 — iteration #10 thesis: `llm-expectations` ONLY (incumbency-check verdict)
 
-> After prompt-lineage closes the governance suite, pivot to Great Expectations for LLM training data — a sister thesis with the same shape (3 composable repos, DE mental model port, un-saturated space).
+> Incumbency check ran 2026-05-17. Verdict: **BUILD, NARROW THE NICHE**. Lilac is dead (Databricks acquired March 2024, OSS dormant). Argilla is in HF maintenance mode (labeling tool, not data-quality CI). Cleanlab is Python-imperative + ML-label focused. Great Expectations has no LLM features through 2026. MLflow is ops-side. dbt-llm-evals is warehouse-native. **No incumbent owns "great_expectations.yml for your finetune.jsonl + your RAG corpus snapshot diff" as a single pip-installable CLI.**
 
-- [ ] `BUILD_SKILL` **llm-expectations** — declarative YAML data quality checks for JSONL training files. Schema drift, label distribution, duplicate prompts, PII, max-token ceilings, language-detect. Same YAML-shape ergonomics as the governance suite. Borrows from Great Expectations. ~8h.
-- [ ] `BUILD_SKILL` **corpus-snapshot** — snapshot + diff tool for RAG corpora. `corpus-snapshot diff prod staging` shows added/removed/changed documents with chunk-level hashes. Borrows from dbt snapshots + Datafold's data-diff. ~6h.
-- [ ] `BUILD_SKILL` **fixture-lineage** — track which eval fixtures came from which prod traces, with consent + redaction provenance. Composes with prompt-lineage's data model. ~7h.
-- **Incumbency check before building**: 30-min sweep of cleanlab, lilac, argilla to confirm the JSONL-native + RAG-corpus-aware + declarative-YAML combination is genuinely un-saturated.
+- [ ] `BUILD_SKILL` **llm-expectations (HIGHEST priority — Tier 1, score 9-10/10)** — declarative YAML data quality checks for JSONL training/SFT/DPO files. Schema drift, label distribution, duplicate prompts, PII detection, max-token ceilings, language-detect. Same YAML-shape ergonomics as the governance suite (mental-model port from dbt-eval). Borrows from Great Expectations' `expectation_suite.yml` shape. CLI: `llm-expectations check finetune.jsonl --suite expectations.yml`. ~8h. Anchor post: "dbt-test for your finetune.jsonl — no warehouse, no SaaS, just YAML and pip install."
+
+### Tier 2 — deferred until llm-expectations gets traction
+
+> Per incumbency-check recommendation: ship llm-expectations FIRST, let demand validate before committing the other two. corpus-snapshot is the second-likely move once llm-expectations users start asking "how do I diff RAG corpora?". fixture-lineage is slow-build trust work that needs an existing user base.
+
+- [ ] `BUILD_SKILL` **corpus-snapshot** (deferred) — snapshot + diff tool for RAG corpora. `corpus-snapshot diff prod staging` shows added/removed/changed documents with chunk-level hashes. Borrows from dbt snapshots + Datafold's data-diff. ~6h. Ship after llm-expectations has its first non-author user.
+- [ ] `BUILD_SKILL` **fixture-lineage** (v2 territory) — track which eval fixtures came from which prod traces, with consent + redaction provenance. Composes with prompt-lineage's data model. ~7h. Consent/provenance is a slow-build trust feature that needs the first repo's user base.
 
 ### Tier 1.5 — three-repo dbt-style governance suite for prompts (companion to dbt-eval)
 

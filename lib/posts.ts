@@ -11,6 +11,98 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "dbt-docs-for-prompts",
+    title: "dbt-docs for prompts: the navigation surface that turns three CLIs into a platform",
+    excerpt:
+      "Before dbt-docs, dbt was a command-line tool that compiled SQL. After dbt-docs, dbt was a data platform. The trio of CLIs hadn't changed — the navigation surface had. Same move for prompts, four years late.",
+    date: "2026-05-17",
+    tags: ["dbt-docs", "prompt-lineage", "governance-suite", "open-source", "platform-thinking"],
+    readTime: 7,
+    body: `Before dbt-docs, dbt was a command-line tool that compiled SQL. After dbt-docs, dbt was a data platform.
+
+The CLIs hadn't changed. \`dbt run\`, \`dbt test\`, \`dbt snapshot\` — same commands, same flags, same YAML configs. What changed was that you could open a browser tab and *see* how it all connected. Which models depended on which sources. Which tests covered which columns. What the documented schema actually said.
+
+The trio of CLIs became a platform the day adopters had a way to navigate them. Same move for prompts, four years late.
+
+[**prompt-lineage**](https://github.com/uppulaharshith2-rgb/prompt-lineage) just shipped — the fourth and final member of [the dbt-style governance suite for prompts](/oss). Same week as [dbt-eval](/projects/dbt-eval) (declarative assertions), [prompt-contracts](/projects/prompt-contracts) (runtime enforcement), and [prompt-freshness](/projects/prompt-freshness) (per-model staleness). Three working CLIs. The fourth is what retroactively makes them feel like one platform.
+
+## What it does
+
+\`prompt-lineage build examples/\` walks your project, finds:
+
+- \`prompts.yml\` manifests
+- dbt-eval suite YAMLs
+- \`@prompt_contract\` decorator usage in Python source
+- prompt-freshness state files
+- git history
+
+…and emits two artifacts:
+
+1. **\`lineage.json\`** — a structured graph: every prompt's model alias, which eval suites cover it, which contracts enforce it, which production callers wrap it, what the freshness status is. Cross-referenced edges between all four.
+2. **A static HTML site** — searchable, sortable, dbt-docs aesthetic. Light/dark via \`prefers-color-scheme\` CSS only. No JS framework. Vanilla \`<script>\` for sort and filter, ≤ 100 lines inline in the template.
+
+\`prompt-lineage diff main..HEAD\` walks both branches, generates lineage for each, prints a structured diff:
+
+\`\`\`
+prompt-lineage diff main..HEAD
+
+  prompts/support_triage.md  modified — model alias bumped sonnet-4-6 → sonnet-4-7
+                             impacts: 1 eval suite, 1 contract
+
+  prompts/new_classifier.md  added (no eval coverage yet)
+
+  evals/old_suite.yml        removed (was covering 2 prompts)
+
+3 changes · 1 modified · 1 added · 1 removed
+\`\`\`
+
+That's the same shape Datafold's data-diff gave SQL teams. The PR comment from the included GitHub Action posts the diff as a sticky comment on the pull request. Reviewer reads it in 10 seconds.
+
+## Why this matters more than the other three
+
+The first three suite members are useful in isolation. You can use dbt-eval without ever touching prompt-contracts. You can use prompt-contracts without dbt-eval. They compose, but they don't *require* each other.
+
+prompt-lineage is the surface where the composition becomes visible. Before it shipped, "the governance suite for prompts" was a sentence I said. After it shipped, "the governance suite for prompts" is a thing you can open in a browser and see. The cross-references stop being implicit and become hyperlinks.
+
+This is what dbt-docs did for dbt. Before docs, "dbt is the modern data stack" was VC pitch language. After docs, the modern data stack was a thing you could literally browse. The framing collapsed into evidence.
+
+## The schema is the part that locks in
+
+Same v0 discipline as the other three repos. The thing that has to be right is \`lineage.json\` — the schema adopters will write parsers against, integrate into their CI dashboards, snapshot into their compliance audits. If the schema is wrong, every line of HTML rendering is wasted.
+
+So v0 ships the schema deliberately and stubs the rest:
+
+- **Schema locked**: \`prompts\`, \`suites\`, \`contracts\`, \`edges\` arrays with stable field names. Schema version stamped at the top of every emitted file.
+- **HTML deliberately minimal**: sortable table + collapsible details. No force-directed graph, no SPA, no canvas. v0.2 adds the graph viz once the schema has been used in anger.
+- **Scanner is grep-based for \`@prompt_contract\` detection**: an AST walker would be more correct but adds dependency surface for ~5% more accuracy. v0.2 swaps in AST when there's a real regression report.
+- **Roadmap names what's deferred**: dbt-style column lineage view, multi-repo monorepo support, Slack notifications on diff, prompt-lineage Cloud as a managed hosted version. Adopters see the destination.
+
+This is the same pattern [I wrote about as ship-the-schema-before-the-engine](/blog/ship-the-schema-before-the-engine) — applied to a navigation surface this time. The HTML is the engine; the JSON is the surface.
+
+## What this closes
+
+The governance suite at 4:
+
+| Repo | Role | v0 stats |
+|---|---|---|
+| [dbt-eval](https://github.com/uppulaharshith2-rgb/dbt-eval) | Declare what good output looks like | 41 tests |
+| [prompt-contracts](https://github.com/uppulaharshith2-rgb/prompt-contracts) | Enforce it at runtime | 55 tests |
+| [prompt-freshness](https://github.com/uppulaharshith2-rgb/prompt-freshness) | Keep both honest as models shift | 57 tests |
+| [prompt-lineage](https://github.com/uppulaharshith2-rgb/prompt-lineage) | See how it all connects | 78 tests |
+
+The suite is **structurally complete at 4**. Not 5. The narrative has a beginning (declare), a middle (enforce + keep fresh), and an end (navigate). Adding a fifth would dilute the story without adding a missing capability — the [prior research](/blog/research-agents-that-abandon-discipline-as-a-feature) named exactly this kind of "stop while the story is tight" discipline.
+
+The next thesis I'm scoping is Great Expectations for LLM **training data** — sister suite, different domain, same mental-model-port shape. But that's the next post.
+
+## The lesson worth stealing
+
+When you build a collection of CLIs, the day they become a platform is the day someone can open a browser tab and see how they connect. Not when you write a marketing page. Not when you tweet about composition. **When the cross-references stop being implicit and become hyperlinks.**
+
+dbt did this in 2017 with dbt-docs. Most LLM tooling in 2025-2026 hasn't done it yet. The framing gap is open. Walk through it.
+
+Try it: \`pip install prompt-lineage\`, run \`prompt-lineage build examples/\`, open the HTML. Repo here: [github.com/uppulaharshith2-rgb/prompt-lineage](https://github.com/uppulaharshith2-rgb/prompt-lineage). MIT.`,
+  },
+  {
     slug: "stop-competing-for-first-pr-queue-spots",
     title: "Stop competing for first-PR queue spots: what to build instead",
     excerpt:
@@ -92,9 +184,9 @@ Sustainable open-source contribution from agent loops is going to look less like
     readTime: 8,
     body: `I shipped two OSS Python packages this week as part of [a dbt-style governance suite for prompts](/oss). Both are v0 releases. Both are missing the part you'd assume is the whole point.
 
-[**dbt-eval**](https://github.com/uppulaharshith/dbt-eval) ships a working CLI that reads YAML eval suites, runs assertions on outputs, and prints a \`dbt test\`–style terminal report. What it doesn't ship: a real LLM call in the example pipeline. \`EvalCase.output()\` returns the \`expected\` block as the model's "output." Every assertion runs against a stub. v0.2 swaps one function.
+[**dbt-eval**](https://github.com/uppulaharshith2-rgb/dbt-eval) ships a working CLI that reads YAML eval suites, runs assertions on outputs, and prints a \`dbt test\`–style terminal report. What it doesn't ship: a real LLM call in the example pipeline. \`EvalCase.output()\` returns the \`expected\` block as the model's "output." Every assertion runs against a stub. v0.2 swaps one function.
 
-[**prompt-contracts**](https://github.com/uppulaharshith/prompt-contracts) ships a working \`@prompt_contract\` decorator with three on-violation modes (raise / drop / quarantine), JSON Schema validation, Pydantic adapters, best-effort coerce, and a JSONL quarantine store. What it doesn't ship: any SQL or Snowflake quarantine adapter. The \`QuarantineStore\` Protocol is shipped, the JSONL implementation is the only one. v0.2 adds a SQL adapter as a drop-in.
+[**prompt-contracts**](https://github.com/uppulaharshith2-rgb/prompt-contracts) ships a working \`@prompt_contract\` decorator with three on-violation modes (raise / drop / quarantine), JSON Schema validation, Pydantic adapters, best-effort coerce, and a JSONL quarantine store. What it doesn't ship: any SQL or Snowflake quarantine adapter. The \`QuarantineStore\` Protocol is shipped, the JSONL implementation is the only one. v0.2 adds a SQL adapter as a drop-in.
 
 Both decisions look like cuts. Both are the load-bearing move. **The schema is the part adopters lock in on. The runtime is rewritable in 200 lines.**
 

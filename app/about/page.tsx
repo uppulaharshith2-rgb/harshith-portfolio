@@ -102,25 +102,27 @@ export default function AboutPage() {
             message bus, budget guard, install in one curl. Zero extra spend.
           </li>
           <li>
-            <strong>Built the dbt-style governance suite for prompts.</strong>{" "}
-            One thesis, three repos shipped this week, all public:{" "}
+            <strong>Built and closed the dbt-style governance suite for prompts.</strong>{" "}
+            One thesis, four public repos shipped this week, 231 combined passing tests:{" "}
             <Link href="/projects/dbt-eval" style={{ color: "var(--accent)" }}>
               dbt-eval
             </Link>{" "}
-            (declare what good output looks like — v0, 41 passing tests in 0.51s),{" "}
+            (declare what good output looks like — 41 tests),{" "}
             <Link href="/projects/prompt-contracts" style={{ color: "var(--accent)" }}>
               prompt-contracts
             </Link>{" "}
-            (enforce it at runtime with raise/drop/quarantine modes — v0, 55 passing
-            tests in 0.23s), and{" "}
+            (enforce it at runtime — 55 tests),{" "}
             <Link href="/projects/prompt-freshness" style={{ color: "var(--accent)" }}>
               prompt-freshness
             </Link>{" "}
-            (keep both honest as models shift — v0, 57 passing tests in 0.10s, CI green
-            on Python 3.10 / 3.11 / 3.12). Three repos, 153 combined passing tests, one
-            mental model every analytics engineer already knows. None compete with
-            promptfoo, DeepEval, or Phoenix — they occupy the un-saturated governance
-            layer above eval.{" "}
+            (keep both honest as models shift — 57 tests), and{" "}
+            <Link href="/projects/prompt-lineage" style={{ color: "var(--accent)" }}>
+              prompt-lineage
+            </Link>{" "}
+            (dbt-docs for prompts — see how it all connects — 78 tests). Four repos that
+            cite each other in their READMEs, one mental model every analytics engineer
+            already knows. None compete with promptfoo, DeepEval, or Phoenix — they
+            occupy the un-saturated governance layer above eval.{" "}
             <Link href="/oss" style={{ color: "var(--accent)" }}>
               See the collection.
             </Link>

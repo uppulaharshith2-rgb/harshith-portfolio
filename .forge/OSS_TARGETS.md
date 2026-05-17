@@ -117,6 +117,15 @@ Priority = Visibility + Relevance - Effort.
 - **Why this matters for the candidacy**: lives at the intersection of data engineering (the entire YAML shape mirrors `dbt schema.yml`) and AI infra (LLM-as-judge with offline mock for CI). Exact "AI Data Engineer" pitch the role bands at top labs are asking for.
 - **Strategic note**: this is the FIRST result of the OSS-landscape recalibration that said "stop competing for PR queue spots, build in uncrowded space." Within 6 hours of the recalibration, a real public artifact landed. Pattern confirmed.
 
+### 2026-05-17 — prompt-lineage v0 public release (4th / SUITE CLOSED)
+
+- **Repo**: https://github.com/uppulaharshith2-rgb/prompt-lineage (MIT)
+- **Stats**: 30 files, **78 tests passing in 0.93s** (largest test count in the governance suite)
+- **Pitch**: dbt-docs for prompts. Walks the project, parses prompts.yml + dbt-eval YAMLs + `@prompt_contract` decorator usage + prompt-freshness state, emits `lineage.json` + a static HTML site (dbt-docs aesthetic, vanilla JS for sort/filter, no framework). `diff main..HEAD` subcommand subsumes the queued golden-diff Marketplace Action.
+- **Suite-closing moment**: governance suite is now **4 of 4 public, 231 combined passing tests**: dbt-eval (41) + prompt-contracts (55) + prompt-freshness (57) + prompt-lineage (78). Before dbt-docs, dbt was a CLI; after dbt-docs, dbt was a platform. Same move here.
+- **v0-discipline notes**: schema-first — `lineage.json` is the part that locks in, HTML rendering is in the deferred-engine bucket (v0.2 adds the force-directed graph + dbt-style column lineage). Scanner is grep-based for decorator detection (AST is v0.2 polish). Same honest-trade-off pattern as the prior three suite members.
+- **Loop note worth recording**: the impl agent built the full v0 locally (30 files, 78 passing tests, rendered HTML site) but never completed the git init + commit + push workflow. I completed those steps myself (90s recovery, no quality compromise). Implication for future impl-agent briefs: explicitly check the agent's git state in the post-flight, not just the local build artifact.
+
 ### 2026-05-17 — OSS_COMMENT on modelcontextprotocol/python-sdk #2040 (first comment-pattern shipment)
 
 - **Comment**: https://github.com/modelcontextprotocol/python-sdk/pull/2040#issuecomment-4469902482
