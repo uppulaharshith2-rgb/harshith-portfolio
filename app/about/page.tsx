@@ -102,20 +102,25 @@ export default function AboutPage() {
             message bus, budget guard, install in one curl. Zero extra spend.
           </li>
           <li>
-            <strong>Building the dbt-style governance suite for prompts.</strong>{" "}
-            One thesis, three repos shipping this week — two already public:{" "}
+            <strong>Built the dbt-style governance suite for prompts.</strong>{" "}
+            One thesis, three repos shipped this week, all public:{" "}
             <Link href="/projects/dbt-eval" style={{ color: "var(--accent)" }}>
               dbt-eval
             </Link>{" "}
-            (declarative LLM assertions — v0 with 41 passing tests in 0.51s) and{" "}
+            (declare what good output looks like — v0, 41 passing tests in 0.51s),{" "}
             <Link href="/projects/prompt-contracts" style={{ color: "var(--accent)" }}>
               prompt-contracts
             </Link>{" "}
-            (runtime JSON Schema + Pydantic enforcement with raise/drop/quarantine modes —
-            v0 with 55 passing tests in 0.23s). Third member{" "}
-            <strong>prompt-freshness</strong> is queued — per-(prompt, model) staleness,
-            `dbt source freshness` for prompts. None compete with promptfoo, DeepEval, or
-            Phoenix — they occupy the un-saturated governance layer above eval.{" "}
+            (enforce it at runtime with raise/drop/quarantine modes — v0, 55 passing
+            tests in 0.23s), and{" "}
+            <Link href="/projects/prompt-freshness" style={{ color: "var(--accent)" }}>
+              prompt-freshness
+            </Link>{" "}
+            (keep both honest as models shift — v0, 57 passing tests in 0.10s, CI green
+            on Python 3.10 / 3.11 / 3.12). Three repos, 153 combined passing tests, one
+            mental model every analytics engineer already knows. None compete with
+            promptfoo, DeepEval, or Phoenix — they occupy the un-saturated governance
+            layer above eval.{" "}
             <Link href="/oss" style={{ color: "var(--accent)" }}>
               See the collection.
             </Link>

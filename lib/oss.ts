@@ -86,6 +86,29 @@ export const CONTRIBUTIONS: Contribution[] = [
     collection: "upstream-prs",
   },
   {
+    slug: "prompt-freshness-v0",
+    kind: "repo",
+    title: "prompt-freshness — `dbt source freshness` for prompts (v0)",
+    repo: "uppulaharshith2-rgb/prompt-freshness",
+    url: "https://github.com/uppulaharshith2-rgb/prompt-freshness",
+    date: "2026-05-17",
+    status: "published",
+    summary:
+      "New public Python package. Third and final member of the dbt-style governance suite for prompts. CLI reads a `prompts.yml` manifest with per-prompt `warn_after` / `error_after` thresholds, checks the last-evaluated timestamp against the *current* model alias declared in the manifest. The headline feature is model-alias drift detection: bumping `claude-sonnet-4-6 → claude-sonnet-4-7` in the manifest flips every prior evaluation to STALE with an explicit `model alias drifted:` reason, even if the wall-clock time hasn't elapsed. dbt-eval integration shipped end-to-end. GitHub Action workflow opens an issue when a prompt is stale.",
+    stats: { additions: 2110, files: 24, tests: 57 },
+    highlights: [
+      "57 tests passing in 0.10s — CI green across Python 3.10 / 3.11 / 3.12 in the shipped GitHub Actions workflow",
+      "Model-alias drift is the unique value over a naive 'X days ago' check — analytics engineers immediately get it from `dbt source freshness`",
+      "dbt-eval integration is real, not stubbed — `mark-evaluated --suite ./examples/` parses dbt-eval YAML and updates state on passing runs",
+      "Scope discipline: no git-aware staleness in v0 (a real git dependency + ambiguous 'is this a meaningful edit or just reformatting' semantics); listed v0.5",
+      "Design trade-off: model-alias check is binary, not semantic — user owns the alias string by design rather than a normalizer that's subtly wrong in both directions",
+    ],
+    whyItMatters:
+      "Third and final v0 in the suite. With this, the governance-suite story is complete: **dbt-eval** (declare what good output looks like) + **prompt-contracts** (enforce it at runtime) + **prompt-freshness** (keep both honest as models shift). Three repos that cite each other in their READMEs. Recruiter pitch fits in a single sentence and links to three shipped public artifacts with 153 combined passing tests.",
+    tags: ["llm-governance", "dbt", "source-freshness", "python", "ai-data-engineering", "open-source-release"],
+    collection: "governance-suite",
+  },
+  {
     slug: "prompt-contracts-v0",
     kind: "repo",
     title: "prompt-contracts — dbt contracts for LLM JSON outputs (v0)",

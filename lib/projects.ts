@@ -170,6 +170,30 @@ export const PROJECTS: Project[] = [
     collection: "governance-suite",
   },
   {
+    slug: "prompt-freshness",
+    name: "prompt-freshness",
+    tagline: "`dbt source freshness` for prompt templates. Per-(prompt, model) staleness — re-eval only counts against the current model alias.",
+    oneLiner:
+      "Your prompts are sources. Treat them like sources. `dbt source freshness` taught us this in 2022.",
+    description:
+      "Public Python package. CLI reads a `prompts.yml` manifest with per-prompt `warn_after / error_after` thresholds, checks last-evaluated timestamps against the current model alias. The headline feature: when you bump `claude-sonnet-4-6` → `claude-sonnet-4-7` in the manifest, every prompt previously evaluated against the older alias flips to STALE with an explicit `model alias drifted:` line — even if the wall-clock time hasn't elapsed. dbt-eval integration shipped end-to-end: `prompt-freshness mark-evaluated --suite examples/` parses dbt-eval YAML suites and updates state on passing runs. GitHub Action workflow opens an issue when a prompt goes stale.",
+    status: "live",
+    category: "library",
+    liveUrl: "https://github.com/uppulaharshith2-rgb/prompt-freshness",
+    repoUrl: "https://github.com/uppulaharshith2-rgb/prompt-freshness",
+    techStack: ["Python 3.10+", "Click", "PyYAML", "GitHub Actions", "pytest"],
+    highlights: [
+      "57 tests passing in 0.10s — CI green across Python 3.10 / 3.11 / 3.12",
+      "Model-alias drift detection — `claude-sonnet-4-6 → 4-7` bump flips evaluations to STALE with explicit reason",
+      "dbt-eval integration shipped end-to-end (`prompt-freshness mark-evaluated --suite examples/`) — not stubbed",
+      "Honest scope discipline — no git-aware staleness in v0 (it's a real git dependency + ambiguous semantics); listed v0.5",
+      "Honest design trade-off — model-alias check is binary, not semantic; user owns the alias string by design, no normalization that's subtly wrong in both directions",
+    ],
+    year: "2026",
+    accentColor: "#7c3aed",
+    collection: "governance-suite",
+  },
+  {
     slug: "forge",
     name: "Forge",
     tagline: "Multi-agent dev orchestrator — Claude Code on Max plan, zero extra spend",
@@ -235,6 +259,7 @@ const MONOGRAM_OVERRIDES: Record<string, string> = {
   forge: "F",
   "dbt-eval": "DE",
   "prompt-contracts": "PC",
+  "prompt-freshness": "PF",
 };
 
 export function projectMonogram(slug: string, name: string): string {

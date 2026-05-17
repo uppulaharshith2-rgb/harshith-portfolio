@@ -117,6 +117,14 @@ Priority = Visibility + Relevance - Effort.
 - **Why this matters for the candidacy**: lives at the intersection of data engineering (the entire YAML shape mirrors `dbt schema.yml`) and AI infra (LLM-as-judge with offline mock for CI). Exact "AI Data Engineer" pitch the role bands at top labs are asking for.
 - **Strategic note**: this is the FIRST result of the OSS-landscape recalibration that said "stop competing for PR queue spots, build in uncrowded space." Within 6 hours of the recalibration, a real public artifact landed. Pattern confirmed.
 
+### 2026-05-17 — prompt-freshness v0 public release (3rd / SUITE COMPLETE)
+
+- **Repo**: https://github.com/uppulaharshith2-rgb/prompt-freshness (MIT)
+- **Stats**: 24 files, ~2,110 LOC, **57 tests passing in 0.10s, CI green on Python 3.10 / 3.11 / 3.12**
+- **Pitch**: `dbt source freshness` for prompt templates. Per-(prompt, model) staleness — re-eval only counts against the *current* model alias, so a `claude-sonnet-4-6 → 4-7` bump flips evaluations to STALE with an explicit drift reason even when wall-clock time is short. dbt-eval integration shipped end-to-end (not stubbed).
+- **Suite-complete moment**: governance suite is now 3-of-3 public. **dbt-eval + prompt-contracts + prompt-freshness = 153 combined passing tests** across three coherent v0 releases in a single 24-hour window. The "I'm building the dbt-style governance suite for prompts" pitch now has three live links.
+- **v0-discipline notes**: no git-aware staleness in v0 (a real git dep + ambiguous "is this a meaningful prompt edit or just reformatting" semantics); listed v0.5. Model-alias check is binary, not semantic — the user owns the alias string by design rather than a normalizer that would be subtly wrong in both directions. Same honest-trade-off pattern as dbt-eval's faithful-scoring + prompt-contracts' coerce-counter.
+
 ### 2026-05-17 — prompt-contracts v0 public release (2nd governance-suite member)
 
 - **Repo**: https://github.com/uppulaharshith2-rgb/prompt-contracts (MIT)

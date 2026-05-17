@@ -69,18 +69,21 @@ Plus **[litellm PR #28113](https://github.com/BerriAI/litellm/pull/28113)** — 
 > What stack do you use to ship this fast?`,
   },
   {
-    match: /governance|suite|three.?repos|coherent|prompt.?contracts|contract/i,
-    reply: `**Building the dbt-style governance suite for prompts** — one thesis, three repos shipping this week. Two already public:
+    match: /governance|suite|three.?repos|coherent|prompt.?contracts|prompt.?freshness|contract/i,
+    reply: `**The dbt-style governance suite for prompts — complete.** Three repos shipped this week, all public, all MIT, all with passing CI:
 
 [[PROJECT:dbt-eval]]
 [[PROJECT:prompt-contracts]]
+[[PROJECT:prompt-freshness]]
 
-**dbt-eval** scores prompts in dev — \`dbt test\` syntax for LLM outputs, 41 passing tests, MIT. **prompt-contracts** blocks bad outputs at runtime — \`@prompt_contract\` decorator with raise/drop/quarantine modes, 55 passing tests, MIT. Third member **prompt-freshness** queued for this weekend — per-(prompt, model) staleness, the \`dbt source freshness\` mental model ported to prompts.
+- **dbt-eval** — declare what good output looks like. \`dbt test\` syntax for LLM outputs. 41 passing tests in 0.51s.
+- **prompt-contracts** — enforce it at runtime. \`@prompt_contract\` decorator with raise / drop / quarantine modes. 55 passing tests in 0.23s.
+- **prompt-freshness** — keep both honest as models shift. Per-(prompt, model) staleness; re-eval only counts against the *current* model alias. 57 passing tests in 0.10s, CI green on Python 3.10 / 3.11 / 3.12.
 
-The pitch: none compete with promptfoo, DeepEval, or Phoenix on assertions — they occupy the un-saturated *governance* layer above eval. Three repos, one mental model every analytics engineer already knows.
+**153 combined passing tests across the suite.** None compete with promptfoo, DeepEval, or Phoenix on assertions — they occupy the un-saturated *governance* layer above eval. One mental model every analytics engineer already knows from dbt.
 
 > Why three repos instead of one?
-> Show me the prompt-contracts example
+> Show me the dbt-eval example
 > Are you open to roles?`,
   },
   {
