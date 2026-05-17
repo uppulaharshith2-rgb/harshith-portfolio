@@ -121,6 +121,29 @@ export const PROJECTS: Project[] = [
     accentColor: "#f59e0b",
   },
   {
+    slug: "dbt-eval",
+    name: "dbt-eval",
+    tagline: "`dbt test` syntax for LLM outputs. Declarative YAML assertions for prompts. v0 ships 3 working assertions + 41 passing tests; roadmap names 8 more.",
+    oneLiner:
+      "I made LLM evaluation boring like dbt tests — same declarative YAML, same pass/fail/skip ergonomics every data engineer already knows.",
+    description:
+      "Public Python package. CLI (`dbt-eval run examples/`) reads YAML eval suites + JSONL fixtures, runs assertions, prints a dbt-style terminal report. v0 ships three working assertions: `regex_match` (pure-Python regex), `json_schema` (full JSON Schema validation), and `faithful` (LLM-as-judge via Claude Haiku 4.5 with a deterministic offline mock for CI). Mental model port: every DE knows `dbt test` — port that to prompts. The thesis is that LLM evaluation is broken because it's *exciting* — bespoke harnesses, novel metrics, custom dashboards — and the fix is to make it boring.",
+    status: "live",
+    category: "library",
+    liveUrl: "https://github.com/uppulaharshith2-rgb/dbt-eval",
+    repoUrl: "https://github.com/uppulaharshith2-rgb/dbt-eval",
+    techStack: ["Python 3.10+", "YAML", "JSON Schema", "Claude Haiku 4.5", "pytest", "pyproject.toml"],
+    highlights: [
+      "41 tests passing in 0.51s — full suite runs offline via `DBT_EVAL_MOCK=1`",
+      "Declarative YAML eval suites mirror dbt's `schema.yml` ergonomics intentionally",
+      "Three assertions in v0; roadmap names 8 more (cosine_similarity, tool_call_shape, latency_p95, cost_per_call, no_pii, factual_consistency_v2, length_constraint, accepted_values)",
+      "Honest v0 scope discipline — no real LLM call in the example pipeline yet; seam pre-built at `EvalCase.output()` for v0.2",
+      "MIT-licensed, public, install with `pip install -e .` (PyPI publish queued)",
+    ],
+    year: "2026",
+    accentColor: "#ff694b",
+  },
+  {
     slug: "forge",
     name: "Forge",
     tagline: "Multi-agent dev orchestrator — Claude Code on Max plan, zero extra spend",
@@ -184,6 +207,7 @@ const MONOGRAM_OVERRIDES: Record<string, string> = {
   "secondbrain-kit": "SK",
   "ai-cost-calculator": "AI",
   forge: "F",
+  "dbt-eval": "DE",
 };
 
 export function projectMonogram(slug: string, name: string): string {

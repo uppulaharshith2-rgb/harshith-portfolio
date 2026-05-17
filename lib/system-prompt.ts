@@ -53,19 +53,34 @@ export const CANNED_REPLIES: Array<{ match: RegExp; reply: string }> = [
   },
   {
     match: /shipped|built|projects|work|recent|portfolio/i,
-    reply: `Three live, daily-use products + a fresh OSS PR landed this week:
+    reply: `Three live products + four public OSS artifacts this week:
 
 [[PROJECT:claude-hub]]
 [[PROJECT:cockpit]]
 [[PROJECT:pipecode]]
+[[PROJECT:dbt-eval]]
 
-**Cockpit** runs my own Staff+ DE job search — 12 daemons, scored against my embedding, daily use for 12 weeks. **Claude Hub** is the curated Claude registry I wished existed — 181 resources, AI search via Haiku, three UI iterations in one session. **PipeCode** is the SaaS I founded — DE interview prep that actually runs your code.
+**Cockpit** runs my own Staff+ DE job search — 12 daemons, scored against my embedding, daily for 12 weeks. **Claude Hub** is the curated Claude registry — 181 resources, AI search via Haiku, three UI iterations in one session. **PipeCode** is the SaaS I founded — DE interview prep that actually runs your code. **dbt-eval** is the freshest — \`dbt test\` syntax for LLM outputs, 41 tests passing, published this week.
 
-Plus a real OSS contribution shipped this week: **[litellm PR #28113](https://github.com/BerriAI/litellm/pull/28113)** — fixed the Opus 4.7 \`temperature\` drop_params bug. 21 new tests, 976 existing tests still green. The full ledger lives at [/oss](/oss).
+Plus **[litellm PR #28113](https://github.com/BerriAI/litellm/pull/28113)** — fixed the Opus 4.7 \`temperature\` drop_params bug. 21 new tests, 976 existing tests still green. Full ledger at [/oss](/oss).
 
+> Show me dbt-eval — what's the pitch?
 > Walk me through the litellm PR — what made the difference?
-> Show me your most ambitious project (Cockpit)
 > What stack do you use to ship this fast?`,
+  },
+  {
+    match: /dbt|llm.?eval|evaluation|assertion|prompt.?test/i,
+    reply: `[[PROJECT:dbt-eval]]
+
+The bet: **LLM evaluation is broken because it's exciting**. Every eval framework I looked at — Promptfoo, DeepEval, Phoenix, Ragas — invents new vocabulary (trace, span, judge, rubric, metric). Data engineers already have all of this and call it \`dbt test\`. So I built **dbt-eval**: same YAML shape, same pass/fail/skip ergonomics, three working assertions in v0 (\`regex_match\`, \`json_schema\`, \`faithful\` via Claude Haiku with an offline mock).
+
+If you've shipped dbt to production, you can adopt dbt-eval the day you read the README. That's the whole pitch — boring is the feature.
+
+Roadmap names 8 more assertions: \`cosine_similarity\`, \`tool_call_shape\`, \`latency_p95\`, \`cost_per_call\`, \`no_pii\`, \`factual_consistency_v2\`, \`length_constraint\`, \`accepted_values\`.
+
+> Why YAML in 2026 — just write Python?
+> Show me the example
+> Are you open to roles?`,
   },
   {
     match: /stack|tech|tools|languages|framework/i,

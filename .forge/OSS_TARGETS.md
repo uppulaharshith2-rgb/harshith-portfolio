@@ -110,6 +110,13 @@ Priority = Visibility + Relevance - Effort.
 - **Repo**: https://github.com/uppulaharshith2-rgb/secondbrain (MIT)
 - PARA vault skeleton + 9 custom Claude slash commands + 11 templates + pre-written CLAUDE.md operating manual.
 
+### 2026-05-17 — dbt-eval v0 public release
+- **Repo**: https://github.com/uppulaharshith2-rgb/dbt-eval (MIT)
+- **Stats**: 19 files, ~1,229 LOC, **41 tests passing in 0.51s**, working example suite (3 cases · 9 assertions · 8 passed · 1 failed by design)
+- **Pitch**: `dbt test` syntax for LLM outputs. Declarative YAML assertions for prompts. v0 ships 3 working assertions (`regex_match`, `json_schema`, `faithful`); roadmap names 8 more. The thesis is that LLM eval is broken because it's *exciting* and the fix is to make it boring like dbt tests.
+- **Why this matters for the candidacy**: lives at the intersection of data engineering (the entire YAML shape mirrors `dbt schema.yml`) and AI infra (LLM-as-judge with offline mock for CI). Exact "AI Data Engineer" pitch the role bands at top labs are asking for.
+- **Strategic note**: this is the FIRST result of the OSS-landscape recalibration that said "stop competing for PR queue spots, build in uncrowded space." Within 6 hours of the recalibration, a real public artifact landed. Pattern confirmed.
+
 ## Skipped — duplicate work avoided
 
 ### 2026-05-17 — anthropics/claude-agent-sdk-python #899 (list-form system_prompt)

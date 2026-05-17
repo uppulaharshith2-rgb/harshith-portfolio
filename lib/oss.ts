@@ -42,6 +42,28 @@ export const CONTRIBUTIONS: Contribution[] = [
     tags: ["anthropic", "litellm", "model-router", "first-party-claude", "bug-fix"],
   },
   {
+    slug: "dbt-eval-v0",
+    kind: "repo",
+    title: "dbt-eval — `dbt test` syntax for LLM outputs (v0)",
+    repo: "uppulaharshith2-rgb/dbt-eval",
+    url: "https://github.com/uppulaharshith2-rgb/dbt-eval",
+    date: "2026-05-17",
+    status: "published",
+    summary:
+      "New public Python package. CLI runs YAML-defined eval suites with JSONL fixtures and reports pass/fail/skip per assertion in a dbt-style terminal grid. v0 ships three working assertions — `regex_match` (pure-Python regex), `json_schema` (full JSON Schema validation), and `faithful` (LLM-as-judge via Claude Haiku 4.5 with a deterministic offline mock for CI). The thesis: LLM evaluation is broken because it's exciting; the fix is to copy the most boring, most-successful pattern in data engineering — `dbt test`. Same YAML shape, same severities, same ergonomics every analytics engineer already knows.",
+    stats: { additions: 1229, files: 19, tests: 41 },
+    highlights: [
+      "41 tests passing in 0.51s — entire suite runs offline via `DBT_EVAL_MOCK=1`",
+      "Three assertions in v0; roadmap names 8 more (cosine_similarity, tool_call_shape, latency_p95, cost_per_call, no_pii, factual_consistency_v2, length_constraint, accepted_values)",
+      "Honest v0 scope discipline — no real LLM call in the example pipeline yet; seam pre-built at `EvalCase.output()` so v0.2 swaps one function from `return stub` to `call model`",
+      "Faithful-mock scoring uses `0.5 * coverage + 0.5 * jaccard` after Jaccard-only gave false negatives — rewards short focused rationales that quote the input, mirroring how a real LLM judge would think",
+      "MIT-licensed, public, MIT license, install with `pip install -e .` (PyPI publish queued)",
+    ],
+    whyItMatters:
+      "Every other LLM eval framework I looked at (Promptfoo, DeepEval, Phoenix, Ragas) invents new vocabulary — trace, span, judge, rubric, metric. Data engineers already have all of this and call it `dbt test`. Porting that mental model means analytics engineers can adopt LLM eval the day they read the README, because the YAML is already familiar. This is a shape-of-the-pitch decision more than a technical one.",
+    tags: ["llm-eval", "dbt", "python", "ai-data-engineering", "open-source-release"],
+  },
+  {
     slug: "forge-public",
     kind: "repo",
     title: "Forge — multi-agent dev orchestrator on Claude Code Max",
