@@ -42,6 +42,10 @@ up: "[[index]]"
 
 - [ ] `BUILD_SKILL` **claude-warehouse-mcp** — one MCP, four warehouses (Snowflake/BigQuery/Databricks/DuckDB), governed SQL. Tools: `list_tables`, `describe`, `sample`, `query`, `estimate_cost`, `lineage_for_column`. Per-warehouse adapters, read-only enforcement, LIMIT injection, scanned-bytes ceiling, `claude_warehouse.yml` policy. Demo notebook: "Claude analyzes 1TB BigQuery for $0.14." 10-12h. Fills the governed-multi-warehouse-MCP gap.
 
+- [x] `OSS_PR` **BerriAI/litellm #26444** — drop unsupported `temperature` param for Claude Opus 4.7 → https://github.com/BerriAI/litellm/pull/28113 (6 files, +346/−0, 21 new tests, 976 existing tests still green). Read 2 prior closed PRs first to understand maintainer rejection patterns. 2026-05-17.
+
+- [ ] `OSS_PR` **BerriAI/litellm Databricks follow-up** — mirror the Opus 4.7 fix into `DatabricksConfig.get_supported_openai_params` and add the JSON flags on `databricks-claude-opus-4-7` entries. Same shape as #28113, smaller scope. Per @Kontinuation's comment on the original issue. ~2h.
+
 - [ ] `OSS_PR` **BerriAI/litellm #28067** — Anthropic streaming `KeyError: 'text'` on `content_block_start` when upstream omits optional field. `chunk["text"]` → `chunk.get("text", "")` in `litellm/llms/anthropic/chat/handler.py:789` + streaming test. 1.5h. Filed yesterday, zero comments = wide open.
 
 - [ ] `OSS_PR` **BerriAI/litellm #27944** — Anthropic batch costs always 0; `transform_file_content_request` routes `msgbatch_*` IDs to wrong endpoint. Branch on `file_id` prefix in `litellm/llms/anthropic/files/transformation.py`. 4h. Cost-tracking bug = DE-adjacent signal.

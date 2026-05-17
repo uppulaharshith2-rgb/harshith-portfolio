@@ -147,10 +147,27 @@ Targeting:
 - **Pre-IPO unicorns** (Databricks, Stripe, Ramp)
 - **Pre-Series-C AI infra** (LangChain, LlamaIndex, Pinecone, Modal-tier)
 
+The receipts are public: see **[/oss](/oss)** for every PR, repo, and skill I've shipped — diffs, test counts, links, dates.
+
 Reach me at **uppula.harshith2@gmail.com** — happy to share the resume and walk through any of this in 20 min.
 
+> show me your most recent OSS contribution
 > what makes you different from a generic DE candidate?
 > show me your most technical project`,
+  },
+  {
+    match: /oss|open.?source|contribut|github|pr|pull.?request|merge/i,
+    reply: `Live ledger at **[/oss](/oss)** — every contribution with diff stats, test counts, and links.
+
+Highlights:
+- **[litellm #28113](https://github.com/BerriAI/litellm/pull/28113)** — fix Anthropic Opus 4.7 \`temperature\` drop_params bug. 346 additions, 21 new tests, 976 existing tests still green. Read 2 prior closed PRs first to understand why maintainers rejected them, then shipped a defense-in-depth version that doesn't repeat their mistakes.
+- **[github.com/uppulaharshith2-rgb/forge](https://github.com/uppulaharshith2-rgb/forge)** — multi-agent dev orchestrator, MIT, installable
+- **[github.com/uppulaharshith2-rgb/secondbrain](https://github.com/uppulaharshith2-rgb/secondbrain)** — PARA vault + 9 Claude skills + 11 templates, MIT
+
+New contributions land on **/oss** automatically as the portfolio forge loop ships them.
+
+> what made the litellm PR different from the closed ones?
+> are you open to roles?`,
   },
   {
     match: /skill|claude.?code|code/i,

@@ -94,4 +94,18 @@ Priority = Visibility + Relevance - Effort.
 
 ## Completed
 
-(empty — first OSS_PR tick hasn't fired)
+### 2026-05-17 — litellm Opus 4.7 temperature drop_params fix
+
+- **PR**: https://github.com/BerriAI/litellm/pull/28113 (status: open)
+- **Stats**: 6 files, +346/−0, 21 new tests, 976 existing tests still green
+- **Issue**: BerriAI/litellm#26444
+- **Approach delta from prior closed PRs**: #26445 over-stripped (treated all reasoning-family models — Anthropic's deprecation is Opus-4.7-only per migration docs). #26246 had right gating but bloated 256 lines with a `ProviderSpecificModelInfo` TypedDict rewrite that was unnecessary. This PR uses the existing `_is_explicitly_disabled_factory` helper, scopes strictly to Opus 4.7, mirrors into Bedrock Converse, sets JSON flags on all 10 Opus 4.7 model entries, and adds defense-in-depth in `map_openai_params`.
+- **Coverage gap noted**: Same bug exists in `DatabricksConfig.get_supported_openai_params` per @Kontinuation's comment on the original issue. Filed as follow-up queue item.
+
+### 2026-05-17 — Forge public release
+- **Repo**: https://github.com/uppulaharshith2-rgb/forge (MIT)
+- Multi-agent dev orchestrator on Claude Code Max. 11 personas, 6 GSD templates, file bus, budget guard, install script.
+
+### 2026-05-17 — SecondBrain Kit public release
+- **Repo**: https://github.com/uppulaharshith2-rgb/secondbrain (MIT)
+- PARA vault skeleton + 9 custom Claude slash commands + 11 templates + pre-written CLAUDE.md operating manual.

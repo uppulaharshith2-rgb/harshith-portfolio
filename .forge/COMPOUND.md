@@ -65,5 +65,20 @@ Built v0 portfolio + opened two companion public repos in a single session.
 - **Open-source as portfolio leverage.** Private projects (Cockpit, PipeCode) signal commercial intent, not OSS contribution. Putting Forge and SecondBrain Kit on public GitHub creates star-able, fork-able, link-able artifacts that work as portfolio assets even when the portfolio site isn't being viewed.
 - **Skeleton-extraction beats redaction.** For SecondBrain, instead of scrubbing the user's personal vault into a public version, built a parallel `secondbrain-public/` directory with the *structure* (PARA folders, templates, slash commands, CLAUDE.md template) and gitignored actual notes. Cleaner outcome than line-by-line redaction.
 - **Install scripts are a credibility multiplier.** A `curl | bash` installer signals "the author thought through how a stranger uses this." Took ~15 min per repo, paid off immediately.
-- **Cap research on OSS_PR ticks.** Remote scheduler prompt caps research at 5 WebFetch/WebSearch calls per tick. Downgrades to a different action type rather than going down a rabbit hole — preserves tick atomicity.
 - **`.forge/` lives in the repo, not the vault.** Remote agents can't reach local paths. Canonical queue state in the repo means both local and remote ticks share it.
+
+### Iteration #1 (2026-05-17) — research + implement loop kicked off
+
+Parallel research agents (oss-targets, portfolio-polish, new-builds) → impl agent shipped a quality litellm PR while I shipped auto-stream + metadata + favicon locally.
+
+- **Read prior failed PRs before opening yours.** The litellm impl agent read 2 previously-closed PRs (#26445, #26246) targeting the same bug before writing a single line. #26445 was rejected for over-stripping (treated all reasoning-family models when the deprecation is Opus-4.7-only); #26246 was rejected for over-engineering (256-line TypedDict rewrite when a small filter would do). The new PR (#28113) is tight, scoped to Opus 4.7, and uses the existing helper rather than rewriting plumbing. **Outcome**: PR posted with 976 tests still green and 21 new tests. Without that 10-minute prior-PR review, this would have been the third rejected attempt.
+- **Auto-stream is the killer landing move for chat-first portfolios.** A chat landing that doesn't demo itself within 4 seconds reads as static to a 30-second scanner. Adding the 1.6s `setTimeout` → `send("What have you shipped this year?")` with sessionStorage guard turns the page into a self-demonstrating product — the visitor sees Claude streaming an answer with 3 embedded project cards before they touch the keyboard.
+- **Defense-in-depth in OSS fixes signals seniority.** The litellm PR didn't just fix `get_supported_openai_params` — it also added guards in `map_openai_params` and set JSON-level flags. Maintainers read multi-layer fixes as "this person understands production failure modes," not "this person changed one line."
+- **A `/oss` page is the artifact a hiring manager actually wants.** Embedding contributions in the chat is good; a dedicated public ledger with diff stats / test counts / "why it matters" paragraphs is what gets screenshot and pasted into recruiter Slack channels. Build this BEFORE filing the second OSS PR so each new PR auto-shows up on a credible page.
+
+### Operating principles (refined this iteration)
+
+- **Atomic ticks.** One action → one commit → one push. Bundling hides what compounded vs noise.
+- **Source from the vault and the repo before the web.** Most material exists; rewriting is faster and more accurate than searching.
+- **Build green before commit.** Red builds are worse than no tick.
+- **Quality bar: Anthropic / OpenAI hiring panel.** If the diff is sloppy, the tests are weak, or the prose has marketing fluff, downgrade or abandon — never ship low quality.
