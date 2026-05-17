@@ -117,6 +117,14 @@ Priority = Visibility + Relevance - Effort.
 - **Why this matters for the candidacy**: lives at the intersection of data engineering (the entire YAML shape mirrors `dbt schema.yml`) and AI infra (LLM-as-judge with offline mock for CI). Exact "AI Data Engineer" pitch the role bands at top labs are asking for.
 - **Strategic note**: this is the FIRST result of the OSS-landscape recalibration that said "stop competing for PR queue spots, build in uncrowded space." Within 6 hours of the recalibration, a real public artifact landed. Pattern confirmed.
 
+### 2026-05-17 — prompt-contracts v0 public release (2nd governance-suite member)
+
+- **Repo**: https://github.com/uppulaharshith2-rgb/prompt-contracts (MIT)
+- **Stats**: 19 files, ~1,470 LOC, **55 tests passing in 0.23s**, working quickstart (3 inputs → 2 passed including 1 via coerce, 1 quarantined)
+- **Pitch**: Companion to dbt-eval. Runtime contract enforcement for LLM JSON outputs. `@prompt_contract` decorator with raise/drop/quarantine modes + best-effort coerce + per-function `.contract_stats`.
+- **Suite progress**: governance suite now has 2 of 3 public members. `dbt-eval` (dev-time eval) + `prompt-contracts` (runtime enforcement) + `prompt-freshness` (queued, source-freshness for prompts). The "I'm building the dbt-style governance suite for prompts" pitch now has TWO live links instead of one.
+- **Honest scope discipline noted in PR/README**: SQL quarantine adapter deferred to v0.2 as a Protocol-only stub (clean drop-in, no refactor required). Coerce mode tracked via separate `coerced` counter so coercions don't silently hide violations from dashboards.
+
 ### 2026-05-17 — litellm Databricks Opus 4.7 temperature follow-up
 
 - **PR**: https://github.com/BerriAI/litellm/pull/28115 (status: open)

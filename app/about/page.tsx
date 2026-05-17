@@ -103,16 +103,19 @@ export default function AboutPage() {
           </li>
           <li>
             <strong>Building the dbt-style governance suite for prompts.</strong>{" "}
-            One thesis, three repos shipping in one weekend:{" "}
+            One thesis, three repos shipping this week — two already public:{" "}
             <Link href="/projects/dbt-eval" style={{ color: "var(--accent)" }}>
               dbt-eval
             </Link>{" "}
-            (declarative LLM assertions — v0 shipped with 41 passing tests),{" "}
-            <strong>prompt-contracts</strong> (runtime JSON Schema + Pydantic enforcement
-            with raise/drop/quarantine modes — in flight), and{" "}
-            <strong>prompt-freshness</strong> (per-(prompt, model) staleness — `dbt source
-            freshness` for prompts). None compete with promptfoo, DeepEval, or Phoenix —
-            they occupy the un-saturated governance layer above eval.{" "}
+            (declarative LLM assertions — v0 with 41 passing tests in 0.51s) and{" "}
+            <Link href="/projects/prompt-contracts" style={{ color: "var(--accent)" }}>
+              prompt-contracts
+            </Link>{" "}
+            (runtime JSON Schema + Pydantic enforcement with raise/drop/quarantine modes —
+            v0 with 55 passing tests in 0.23s). Third member{" "}
+            <strong>prompt-freshness</strong> is queued — per-(prompt, model) staleness,
+            `dbt source freshness` for prompts. None compete with promptfoo, DeepEval, or
+            Phoenix — they occupy the un-saturated governance layer above eval.{" "}
             <Link href="/oss" style={{ color: "var(--accent)" }}>
               See the collection.
             </Link>

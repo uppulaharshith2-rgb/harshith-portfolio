@@ -146,6 +146,30 @@ export const PROJECTS: Project[] = [
     collection: "governance-suite",
   },
   {
+    slug: "prompt-contracts",
+    name: "prompt-contracts",
+    tagline: "dbt contracts for LLM JSON outputs. `@prompt_contract` decorator with raise/drop/quarantine modes + coerce + per-function stats. v0 ships JSON Schema + Pydantic validators; 55 tests passing.",
+    oneLiner:
+      "Your LLM is a producer in a data contract — treat it like one. Runtime enforcement, not dev-time eval.",
+    description:
+      "Public Python package. Decorator wraps any Claude/OpenAI call: declare the expected JSON output schema, validate at runtime, choose what to do on violation (raise / drop / quarantine). JSON Schema + Pydantic adapters built in. Best-effort `coerce` mode handles trivially-fixable outputs (strip code fences, trailing commas, stringified numbers). Every decorated function gains a `.contract_stats` attribute (passed / dropped / quarantined / errors / coerced) for end-of-pipeline introspection. Companion to dbt-eval — dbt-eval scores prompts in dev, prompt-contracts blocks bad outputs at runtime.",
+    status: "live",
+    category: "library",
+    liveUrl: "https://github.com/uppulaharshith2-rgb/prompt-contracts",
+    repoUrl: "https://github.com/uppulaharshith2-rgb/prompt-contracts",
+    techStack: ["Python 3.10+", "JSON Schema", "Pydantic", "pytest", "pyproject.toml"],
+    highlights: [
+      "55 tests passing in 0.23s — full suite runs offline with the stub model included",
+      "Three on-violation modes — `raise` (fail the DAG), `drop` (skip + log + counter), `quarantine` (write to a JSONL `_rejected.jsonl` you can replay)",
+      "Honest scope discipline — `QuarantineStore` Protocol shipped with the JSONL implementation only; SQL/Snowflake adapter deferred to v0.2 as a clean drop-in (no refactor)",
+      "Coerce mode handles 4 narrow repairs (code-fence strip, trailing comma fix, stringified-primitive cast, top-level JSON parse); refuses bool→int silently; tracked via a separate `coerced` counter so coercion is visible to dashboards instead of hidden",
+      "Roadmap names Airflow `PromptContractOperator`, SQL/Snowflake quarantine adapter, OpenTelemetry export, declarative `prompt_contracts.yml` manifest, dbt-eval cross-tool model registry",
+    ],
+    year: "2026",
+    accentColor: "#10b981",
+    collection: "governance-suite",
+  },
+  {
     slug: "forge",
     name: "Forge",
     tagline: "Multi-agent dev orchestrator — Claude Code on Max plan, zero extra spend",
@@ -210,6 +234,7 @@ const MONOGRAM_OVERRIDES: Record<string, string> = {
   "ai-cost-calculator": "AI",
   forge: "F",
   "dbt-eval": "DE",
+  "prompt-contracts": "PC",
 };
 
 export function projectMonogram(slug: string, name: string): string {

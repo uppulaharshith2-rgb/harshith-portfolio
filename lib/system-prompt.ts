@@ -69,17 +69,30 @@ Plus **[litellm PR #28113](https://github.com/BerriAI/litellm/pull/28113)** — 
 > What stack do you use to ship this fast?`,
   },
   {
+    match: /governance|suite|three.?repos|coherent|prompt.?contracts|contract/i,
+    reply: `**Building the dbt-style governance suite for prompts** — one thesis, three repos shipping this week. Two already public:
+
+[[PROJECT:dbt-eval]]
+[[PROJECT:prompt-contracts]]
+
+**dbt-eval** scores prompts in dev — `dbt test` syntax for LLM outputs, 41 passing tests, MIT. **prompt-contracts** blocks bad outputs at runtime — \`@prompt_contract\` decorator with raise/drop/quarantine modes, 55 passing tests, MIT. Third member **prompt-freshness** queued for this weekend — per-(prompt, model) staleness, the \`dbt source freshness\` mental model ported to prompts.
+
+The pitch: none compete with promptfoo, DeepEval, or Phoenix on assertions — they occupy the un-saturated *governance* layer above eval. Three repos, one mental model every analytics engineer already knows.
+
+> Why three repos instead of one?
+> Show me the prompt-contracts example
+> Are you open to roles?`,
+  },
+  {
     match: /dbt|llm.?eval|evaluation|assertion|prompt.?test/i,
     reply: `[[PROJECT:dbt-eval]]
 
 The bet: **LLM evaluation is broken because it's exciting**. Every eval framework I looked at — Promptfoo, DeepEval, Phoenix, Ragas — invents new vocabulary (trace, span, judge, rubric, metric). Data engineers already have all of this and call it \`dbt test\`. So I built **dbt-eval**: same YAML shape, same pass/fail/skip ergonomics, three working assertions in v0 (\`regex_match\`, \`json_schema\`, \`faithful\` via Claude Haiku with an offline mock).
 
-If you've shipped dbt to production, you can adopt dbt-eval the day you read the README. That's the whole pitch — boring is the feature.
+If you've shipped dbt to production, you can adopt dbt-eval the day you read the README. That's the whole pitch — boring is the feature. Now part of a coherent three-repo governance suite with [prompt-contracts](/projects/prompt-contracts) and prompt-freshness.
 
-Roadmap names 8 more assertions: \`cosine_similarity\`, \`tool_call_shape\`, \`latency_p95\`, \`cost_per_call\`, \`no_pii\`, \`factual_consistency_v2\`, \`length_constraint\`, \`accepted_values\`.
-
+> Show me prompt-contracts (the runtime half)
 > Why YAML in 2026 — just write Python?
-> Show me the example
 > Are you open to roles?`,
   },
   {

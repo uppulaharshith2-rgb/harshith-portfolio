@@ -86,6 +86,29 @@ export const CONTRIBUTIONS: Contribution[] = [
     collection: "upstream-prs",
   },
   {
+    slug: "prompt-contracts-v0",
+    kind: "repo",
+    title: "prompt-contracts — dbt contracts for LLM JSON outputs (v0)",
+    repo: "uppulaharshith2-rgb/prompt-contracts",
+    url: "https://github.com/uppulaharshith2-rgb/prompt-contracts",
+    date: "2026-05-17",
+    status: "published",
+    summary:
+      "New public Python package. The runtime half of the governance suite — dbt-eval scores prompts in dev, prompt-contracts blocks bad outputs at runtime. `@prompt_contract` decorator wraps any LLM call: declare the expected output schema (JSON Schema or Pydantic), validate at runtime, choose what to do on violation (`raise` / `drop` / `quarantine`). Best-effort `coerce` mode handles trivially-fixable outputs without hiding violations from dashboards (tracked via a separate `coerced` counter). Every decorated function gains a `.contract_stats` attribute for end-of-pipeline introspection.",
+    stats: { additions: 1470, files: 19, tests: 55 },
+    highlights: [
+      "55 tests passing in 0.23s — full suite runs offline with the included stub model",
+      "Three on-violation modes shipped end-to-end: raise (fail the DAG), drop (skip + log + counter), quarantine (write to JSONL you can replay)",
+      "Honest scope discipline — `QuarantineStore` Protocol exists in the API; only the JSONL implementation ships, SQL adapter deferred so v0.2 is a drop-in, not a refactor",
+      "Honest design trade-off documented — coerce mode could hide violations from dashboards, so coercions count as `passed` but also bump a separate `coerced` counter for discoverability",
+      "Comparison table in README addresses overlap with instructor + guardrails head-on (differentiator: on_violation choreography + quarantine pattern)",
+    ],
+    whyItMatters:
+      "Companion to dbt-eval — the runtime enforcement layer above eval frameworks. The governance suite's pitch becomes one sentence at a recruiter call: 'I'm building the dbt-style governance suite for prompts — eval in dev (dbt-eval), contracts at runtime (prompt-contracts), source-freshness for prompt templates (prompt-freshness, next).' Composes; doesn't compete with promptfoo / DeepEval / Phoenix.",
+    tags: ["llm-runtime", "json-schema", "pydantic", "python", "ai-data-engineering", "open-source-release"],
+    collection: "governance-suite",
+  },
+  {
     slug: "dbt-eval-v0",
     kind: "repo",
     title: "dbt-eval — `dbt test` syntax for LLM outputs (v0)",
