@@ -11,6 +11,83 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "research-agents-that-abandon-discipline-as-a-feature",
+    title: "Research agents that abandon: discipline as a feature",
+    excerpt:
+      "I ran four OSS implementation agents in a row through the forge loop driving this portfolio. Three abandoned before writing code. That's the iteration I'm proudest of.",
+    date: "2026-05-17",
+    tags: ["multi-agent", "forge", "claude-code", "open-source", "process"],
+    readTime: 8,
+    body: `I run a small forge loop on top of Claude Code Max to keep this portfolio compounding while I sleep. Research agents queue work; implementation agents drain it. The loop is documented [here](/projects/forge) and the queue lives in the same git repo as the portfolio so both local ticks and the nightly remote schedule read the same state.
+
+In the last iteration, the loop dispatched four OSS implementation agents. **Three of them abandoned before writing a single line of code.** The fourth shipped a 346-line PR to litellm with 21 new tests and zero regressions ([#28113](https://github.com/BerriAI/litellm/pull/28113)).
+
+That ratio — 1 shipped, 3 abandoned — is the iteration I'm proudest of. Not the PR. The abandonments.
+
+## What the abandoning agents found
+
+Each agent's brief was the same shape: "file a high-quality PR fixing this specific issue in this specific repo, here are the hard rules, quality bar is Anthropic / OpenAI hiring panel." The first instruction inside every brief was a 30-second pre-flight:
+
+\`\`\`bash
+gh issue view <repo>#<n> --comments
+gh pr list --repo <repo> --state open --search "<keyword>"
+gh pr list --repo <repo> --state closed --search "<keyword>" --limit 5
+\`\`\`
+
+The hard rule attached to those commands: **if any open PR addresses this issue, STOP and return "duplicate: <PR URL>".**
+
+The three abandonments:
+
+1. **anthropics/claude-agent-sdk-python #899** (list-form \`system_prompt\` rejected by subprocess CLI). Two viable PRs already open — #900 (104 lines, transport+types+tests, most thorough) and #947 (22 lines, transport-only). Both use the JSON-temp-file approach. Filing a third would have been pure noise on an already-busy maintainer triage queue. **Abandoned.**
+
+2. **modelcontextprotocol/python-sdk #1933** (stdio transport closes real fds, breaks downstream stdio). **Seven** open PRs already addressed this — #2040 was the most advanced, with the maintainer @maxisbey actively reviewing and the author having applied a requested change. Three more closed PRs existed using \`os.dup()\`, an approach the maintainer had explicitly stated they didn't want. Filing an eighth would have been worse than noise. **Abandoned.**
+
+3. **BerriAI/litellm #28067** (Anthropic streaming \`KeyError: 'text'\` on \`content_block_start\`). Two PRs filed the day before by other contributors — #28069 used the exact \`.get("text", "")\` shape the brief specified, including a regression test. **Abandoned.**
+
+In all three cases the agent returned a one-paragraph report explaining what it found, naming the existing PRs, and recommending higher-value alternatives (thoughtful technical comments on the open PRs; less-trafficked repos; a strategic recalibration toward *building* new OSS rather than competing for queue spots).
+
+## Why this matters
+
+Most multi-agent dev frameworks I've looked at — including some of the bigger names — implicitly reward shipping. The agent's success metric is "did a PR get filed." That's a one-way door. An agent rewarded for shipping will ship even when the right answer is "don't."
+
+The forge loop deliberately inverts this. The success metric isn't *PRs filed*. It's *PRs filed that wouldn't have existed without the loop's discipline*. By that metric, the three abandonments are wins — each one prevented a duplicate-PR filing that would have damaged the candidacy bar instead of strengthening it.
+
+Filing a duplicate PR on a first-party Anthropic repo from a candidate's GitHub identity is not neutral. It's negative signal. Maintainers see "another agent-generated PR that didn't check before filing." Three of those compound fast. Better to file one careful PR than four lazy ones.
+
+## What changed in iteration #4
+
+After three abandonments in a row, the loop's compound-learning file recorded a structural observation: *easy first-PR targets in popular Anthropic-ecosystem repos are claimed within hours of issue filing*. The bottleneck is maintainer review bandwidth, not contributor supply.
+
+That observation became a written strategic recalibration in the loop's OSS-targets document:
+
+1. **Build new OSS, don't compete for PR queue spots.** Ship in uncrowded space.
+2. **Extend already-shipped work** — e.g., a Databricks follow-up to the merged litellm PR, leveraging the prior context.
+3. **\`OSS_COMMENT\` instead of \`OSS_PR\`** — a thoughtful technical comment on an existing open PR gets the same maintainer eyeballs without queue noise.
+4. **Less-trafficked but relevant repos** — langchain-anthropic, cost-tracking issues, non-reference MCP servers.
+
+The very next iteration produced a fresh public OSS package ([\`dbt-eval\`](/projects/dbt-eval)) — 41 passing tests, working CLI, 19 files. **Recalibration → shipped artifact in under 6 hours**, which is the right speed for "we noticed a pattern and changed strategy."
+
+## The architecture decision that makes this work
+
+The 30-second pre-flight is the load-bearing part. It's a single \`gh\` command. It runs *before* the agent forks the repo. The cost is negligible; the benefit is binary.
+
+The pre-flight only works because the abandon path is **explicit, structured, and rewarded**. The hard rules inside every implementation brief include:
+
+> If any open PR addresses this issue, **STOP** and return "duplicate: <PR URL>". The prior impl agent abandoned correctly when it found duplicates. Match that discipline.
+
+That last sentence — "match that discipline" — is doing work. The agent is told there's a recent precedent for abandoning. The compound-learning file (\`.forge/COMPOUND.md\`) records *which past iterations abandoned and why*, so each new spawn reads it and inherits the norm.
+
+This is the multi-agent equivalent of a team culture. The team that abandons correctly the first time teaches the team that comes after.
+
+## The broader lesson
+
+Agent loops need a way for agents to **stop**. Not a budget cap, not a timeout — a structured "I looked, the work isn't worth doing, here's why." That report is more valuable than the work the agent would have done if it pressed on.
+
+If your agent never abandons, your agent is shipping bad work and your loop is producing negative signal. The metric to watch isn't throughput. It's the abandon rate, with one-line reasons that hold up to scrutiny.
+
+For this loop, on the OSS-PR action type, the abandon rate is currently 3/4 = 75%. That's not a failure mode. That's the loop working.`,
+  },
+  {
     slug: "dbt-eval-making-llm-evaluations-boring",
     title: "dbt-eval: making LLM evaluations boring",
     excerpt:
