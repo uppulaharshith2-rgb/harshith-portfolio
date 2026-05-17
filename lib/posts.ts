@@ -11,6 +11,70 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "ship-the-schema-before-the-engine",
+    title: "Ship the schema before the engine: a v0 discipline",
+    excerpt:
+      "I shipped two OSS Python packages this week. Neither one ships the part you'd think is the point. The runtime is a swap of one function. The schema is the part adopters lock in on.",
+    date: "2026-05-17",
+    tags: ["open-source", "process", "dbt-eval", "prompt-contracts", "v0-discipline"],
+    readTime: 8,
+    body: `I shipped two OSS Python packages this week as part of [a dbt-style governance suite for prompts](/oss). Both are v0 releases. Both are missing the part you'd assume is the whole point.
+
+[**dbt-eval**](https://github.com/uppulaharshith/dbt-eval) ships a working CLI that reads YAML eval suites, runs assertions on outputs, and prints a \`dbt test\`–style terminal report. What it doesn't ship: a real LLM call in the example pipeline. \`EvalCase.output()\` returns the \`expected\` block as the model's "output." Every assertion runs against a stub. v0.2 swaps one function.
+
+[**prompt-contracts**](https://github.com/uppulaharshith/prompt-contracts) ships a working \`@prompt_contract\` decorator with three on-violation modes (raise / drop / quarantine), JSON Schema validation, Pydantic adapters, best-effort coerce, and a JSONL quarantine store. What it doesn't ship: any SQL or Snowflake quarantine adapter. The \`QuarantineStore\` Protocol is shipped, the JSONL implementation is the only one. v0.2 adds a SQL adapter as a drop-in.
+
+Both decisions look like cuts. Both are the load-bearing move. **The schema is the part adopters lock in on. The runtime is rewritable in 200 lines.**
+
+## Why this works for OSS v0
+
+The thing a user of dbt-eval cares about, the day they read the README, is the **YAML shape of an eval suite**. Can they write their own? Does the assertion list look right? Does \`faithful\` mean what they hope it means? If the YAML is wrong, every line of runtime code is wasted — you'll throw it away and rewrite when adopters tell you the schema is wrong.
+
+The runtime, by contrast, is straightforward engineering once the schema is locked. It's a loader + an executor + a reporter. A few hundred lines of pure code that doesn't drive an API conversation. Nobody opens an issue about a runtime implementation; they open issues about the schema.
+
+The same logic applies to prompt-contracts. Adopters care about the \`@prompt_contract(...)\` call site — what arguments does it take, what does \`on_violation\` mean, what's in \`.contract_stats\`. The Protocol-vs-implementation split lets the call site lock in without committing to a quarantine backend that should be informed by real users anyway.
+
+Both packages shipped the part where the API conversation happens. Both deferred the part where the engineering is.
+
+## How to detect when you're getting this backwards
+
+When you're building a v0 and feel the pull to "make it real" before shipping, ask:
+
+1. **Is this code part of the surface or part of the engine?** A function signature your user types, a YAML key your user writes, a config the user passes — that's the surface. A network call, a parser, a serializer that the user never sees — that's the engine.
+
+2. **If I rewrote the engine tomorrow, would any user-facing thing break?** If yes, you've leaked engine into surface and you should refactor before shipping. If no, the engine can be deferred.
+
+3. **What's the smallest engine that lets the surface ship?** For dbt-eval it was "have \`EvalCase.output()\` return \`expected\`." For prompt-contracts it was "have \`QuarantineStore\` be a Protocol with one JSONL implementation." Both are visibly stubs to readers of the code, but neither lies — the *behavior* of the surface is real, just powered by something less impressive than the final form will be.
+
+If the engine is doing 80% of the lines but the surface is 100% of the value proposition, ship the surface and name the engine in the roadmap.
+
+## Why most v0 releases get this backwards
+
+Engineering culture rewards the engine. The hard part is usually the runtime — that's where the actual computation lives, where the cleverness goes, where you spent the time. Shipping a stub feels like cheating.
+
+But shipping order is about **risk reduction**, not pride. The risk in a v0 is "the surface is wrong and we have to rewrite everything." The surface owns that risk; the engine doesn't. So you ship the surface first, get the feedback, and only invest engine effort once the surface is stable.
+
+The other failure mode: shipping the engine first and "wrapping it in a nice API." This is how every framework gets a surface that betrays its implementation. The surface should look like what the *user* wants, not like a faithful reflection of the engine. Decoupling them at v0 is how you preserve that freedom.
+
+## The pattern, named
+
+Three concrete behaviors:
+
+- **Ship the YAML / config / decorator first.** Lock the call site. Lock the keys. Lock the defaults.
+- **Stub the engine to a deterministic minimum.** \`EvalCase.output()\` returning \`expected\`. \`QuarantineStore\` Protocol with one implementation. A mock model that returns deterministic outputs from the example inputs.
+- **Name the engine in the roadmap.** README's final section: "v0.2 adds real \`model:\` blocks." "v0.2 ships a SQL quarantine adapter." Be specific. Naming the unbuilt does as much work as the built — adopters see the destination and infer your taste.
+
+When you do this, the v0 README reads as confident discipline, not "I didn't finish." The README's roadmap section is your signal that you knew what you were deferring.
+
+## The lesson worth stealing
+
+If you're building any v0 OSS package, the highest-leverage decision is **what to defer**, not what to ship. Ship the schema. Defer the engine. Name the engine in the roadmap so adopters know the destination.
+
+dbt itself did this — early dbt shipped the YAML shape and the model graph, with minimal materialization strategies. The engine grew over time. The YAML hasn't changed materially. The schema was the right thing to lock in.
+
+Half the time when a v0 looks like a stub, it's because someone got this right.`,
+  },
+  {
     slug: "secondbrain-kit-the-vault-that-compounds",
     title: "SecondBrain Kit: the vault that compounds",
     excerpt:
