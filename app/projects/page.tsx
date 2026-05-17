@@ -60,8 +60,166 @@ export default function ProjectsPage() {
         </p>
       </header>
 
+      {(() => {
+        const suite = PROJECTS.filter((p) => p.collection === "governance-suite");
+        if (suite.length < 2) return null;
+        return (
+          <section
+            style={{
+              marginBottom: 64,
+              padding: "28px 28px 24px",
+              borderRadius: 10,
+              border: "1px solid var(--border)",
+              borderLeft: "3px solid var(--accent)",
+              background:
+                "linear-gradient(135deg, var(--accent-bg) 0%, transparent 35%), var(--bg-elevated)",
+            }}
+          >
+            <header
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: 12,
+                marginBottom: 14,
+              }}
+            >
+              <div
+                className="mono-label"
+                style={{ color: "var(--accent)" }}
+              >
+                · collection · {suite.length} live
+              </div>
+              <a
+                href="#libraries"
+                className="mono"
+                style={{
+                  fontSize: 11,
+                  color: "var(--text-secondary)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  textDecoration: "none",
+                }}
+              >
+                dbt-style governance for prompts ↘
+              </a>
+            </header>
+            <h2
+              className="display"
+              style={{
+                fontSize: "clamp(26px, 3.4vw, 34px)",
+                margin: "0 0 8px",
+                color: "var(--text-primary)",
+                letterSpacing: "-0.015em",
+              }}
+            >
+              The governance suite for{" "}
+              <span className="under-accent" style={{ color: "var(--accent)" }}>
+                LLM outputs
+              </span>
+            </h2>
+            <p
+              style={{
+                color: "var(--text-secondary)",
+                fontSize: 14.5,
+                lineHeight: 1.55,
+                margin: "0 0 18px",
+                maxWidth: 680,
+              }}
+            >
+              Eval in dev. Contracts at runtime. Source-freshness across model upgrades.
+              Port the dbt mental model — `schema.yml`, model contracts, `dbt source freshness` —
+              to LLM outputs, so AI observability becomes boring instead of bespoke.
+            </p>
+            <div
+              style={{
+                borderTop: "1px solid var(--border-subtle)",
+                paddingTop: 14,
+                display: "grid",
+                gap: 8,
+              }}
+            >
+              {suite.map((p) => (
+                <Link
+                  key={p.slug}
+                  href={`/projects/${p.slug}`}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "10px 12px",
+                    borderRadius: 6,
+                    background: "transparent",
+                    color: "inherit",
+                    textDecoration: "none",
+                    transition: "background 0.15s ease",
+                  }}
+                  className="surface-hover"
+                >
+                  <span
+                    className="mono"
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 6,
+                      background: `linear-gradient(135deg, ${p.accentColor}, ${p.accentColor}55)`,
+                      boxShadow: `0 0 8px ${p.accentColor}33`,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: "#fff",
+                      letterSpacing: "0.04em",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {projectMonogram(p.slug, p.name)}
+                  </span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 600,
+                        color: "var(--text-primary)",
+                        letterSpacing: "-0.01em",
+                      }}
+                    >
+                      {p.name}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 12.5,
+                        color: "var(--text-muted)",
+                        lineHeight: 1.4,
+                        marginTop: 2,
+                      }}
+                    >
+                      {p.highlights[0]}
+                    </div>
+                  </div>
+                  <div
+                    className="mono"
+                    style={{
+                      fontSize: 10.5,
+                      color: "var(--text-muted)",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.06em",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {p.status} · {p.year} →
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        );
+      })()}
+
       {byCategory.map(({ cat, items }) => (
-        <section key={cat} style={{ marginBottom: 64 }}>
+        <section key={cat} id={cat} style={{ marginBottom: 64 }}>
           <div
             className="mono-label"
             style={{
