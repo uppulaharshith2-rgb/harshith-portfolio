@@ -1,6 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { listContributions, contributionStats } from "@/lib/oss";
+import {
+  contributionStats,
+  contributionsByCollection,
+} from "@/lib/oss";
 
 export const metadata: Metadata = {
   title: "Open source",
@@ -24,7 +27,7 @@ const STATUS_COLOR: Record<string, string> = {
 };
 
 export default function OssPage() {
-  const contributions = listContributions();
+  const groups = contributionsByCollection();
   const stats = contributionStats();
 
   return (
@@ -71,13 +74,46 @@ export default function OssPage() {
         <Stat label="open" value={String(stats.open)} />
       </div>
 
-      <div style={{ display: "grid", gap: 20 }}>
-        {contributions.map((c) => (
-          <article
-            key={c.slug}
-            className="proj-card"
-            style={{ padding: 24, display: "block" }}
-          >
+      <div style={{ display: "grid", gap: 40 }}>
+        {groups.map(({ collection, label, tagline, items }) => (
+          <section key={collection} style={{ display: "grid", gap: 16 }}>
+            <header
+              style={{
+                paddingBottom: 10,
+                borderBottom: "1px solid var(--border-subtle)",
+                display: "flex",
+                alignItems: "baseline",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: 12,
+              }}
+            >
+              <div>
+                <div
+                  className="mono-label"
+                  style={{ color: "var(--accent)", marginBottom: 6 }}
+                >
+                  · {label} · {items.length}
+                </div>
+                <p
+                  style={{
+                    fontSize: 13.5,
+                    color: "var(--text-muted)",
+                    margin: 0,
+                    maxWidth: 540,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {tagline}
+                </p>
+              </div>
+            </header>
+            {items.map((c) => (
+              <article
+                key={c.slug}
+                className="proj-card"
+                style={{ padding: 24, display: "block" }}
+              >
             <header
               style={{
                 display: "flex",
@@ -301,7 +337,9 @@ export default function OssPage() {
                 </span>
               ))}
             </div>
-          </article>
+              </article>
+            ))}
+          </section>
         ))}
       </div>
 

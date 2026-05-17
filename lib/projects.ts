@@ -12,6 +12,7 @@ export type Project = {
   highlights: string[];
   year: string;
   accentColor?: string;
+  collection?: "governance-suite" | "orchestration";
 };
 
 export const PROJECTS: Project[] = [
@@ -142,6 +143,7 @@ export const PROJECTS: Project[] = [
     ],
     year: "2026",
     accentColor: "#ff694b",
+    collection: "governance-suite",
   },
   {
     slug: "forge",

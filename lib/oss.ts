@@ -16,6 +16,26 @@ export type Contribution = {
   highlights: string[];
   whyItMatters: string;
   tags: string[];
+  collection?: "governance-suite" | "orchestration" | "upstream-prs" | "vault";
+};
+
+export const COLLECTION_LABELS: Record<NonNullable<Contribution["collection"]>, { label: string; tagline: string }> = {
+  "governance-suite": {
+    label: "dbt-style governance suite for prompts",
+    tagline: "Eval + contracts + diff + freshness. The thesis: port the dbt mental model to LLM outputs.",
+  },
+  orchestration: {
+    label: "Multi-agent orchestration",
+    tagline: "Tools for running Claude Code as a team.",
+  },
+  "upstream-prs": {
+    label: "Upstream contributions",
+    tagline: "PRs to repos I depend on.",
+  },
+  vault: {
+    label: "Personal knowledge tooling",
+    tagline: "PARA + Claude skills + the operating manual that makes a vault compound.",
+  },
 };
 
 export const CONTRIBUTIONS: Contribution[] = [
@@ -40,6 +60,7 @@ export const CONTRIBUTIONS: Contribution[] = [
     whyItMatters:
       "Two PRs to the same 47k-star repo in the same week from the same identity, mirroring each other in shape. This is the 'extension of shipped work' move the OSS-landscape recalibration named: rather than competing for fresh-issue PR queue spots (the duplicate-saturated bucket), extend an already-shipped fix into adjacent provider adapters where the work is almost certainly unclaimed. Two PRs that compose tell a stronger candidacy story than two PRs that don't.",
     tags: ["anthropic", "databricks", "litellm", "model-router", "follow-up", "bug-fix"],
+    collection: "upstream-prs",
   },
   {
     slug: "litellm-28113",
@@ -62,6 +83,7 @@ export const CONTRIBUTIONS: Contribution[] = [
     whyItMatters:
       "litellm is the de-facto OSS router for LLM apps (47k stars, multiple new external PRs merged daily). This bug bricks `drop_params=True` for anyone routing through Opus 4.7 — the model I personally use most. The PR is small in spirit (one config bug) but the diff demonstrates the production rigor maintainers actually want: read prior attempts, scope tightly, regression-test the matrix, anticipate pushback.",
     tags: ["anthropic", "litellm", "model-router", "first-party-claude", "bug-fix"],
+    collection: "upstream-prs",
   },
   {
     slug: "dbt-eval-v0",
@@ -84,6 +106,7 @@ export const CONTRIBUTIONS: Contribution[] = [
     whyItMatters:
       "Every other LLM eval framework I looked at (Promptfoo, DeepEval, Phoenix, Ragas) invents new vocabulary — trace, span, judge, rubric, metric. Data engineers already have all of this and call it `dbt test`. Porting that mental model means analytics engineers can adopt LLM eval the day they read the README, because the YAML is already familiar. This is a shape-of-the-pitch decision more than a technical one.",
     tags: ["llm-eval", "dbt", "python", "ai-data-engineering", "open-source-release"],
+    collection: "governance-suite",
   },
   {
     slug: "forge-public",
@@ -104,6 +127,7 @@ export const CONTRIBUTIONS: Contribution[] = [
     whyItMatters:
       "Most multi-agent frameworks either lock you to a specific runtime (Devin, OpenHands) or add token costs on top of what you already pay. Forge is the smallest interesting version: file-system message bus, git worktree isolation, role-personas as markdown, all running on the Claude Code subscription you already have.",
     tags: ["multi-agent", "claude-code", "orchestration", "open-source-release"],
+    collection: "orchestration",
   },
   {
     slug: "secondbrain-kit",
@@ -124,6 +148,7 @@ export const CONTRIBUTIONS: Contribution[] = [
     whyItMatters:
       "Most 'personal knowledge management' systems are templates without behavior. This kit's value is the *operating manual* — the CLAUDE.md that gives Claude a coherent picture of what to do with the vault, how to file things, when to update existing notes instead of creating new ones. Templates fade; an opinionated operating contract compounds.",
     tags: ["personal-knowledge", "obsidian", "claude-code", "open-source-release"],
+    collection: "vault",
   },
 ];
 
@@ -143,4 +168,30 @@ export function contributionStats() {
     merged: CONTRIBUTIONS.filter((c) => c.status === "merged").length,
     open: CONTRIBUTIONS.filter((c) => c.status === "open").length,
   };
+}
+
+const COLLECTION_ORDER: NonNullable<Contribution["collection"]>[] = [
+  "upstream-prs",
+  "governance-suite",
+  "orchestration",
+  "vault",
+];
+
+export function contributionsByCollection(): Array<{
+  collection: NonNullable<Contribution["collection"]>;
+  label: string;
+  tagline: string;
+  items: Contribution[];
+}> {
+  const sorted = listContributions();
+  return COLLECTION_ORDER.map((collection) => {
+    const items = sorted.filter((c) => c.collection === collection);
+    if (items.length === 0) return null;
+    return {
+      collection,
+      label: COLLECTION_LABELS[collection].label,
+      tagline: COLLECTION_LABELS[collection].tagline,
+      items,
+    };
+  }).filter((g): g is NonNullable<typeof g> => g !== null);
 }

@@ -102,6 +102,22 @@ export default function AboutPage() {
             message bus, budget guard, install in one curl. Zero extra spend.
           </li>
           <li>
+            <strong>Building the dbt-style governance suite for prompts.</strong>{" "}
+            One thesis, three repos shipping in one weekend:{" "}
+            <Link href="/projects/dbt-eval" style={{ color: "var(--accent)" }}>
+              dbt-eval
+            </Link>{" "}
+            (declarative LLM assertions — v0 shipped with 41 passing tests),{" "}
+            <strong>prompt-contracts</strong> (runtime JSON Schema + Pydantic enforcement
+            with raise/drop/quarantine modes — in flight), and{" "}
+            <strong>prompt-freshness</strong> (per-(prompt, model) staleness — `dbt source
+            freshness` for prompts). None compete with promptfoo, DeepEval, or Phoenix —
+            they occupy the un-saturated governance layer above eval.{" "}
+            <Link href="/oss" style={{ color: "var(--accent)" }}>
+              See the collection.
+            </Link>
+          </li>
+          <li>
             <strong>Daily-use AI products I shipped solo.</strong>{" "}
             <Link href="/projects/cockpit" style={{ color: "var(--accent)" }}>
               Cockpit
