@@ -76,6 +76,14 @@ Parallel research agents (oss-targets, portfolio-polish, new-builds) → impl ag
 - **Defense-in-depth in OSS fixes signals seniority.** The litellm PR didn't just fix `get_supported_openai_params` — it also added guards in `map_openai_params` and set JSON-level flags. Maintainers read multi-layer fixes as "this person understands production failure modes," not "this person changed one line."
 - **A `/oss` page is the artifact a hiring manager actually wants.** Embedding contributions in the chat is good; a dedicated public ledger with diff stats / test counts / "why it matters" paragraphs is what gets screenshot and pasted into recruiter Slack channels. Build this BEFORE filing the second OSS PR so each new PR auto-shows up on a credible page.
 
+### Iteration #6 toolchain gotcha — bash pipe swallows build exit code
+
+The `bun run build 2>&1 | tail -4 && git commit ... && git push` chain ran the commit and push EVEN WHEN THE BUILD FAILED, because `tail` always exits 0 regardless of upstream. Result: a broken commit (078f02d) landed in git and the deploy failed remotely.
+
+- **Lesson: never put a pipe between build and the commit/push chain.** Use either `bun run build && ...` with no pipe, or check `${PIPESTATUS[0]}` explicitly after the pipe.
+- **Lesson: catch this with a pre-commit check.** Future ticks should run `bun run build` standalone, look at the exit code, THEN commit — not chain it through a pipe to tail.
+- **Recovery cost was 90 seconds**: build → fail → fix backtick escape on one line → rebuild → commit → push → redeploy. Easy because each commit is atomic and the source of truth (the actual prompt-contracts shipment) was solid. Atomic commits saved this.
+
 ### Iteration #6 (2026-05-17) — extension PRs as the recalibration win
 
 The OSS-landscape recalibration in iteration #3 named "extend already-shipped work" as a strategic alternative to chasing fresh-issue PR queue duplicates. Iteration #6 demonstrated it concretely: the Databricks follow-up PR to litellm #28113 became [#28115](https://github.com/BerriAI/litellm/pull/28115) — 4 files, +294/-1, 9 new tests, 81 existing still green, zero regressions.
