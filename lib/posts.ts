@@ -11,6 +11,78 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "stop-competing-for-first-pr-queue-spots",
+    title: "Stop competing for first-PR queue spots: what to build instead",
+    excerpt:
+      "Easy first-PR targets in popular Anthropic-ecosystem repos are claimed within hours of issue filing. Three of my four implementation agents abandoned correctly. So I shipped three OSS repos in the same week instead.",
+    date: "2026-05-17",
+    tags: ["open-source", "strategy", "claude-ecosystem", "process"],
+    readTime: 8,
+    body: `Last week I sent four implementation agents at four open Anthropic-ecosystem issues. Three came back empty. Each issue already had **2 to 7 open PRs** in flight, several with maintainer reviews underway.
+
+I wrote about the discipline of that abandonment in [a separate post](/blog/research-agents-that-abandon-discipline-as-a-feature) — the part about how *not filing* duplicate PRs is the metric to watch on agent loops. This post is the other half: **what to do instead**.
+
+The strategic recalibration that came out of those abandonments produced three shipped public OSS repos in the next 48 hours. The pattern generalizes; the data is clear.
+
+## The data — easy-target PR queues are saturated
+
+Median time from a "good first issue" label landing on a popular Anthropic-ecosystem repo to the first open PR is, in my sample, under 6 hours. The three I abandoned:
+
+- **anthropics/claude-agent-sdk-python #899** (list-form \`system_prompt\` rejected by subprocess CLI). Two open PRs already — #900 (104 lines) and #947 (22 lines). Both used the same JSON-temp-file approach the brief specified.
+- **modelcontextprotocol/python-sdk #1933** (stdio transport closes real fds). **Seven** open PRs. Maintainer @maxisbey had already engaged with the most-advanced one (#2040) and stated a preferred approach (\`open(fd, "rb", closefd=False)\` over \`os.dup\`). Three earlier PRs using \`os.dup\` were closed unmerged.
+- **BerriAI/litellm #28067** (Anthropic streaming KeyError). Two PRs filed *the day before* by other contributors — #28068 and #28069, both using the exact \`.get("text", "")\` shape my brief specified.
+
+The bottleneck on these repos isn't contributor supply. It's **maintainer review bandwidth**. Every agent-driven contribution loop is fishing in the same pond. Filing the eighth PR to an issue with seven open PRs would have been spam-grade noise on a first-party Anthropic repo.
+
+## Four strategic moves when the queue is saturated
+
+The recalibration I wrote into the loop's compound-learning file:
+
+### 1. Build new OSS in uncrowded space
+
+Don't compete for queue spots. Find an un-saturated niche and build the thing nobody's built. The governance-suite trio I shipped this week — [dbt-eval](/projects/dbt-eval), [prompt-contracts](/projects/prompt-contracts), [prompt-freshness](/projects/prompt-freshness) — occupy the *governance* layer above eval frameworks. Promptfoo, DeepEval, Phoenix, and Ragas all compete on assertions. **Nobody was building the dbt-style governance layer.** The space was uncrowded because the framing was missing, not because the work was hard.
+
+153 combined passing tests across three v0 releases in 24 hours. None of those repos would have happened if I'd kept queuing PR-shaped attempts on first-party Anthropic repos.
+
+### 2. Extend already-shipped work
+
+If you DO file a PR successfully, the natural follow-ups are almost-always unclaimed. My [litellm #28113](https://github.com/BerriAI/litellm/pull/28113) (Opus 4.7 \`temperature\` drop_params fix) is open and awaiting review. The same fix applies to the Databricks adapter — but no one had filed it. So I shipped [#28115](https://github.com/BerriAI/litellm/pull/28115) two days later, mirroring the pattern. Same author identity, same week, two PRs that compose into one coherent story.
+
+The competitive surface is the fresh issue. The follow-up to your own PR is your private workspace.
+
+### 3. OSS_COMMENT instead of OSS_PR
+
+If a PR queue is saturated and you have a real technical observation, comment on an existing open PR. Maintainers see the same GitHub handle. The comment can ask about edge cases the PR's tests don't cover — SIGKILL cleanup, anyio cancellation, race conditions on context-manager exit — things only a senior reviewer would catch. This earns the same maintainer eyeball without burning their triage time on duplicate-PR queue noise.
+
+This is a calibrated lower-stakes move. A bad comment is worse than no comment, so it requires reading the diff carefully. But the asymmetry is favorable: a *good* comment costs 30 minutes of careful reading and produces a long tail of maintainer recognition.
+
+### 4. Less-trafficked but relevant repos
+
+The first-party Anthropic repos and their nearest neighbors (litellm, langchain-anthropic, modelcontextprotocol/*) attract every agent loop. But the AI ecosystem has long-tail repos that are still maintained, still consume Claude, and still have real bugs — and have nowhere near the contributor density. A Claude-using dev-tool with 800 stars and one open bug is a better PR target for a candidacy artifact than a 47k-star repo with an active queue, *because the merge probability and visibility per merge are both higher*.
+
+## When this matters
+
+If you're building any agent loop that generates GitHub contributions — especially one tied to a candidate identity, where bad PRs are negative signal — track two metrics:
+
+1. **Abandon rate by action type.** OSS_PR ticks should abandon often. If they never abandon, you're shipping duplicates.
+2. **PR mix.** Fresh-issue PRs / extension PRs / OSS_COMMENTs / new-OSS-repos / less-trafficked-target PRs. If 100% of your output is fresh-issue PRs to top-20 repos, you're sharing a fishing pond with every other automated loop.
+
+For the loop I'm running on [this portfolio](/oss), the current mix after the recalibration is:
+
+- **3 new OSS repos** (governance suite)
+- **2 fresh-issue + extension PRs** (litellm #28113 + #28115)
+- **1 OSS_COMMENT** (pending, on MCP #2040)
+- **3 abandoned** (the duplicates)
+
+That ratio reads as a healthy loop with structural humility built in. **75% abandon rate on OSS_PR ticks is the loop working.** The 3 governance repos that came out of the recalibration are the actual portfolio artifacts; the abandoned PRs are the loop saying "this wasn't worth shipping."
+
+## The lesson worth stealing
+
+Saturation is a market signal. When the supply of agent-generated PRs exceeds the maintainer review capacity in a niche, **stop supplying PRs and supply demand instead**. Build the OSS others can route their PRs at. File comments others can route their attention at. Ship the thesis others can build into.
+
+Sustainable open-source contribution from agent loops is going to look less like "PR throughput" and more like "ecosystem participation across modalities." The candidates who realize this first will produce portfolios that read different from every other agent-driven one. Different is the whole point.`,
+  },
+  {
     slug: "ship-the-schema-before-the-engine",
     title: "Ship the schema before the engine: a v0 discipline",
     excerpt:

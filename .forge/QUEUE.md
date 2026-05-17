@@ -74,6 +74,21 @@ up: "[[index]]"
 
 - [ ] `OSS_PR` **dbt-eval to awesome-claude-code / awesome-llm-eval lists** — once v0 has a star or two, file the PR adding dbt-eval to relevant awesome-lists. Free distribution, low effort. Est 30min.
 
+### Tier 1.4 — close the governance-suite narrative with the 4th repo
+
+> Iteration #8 research agent recommendation, score 10/10 across all four axes (coherence, differentiation, build leverage, hiring signal): ship ONE more repo (prompt-lineage) that closes the suite narratively at 4, then PIVOT to a new thesis.
+
+- [ ] `BUILD_SKILL` **prompt-lineage** — `dbt docs` for prompts. Parses `prompts.yml` + dbt-eval suites + prompt-contracts decorators + git history into a lineage graph. CLI emits a static HTML site (dbt-docs aesthetic — searchable table + clickable DAG). GitHub Action posts sticky PR comment: "this PR touches 3 prompts → 7 eval cases → 2 production callers." **Builds the navigation/observability surface that retroactively turns the 3 existing suite repos into a platform.** Subsumes most of golden-diff's value via `lineage diff main..HEAD` subcommand — so remove golden-diff from Tier 1.5 (it's subsumed). 6h target — ship v0 as sortable table + collapsible details, defer the force-directed graph to v0.2. Same v0 discipline as the other three: lock the `lineage.json` schema, defer the engine. Anchor post: "dbt-docs for prompts — the navigation surface that retroactively turns three CLIs into a platform."
+
+### Tier 2 — open the NEXT thesis (iteration #10+)
+
+> After prompt-lineage closes the governance suite, pivot to Great Expectations for LLM training data — a sister thesis with the same shape (3 composable repos, DE mental model port, un-saturated space).
+
+- [ ] `BUILD_SKILL` **llm-expectations** — declarative YAML data quality checks for JSONL training files. Schema drift, label distribution, duplicate prompts, PII, max-token ceilings, language-detect. Same YAML-shape ergonomics as the governance suite. Borrows from Great Expectations. ~8h.
+- [ ] `BUILD_SKILL` **corpus-snapshot** — snapshot + diff tool for RAG corpora. `corpus-snapshot diff prod staging` shows added/removed/changed documents with chunk-level hashes. Borrows from dbt snapshots + Datafold's data-diff. ~6h.
+- [ ] `BUILD_SKILL` **fixture-lineage** — track which eval fixtures came from which prod traces, with consent + redaction provenance. Composes with prompt-lineage's data model. ~7h.
+- **Incumbency check before building**: 30-min sweep of cleanlab, lilac, argilla to confirm the JSONL-native + RAG-corpus-aware + declarative-YAML combination is genuinely un-saturated.
+
 ### Tier 1.5 — three-repo dbt-style governance suite for prompts (companion to dbt-eval)
 
 > Research agent's iteration #5 finding: extend dbt-eval into a **coherent governance suite** (define a contract → diff changes in CI → track freshness over time) rather than competing with promptfoo / DeepEval / Phoenix on assertions. The pitch becomes one sentence at every recruiter call: "I'm building the dbt-style governance layer for prompts."
@@ -93,6 +108,8 @@ up: "[[index]]"
 - [x] `WRITE_POST` **"Research agents that abandon: discipline as a feature"** — shipped 2026-05-17 at /blog/research-agents-that-abandon-discipline-as-a-feature (~1100 words). Walks the 3 abandonments concretely (claude-agent-sdk #899, MCP python-sdk #1933, litellm #28067), explains the 30-second pre-flight that makes the abandon path explicit and rewarded, names the compound-learning-as-team-culture pattern, closes with "if your agent never abandons, your agent is shipping bad work."
 
 - [x] `WRITE_POST` **"Ship the schema before the engine: a v0 discipline"** — shipped 2026-05-17 at /blog/ship-the-schema-before-the-engine (~1200 words). Two data points (dbt-eval stubbed `EvalCase.output()`, prompt-contracts shipped Protocol-only quarantine). Generalizes: the schema is what adopters lock in on, the engine is rewritable. Three concrete behaviors named (ship the call site, stub the engine to a deterministic minimum, name the engine in the roadmap). Closes with the dbt parallel — early dbt shipped the YAML shape with minimal materialization strategies; that's why we still use the same YAML.
+
+- [x] `WRITE_POST` **"Stop competing for first-PR queue spots: what to build instead"** — shipped 2026-05-17 at /blog/stop-competing-for-first-pr-queue-spots (~1100 words). Companion to research-agents-that-abandon. Opens with the data: median time from `good first issue` to first PR is under 6h on popular Anthropic-ecosystem repos. Walks the 3 saturated abandoned targets. Names 4 strategic moves: build new OSS in uncrowded space, extend already-shipped work, OSS_COMMENT instead of OSS_PR, less-trafficked-relevant repos. Uses the governance suite (3 repos in 24h) and litellm #28113 + #28115 (extension move) as concrete proof. Closes: "stop supplying PRs and supply demand instead."
 - [x] `WRITE_POST` **"SecondBrain Kit: the vault that compounds"** — shipped 2026-05-17 at /blog/secondbrain-kit-the-vault-that-compounds (~900 words). Karpathy LLM Wiki rule as the load-bearing observation, walks PARA + 9 slash commands + 11 templates + the CLAUDE.md operating manual, names the "folders for what / tags for about" choice, closes with the generalizable lesson: bake the rewrite-don't-append rule into the tool, not into willpower.
 - [ ] `WRITE_POST` **"Why my portfolio is a chat (and what it taught me about AI UX)"** — meta post about THIS site, with the streaming-first-message decision, the embedded-cards token pattern, the canned-fallback graceful degradation. Honest about what didn't work. 900 words.
 

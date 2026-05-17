@@ -117,6 +117,14 @@ Priority = Visibility + Relevance - Effort.
 - **Why this matters for the candidacy**: lives at the intersection of data engineering (the entire YAML shape mirrors `dbt schema.yml`) and AI infra (LLM-as-judge with offline mock for CI). Exact "AI Data Engineer" pitch the role bands at top labs are asking for.
 - **Strategic note**: this is the FIRST result of the OSS-landscape recalibration that said "stop competing for PR queue spots, build in uncrowded space." Within 6 hours of the recalibration, a real public artifact landed. Pattern confirmed.
 
+### 2026-05-17 — OSS_COMMENT on modelcontextprotocol/python-sdk #2040 (first comment-pattern shipment)
+
+- **Comment**: https://github.com/modelcontextprotocol/python-sdk/pull/2040#issuecomment-4469902482
+- **Observation**: the new `closefd=False` cleanup path isn't shielded against anyio cancellation, so `TextIOWrapper`s leak on cancelled scopes and trigger `ResourceWarning` on GC — defeating the cleanup the change was meant to enable
+- **Technical fact**: cited `_core/_fileio.py:116-117` showing `to_thread.run_sync` checks the cancel scope before scheduling; the new regression test (`test_1933_stdio_close.py`) only exercises happy-path EOF, not cancellation mid-write
+- **Proposed fix**: `anyio.CancelScope(shield=True)` around the two `aclose` calls + a cancellation-mid-iteration test; offered to draft the test
+- **Strategic shape**: First concrete shipment of the OSS_COMMENT action type the recalibration named. Filed on a saturated-PR-queue issue (7+ open PRs for #1933) where filing an 8th PR would be spam — but maintainer @maxisbey sees the GitHub handle from a substantive technical comment instead
+
 ### 2026-05-17 — prompt-freshness v0 public release (3rd / SUITE COMPLETE)
 
 - **Repo**: https://github.com/uppulaharshith2-rgb/prompt-freshness (MIT)

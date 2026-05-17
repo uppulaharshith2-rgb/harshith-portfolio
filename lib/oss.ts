@@ -1,11 +1,11 @@
 export type Contribution = {
   slug: string;
-  kind: "pr" | "repo" | "skill" | "issue";
+  kind: "pr" | "repo" | "skill" | "issue" | "comment";
   title: string;
   repo: string; // e.g. "BerriAI/litellm"
   url: string;
   date: string; // ISO YYYY-MM-DD
-  status: "open" | "merged" | "closed" | "draft" | "published";
+  status: "open" | "merged" | "closed" | "draft" | "published" | "filed";
   summary: string; // one-paragraph, technical, no marketing fluff
   stats?: {
     additions?: number;
@@ -30,7 +30,7 @@ export const COLLECTION_LABELS: Record<NonNullable<Contribution["collection"]>, 
   },
   "upstream-prs": {
     label: "Upstream contributions",
-    tagline: "PRs to repos I depend on.",
+    tagline: "PRs and technical reviews on repos I depend on.",
   },
   vault: {
     label: "Personal knowledge tooling",
@@ -39,6 +39,27 @@ export const COLLECTION_LABELS: Record<NonNullable<Contribution["collection"]>, 
 };
 
 export const CONTRIBUTIONS: Contribution[] = [
+  {
+    slug: "mcp-python-sdk-2040-comment",
+    kind: "comment",
+    title: "Technical review on modelcontextprotocol/python-sdk #2040 (stdio fd cleanup)",
+    repo: "modelcontextprotocol/python-sdk",
+    url: "https://github.com/modelcontextprotocol/python-sdk/pull/2040#issuecomment-4469902482",
+    date: "2026-05-17",
+    status: "filed",
+    summary:
+      "Filed a technical observation on the most-advanced PR (#2040) for the stdio-transport fd-leak issue (#1933, 7+ open PRs). The new `closefd=False` cleanup path isn't shielded against anyio cancellation, so on a cancelled surrounding scope the `TextIOWrapper`s leak and trigger `ResourceWarning` on GC — defeating the cleanup the change was meant to enable. The comment suggests `anyio.CancelScope(shield=True)` around the two `aclose` calls and proposes a cancellation-mid-iteration test the existing regression test doesn't cover. Low-stakes offer to draft the test attached.",
+    highlights: [
+      "Cites the specific anyio source line (`_core/_fileio.py:116-117`) that proves `to_thread.run_sync` checks the cancel scope before scheduling",
+      "Identifies the exact edge case the new regression test (`test_1933_stdio_close.py`) misses — happy-path EOF only, no cancellation mid-write",
+      "Proposes a concrete fix (`anyio.CancelScope(shield=True)`) with a specific test path, not vague feedback",
+      "Forge loop's OSS_COMMENT pattern in action — same maintainer eyeballs as a PR, without adding an 8th duplicate-PR to a 7-PR queue",
+    ],
+    whyItMatters:
+      "Strategic move from the OSS-landscape recalibration: when a PR queue is saturated and you have a real technical observation, comment carefully on an existing open PR. Maintainer @maxisbey is the same person reviewing future MCP submissions; surfacing the GitHub handle here via substantive technical contribution is the lower-risk version of filing a duplicate PR. The asymmetry is favorable — a good comment costs 30 minutes of careful reading and produces a long tail of maintainer recognition.",
+    tags: ["mcp", "anyio", "code-review", "oss-comment-pattern", "first-party-anthropic"],
+    collection: "upstream-prs",
+  },
   {
     slug: "litellm-28115",
     kind: "pr",
