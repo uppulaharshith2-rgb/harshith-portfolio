@@ -67,8 +67,15 @@ export default async function ProjectPage({
               · {project.category} · {project.status} · {project.year}
             </div>
             <h1
-              className="display"
-              style={{ fontSize: "clamp(36px, 5vw, 54px)", margin: 0 }}
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "clamp(36px, 5vw, 54px)",
+                fontWeight: 600,
+                letterSpacing: "-0.035em",
+                lineHeight: 1.05,
+                margin: 0,
+                color: "var(--text-primary)",
+              }}
             >
               {project.name}
             </h1>

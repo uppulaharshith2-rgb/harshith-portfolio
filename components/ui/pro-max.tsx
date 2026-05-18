@@ -244,11 +244,12 @@ export function TiltCard({
 
         <h3
           style={{
-            fontFamily: "var(--font-display)",
-            fontSize: 30,
+            fontFamily: "var(--font-sans)",
+            fontSize: 26,
+            fontWeight: 600,
             margin: "0 0 8px",
-            letterSpacing: "-0.02em",
-            lineHeight: 1.05,
+            letterSpacing: "-0.03em",
+            lineHeight: 1.12,
             color: "var(--text-primary)",
           }}
         >
