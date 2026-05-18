@@ -3,13 +3,22 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+  FolderKanban,
+  GitPullRequestArrow,
+  Home as HomeIcon,
+  Moon,
+  PenLine,
+  Sun,
+  User,
+} from "lucide-react";
 
 const NAV = [
-  { href: "/", label: "Home" },
-  { href: "/projects", label: "Projects" },
-  { href: "/oss", label: "OSS" },
-  { href: "/blog", label: "Writing" },
-  { href: "/about", label: "About" },
+  { href: "/", label: "Home", icon: HomeIcon },
+  { href: "/projects", label: "Projects", icon: FolderKanban },
+  { href: "/oss", label: "OSS", icon: GitPullRequestArrow },
+  { href: "/blog", label: "Writing", icon: PenLine },
+  { href: "/about", label: "About", icon: User },
 ];
 
 export function SiteHeader() {
@@ -39,8 +48,9 @@ export function SiteHeader() {
     <header
       style={{
         borderBottom: "1px solid var(--border-subtle)",
-        background: "color-mix(in srgb, var(--bg-primary) 90%, transparent)",
-        backdropFilter: "saturate(180%) blur(8px)",
+        background: "color-mix(in srgb, var(--bg-primary) 75%, transparent)",
+        backdropFilter: "saturate(180%) blur(14px)",
+        WebkitBackdropFilter: "saturate(180%) blur(14px)",
         position: "sticky",
         top: 0,
         zIndex: 40,
@@ -48,9 +58,9 @@ export function SiteHeader() {
     >
       <div
         style={{
-          maxWidth: 1200,
+          maxWidth: 1280,
           margin: "0 auto",
-          padding: "16px 24px",
+          padding: "14px 24px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -59,43 +69,43 @@ export function SiteHeader() {
       >
         <Link
           href="/"
-          className="mono"
+          className="wordmark-pro"
           style={{
-            color: "var(--text-primary)",
             textDecoration: "none",
-            fontSize: 14,
-            fontWeight: 600,
-            letterSpacing: "-0.02em",
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
+            fontSize: 15,
           }}
         >
-          <span className="status-dot" />
-          harshith<span style={{ color: "var(--accent)" }}>.dev</span>
+          <span className="dot" aria-hidden />
+          harshith<span className="tld">.dev</span>
         </Link>
 
         <nav style={{ display: "flex", gap: 4, alignItems: "center" }}>
           {NAV.map((n) => {
             const active = pathname === n.href || (n.href !== "/" && pathname.startsWith(n.href));
+            const Icon = n.icon;
             return (
               <Link
                 key={n.href}
                 href={n.href}
                 className="mono"
                 style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
                   padding: "8px 12px",
-                  fontSize: 12,
+                  fontSize: 11.5,
                   textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  color: active ? "var(--accent)" : "var(--text-secondary)",
+                  letterSpacing: "0.08em",
+                  color: active ? "var(--neo-magenta)" : "var(--text-secondary)",
                   textDecoration: "none",
-                  borderRadius: 6,
-                  background: active ? "var(--accent-bg)" : "transparent",
+                  borderRadius: 999,
+                  background: active ? "rgba(236, 72, 153, 0.10)" : "transparent",
+                  border: active ? "1px solid rgba(236, 72, 153, 0.25)" : "1px solid transparent",
                   transition: "all 0.15s ease",
                 }}
               >
-                {n.label}
+                <Icon size={13} strokeWidth={2.4} aria-hidden />
+                <span className="nav-label">{n.label}</span>
               </Link>
             );
           })}
@@ -109,14 +119,25 @@ export function SiteHeader() {
               padding: "8px 10px",
               fontSize: 11,
               border: "1px solid var(--border)",
-              borderRadius: 6,
+              borderRadius: 999,
               background: "var(--surface)",
               color: "var(--text-secondary)",
               cursor: "pointer",
               minWidth: 36,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            {mounted ? (theme === "dark" ? "☾" : "☀") : "·"}
+            {mounted ? (
+              theme === "dark" ? (
+                <Moon size={13} strokeWidth={2.4} aria-hidden />
+              ) : (
+                <Sun size={13} strokeWidth={2.4} aria-hidden />
+              )
+            ) : (
+              <span>·</span>
+            )}
           </button>
         </nav>
       </div>

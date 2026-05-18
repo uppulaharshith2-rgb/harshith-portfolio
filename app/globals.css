@@ -37,6 +37,37 @@
   --warning: #facc15;
   --danger: #f87171;
 
+  /* Pro Max palette — high-energy accents for hero surfaces only */
+  --neo-cyan: #22d3ee;
+  --neo-lime: #a3e635;
+  --neo-magenta: #ec4899;
+  --neo-violet: #a78bfa;
+  --neo-electric: #7c8cff;
+  --neo-amber: #fbbf24;
+  --neo-rose: #fb7185;
+  --neo-ember: #ff6a3d;
+
+  --gradient-burn: linear-gradient(135deg, #ffb38a 0%, #cc785c 30%, #ec4899 70%, #a78bfa 100%);
+  --gradient-signal: linear-gradient(120deg, #22d3ee 0%, #a3e635 50%, #fbbf24 100%);
+  --gradient-sunrise: linear-gradient(135deg, #fbbf24 0%, #fb7185 50%, #a78bfa 100%);
+  --gradient-ember: linear-gradient(135deg, #cc785c 0%, #ff6a3d 50%, #ec4899 100%);
+  --gradient-deep: linear-gradient(135deg, #4f46e5 0%, #a78bfa 50%, #ec4899 100%);
+
+  --aurora-warm:
+    radial-gradient(60% 50% at 20% 20%, rgba(204, 120, 92, 0.22), transparent 70%),
+    radial-gradient(55% 45% at 80% 30%, rgba(236, 72, 153, 0.18), transparent 70%),
+    radial-gradient(65% 60% at 50% 90%, rgba(167, 139, 250, 0.22), transparent 70%);
+  --aurora-cool:
+    radial-gradient(60% 55% at 25% 25%, rgba(34, 211, 238, 0.18), transparent 70%),
+    radial-gradient(55% 45% at 78% 40%, rgba(163, 230, 53, 0.14), transparent 70%),
+    radial-gradient(70% 60% at 50% 90%, rgba(124, 140, 255, 0.22), transparent 70%);
+
+  --glow-cyan: 0 0 24px rgba(34, 211, 238, 0.35);
+  --glow-magenta: 0 0 24px rgba(236, 72, 153, 0.35);
+  --glow-violet: 0 0 24px rgba(167, 139, 250, 0.35);
+  --glow-lime: 0 0 24px rgba(163, 230, 53, 0.35);
+  --glow-amber: 0 0 24px rgba(251, 191, 36, 0.35);
+
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --font-sans: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
@@ -374,4 +405,447 @@ body {
 /* No-flash theme load */
 .no-transitions * {
   transition: none !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   PRO MAX — high-energy effects layered on the base brand.
+   Aurora, kinetic titles, gradient text, magnetic CTAs, tilt cards, marquee.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Aurora — animated mesh radial-gradient background */
+.aurora {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: var(--aurora-warm);
+  animation: auroraDrift 22s ease-in-out infinite alternate;
+  filter: saturate(120%);
+}
+.aurora.cool {
+  background: var(--aurora-cool);
+}
+@keyframes auroraDrift {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-2%, 1%) scale(1.05); }
+  100% { transform: translate(2%, -1%) scale(1.02); }
+}
+
+/* Spotlight that follows the cursor via --mx / --my */
+.spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    320px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(251, 191, 36, 0.10),
+    transparent 70%
+  );
+  transition: background 0.2s ease-out;
+}
+
+/* Neo grid background, finer than .grid-bg */
+.neo-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 75%);
+}
+
+/* Kinetic character cascade */
+.kinetic {
+  display: inline-block;
+  perspective: 800px;
+}
+.kinetic .char {
+  display: inline-block;
+}
+.kinetic .char.space {
+  width: 0.3em;
+}
+.kinetic.play .char {
+  animation: kineticIn 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes kineticIn {
+  0% { transform: translateY(0.45em); filter: blur(6px); }
+  100% { transform: translateY(0); filter: blur(0); }
+}
+
+/* Gradient text — clip a moving gradient onto the type */
+.text-burn,
+.text-signal,
+.text-ember,
+.text-sunrise,
+.text-deep {
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease-in-out infinite;
+}
+.text-burn { background-image: var(--gradient-burn); }
+.text-signal { background-image: var(--gradient-signal); }
+.text-ember { background-image: var(--gradient-ember); }
+.text-sunrise { background-image: var(--gradient-sunrise); }
+.text-deep { background-image: var(--gradient-deep); }
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Magnetic CTA — gradient fill + glow + nudge on hover */
+.btn-magnetic {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 26px;
+  background: var(--gradient-burn);
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow:
+    0 8px 24px -8px rgba(236, 72, 153, 0.45),
+    inset 0 2px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.20);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background-position 0.6s ease,
+    box-shadow 0.25s ease;
+}
+.btn-magnetic::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--gradient-burn);
+  background-size: 200% 200%;
+  filter: blur(14px);
+  opacity: 0.55;
+  animation: gradientShift 5s ease-in-out infinite;
+}
+.btn-magnetic:hover {
+  transform: translateY(-2px) scale(1.02);
+  background-position: 100% 50%;
+  box-shadow:
+    0 16px 40px -10px rgba(236, 72, 153, 0.55),
+    inset 0 2px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.20);
+}
+.btn-magnetic:active {
+  transform: translateY(0) scale(0.985);
+}
+
+/* Ghost button — outlined with animated gradient stroke */
+.btn-ghost-pro {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 22px;
+  color: var(--text-primary);
+  border-radius: 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background-image:
+    linear-gradient(rgba(10, 10, 10, 0.85), rgba(10, 10, 10, 0.85)),
+    var(--gradient-signal);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  background-size: 100% 100%, 200% 200%;
+  animation: gradientShift 8s ease-in-out infinite;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+.btn-ghost-pro:hover {
+  transform: translateY(-2px);
+  color: var(--neo-cyan);
+}
+
+/* Tilt card — 3D transform + cursor-tracked shine */
+.tilt-card {
+  position: relative;
+  display: block;
+  padding: 22px;
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+    rgba(15, 15, 15, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  text-decoration: none;
+  color: inherit;
+  transform-style: preserve-3d;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease,
+    box-shadow 0.4s ease;
+  will-change: transform;
+  isolation: isolate;
+  overflow: hidden;
+}
+.tilt-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--card-accent, var(--gradient-burn));
+  opacity: 0;
+  filter: blur(18px);
+  transition: opacity 0.4s ease;
+}
+.tilt-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    260px circle at var(--sx, 50%) var(--sy, 50%),
+    rgba(255, 255, 255, 0.10),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.tilt-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7);
+}
+.tilt-card:hover::before { opacity: 0.5; }
+.tilt-card:hover::after { opacity: 1; }
+
+html.light .tilt-card {
+  background:
+    linear-gradient(135deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.005)),
+    rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+html.light .tilt-card:hover {
+  border-color: rgba(0, 0, 0, 0.14);
+}
+
+/* Big monogram inside tilt card */
+.tilt-mono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+
+/* Pill chip with optional gradient border */
+.chip-pro {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px 7px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
+}
+.chip-pro.gradient {
+  background:
+    linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)) padding-box,
+    var(--gradient-burn) border-box;
+  border: 1px solid transparent;
+  color: var(--text-primary);
+}
+html.light .chip-pro {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+html.light .chip-pro.gradient {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)) padding-box,
+    var(--gradient-burn) border-box;
+}
+
+/* Marquee */
+.marquee {
+  display: flex;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-track {
+  display: flex;
+  gap: 24px;
+  flex-shrink: 0;
+  min-width: 100%;
+  animation: marqueeScroll 40s linear infinite;
+}
+.marquee-pause:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+/* Pulse ring + live dot */
+@keyframes ringPulse {
+  0% { transform: scale(0.95); opacity: 0.7; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.live-dot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 10px;
+}
+.live-dot .core {
+  width: 8px;
+  height: 8px;
+  background: var(--neo-lime);
+  border-radius: 50%;
+  box-shadow: var(--glow-lime);
+}
+.live-dot::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid var(--neo-lime);
+  animation: ringPulse 2.4s ease-out infinite;
+}
+
+/* Number counters — display-serif big stats */
+.stat-num {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(48px, 6vw, 84px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Eyebrow labels with gradient leader line */
+.eyebrow-pro {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow-pro .line {
+  width: 28px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--neo-cyan), transparent);
+}
+
+/* Animated wordmark */
+.wordmark-pro {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
+}
+.wordmark-pro .dot {
+  width: 8px;
+  height: 8px;
+  background: var(--neo-lime);
+  border-radius: 50%;
+  box-shadow: var(--glow-lime);
+}
+.wordmark-pro .tld {
+  background: var(--gradient-burn);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientShift 6s ease-in-out infinite;
+}
+
+/* Bento grid (6 columns) */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+.bento .span-2 { grid-column: span 2; }
+.bento .span-3 { grid-column: span 3; }
+.bento .span-4 { grid-column: span 4; }
+.bento .span-6 { grid-column: span 6; }
+@media (max-width: 900px) {
+  .bento { grid-template-columns: 1fr; }
+  .bento .span-2, .bento .span-3, .bento .span-4, .bento .span-6 { grid-column: 1; }
+}
+
+/* Hero gradient orb — soft animated blob behind the headline */
+.gradient-orb {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  animation: orbDrift 18s ease-in-out infinite alternate;
+}
+@keyframes orbDrift {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -30px) scale(1.1); }
+  100% { transform: translate(-30px, 40px) scale(0.95); }
+}
+
+/* Light theme tweaks for hero surfaces */
+html.light .aurora { opacity: 0.5; }
+html.light .neo-grid {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .aurora, .text-burn, .text-signal, .text-ember, .text-sunrise, .text-deep,
+  .wordmark-pro .tld, .marquee-track, .gradient-orb, .kinetic.play .char,
+  .live-dot::before, .btn-magnetic::before, .btn-ghost-pro {
+    animation: none !important;
+  }
 }
