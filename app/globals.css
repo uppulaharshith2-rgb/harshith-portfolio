@@ -841,6 +841,157 @@ html.light .neo-grid {
     linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
 }
 
+/* Chat surface — Pro Max variant: gradient-bordered input + glow + glass bubbles */
+.chat-pro-input {
+  position: relative;
+  width: 100%;
+  padding: 22px 64px 22px 24px;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 16.5px;
+  line-height: 1.5;
+  outline: none;
+  resize: none;
+  caret-color: var(--neo-magenta);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: box-shadow 0.25s ease, transform 0.2s ease;
+  background-image:
+    linear-gradient(rgba(10, 10, 10, 0.72), rgba(10, 10, 10, 0.72)),
+    var(--gradient-burn);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  background-size: 100% 100%, 200% 200%;
+  background-position: 0 0, 0% 50%;
+}
+html.light .chat-pro-input {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)),
+    var(--gradient-burn);
+}
+.chat-pro-input::placeholder {
+  color: var(--text-dim);
+}
+.chat-pro-input:focus {
+  animation: gradientShift 5s ease-in-out infinite;
+  box-shadow:
+    0 0 0 4px rgba(236, 72, 153, 0.10),
+    0 8px 32px -12px rgba(236, 72, 153, 0.45);
+}
+
+.chat-pro-send {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 12px;
+  background: var(--gradient-burn);
+  background-size: 200% 200%;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px -4px rgba(236, 72, 153, 0.5);
+  transition: transform 0.2s ease;
+}
+.chat-pro-send:hover:not(:disabled) {
+  transform: scale(1.06);
+  animation: gradientShift 4s ease-in-out infinite;
+}
+.chat-pro-send:active {
+  transform: scale(0.96);
+}
+.chat-pro-send:disabled {
+  background: var(--surface-active);
+  box-shadow: none;
+  cursor: not-allowed;
+  color: var(--text-dim);
+}
+
+/* Pro Max chat bubble — glass surface with role-specific gradient border */
+.bubble-pro {
+  position: relative;
+  padding: 18px 22px;
+  border-radius: 16px;
+  font-size: 15.5px;
+  line-height: 1.62;
+  color: var(--text-primary);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  margin-bottom: 14px;
+  animation: fadeInUp 0.4s ease-out both;
+}
+.bubble-pro.user {
+  background:
+    linear-gradient(135deg, rgba(236, 72, 153, 0.12), rgba(167, 139, 250, 0.08)),
+    rgba(15, 15, 15, 0.7);
+  border: 1px solid rgba(236, 72, 153, 0.25);
+}
+.bubble-pro.assistant {
+  background:
+    linear-gradient(135deg, rgba(34, 211, 238, 0.06), rgba(255, 255, 255, 0.02)),
+    rgba(15, 15, 15, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+html.light .bubble-pro.user {
+  background:
+    linear-gradient(135deg, rgba(236, 72, 153, 0.10), rgba(167, 139, 250, 0.06)),
+    rgba(255, 255, 255, 0.85);
+  border-color: rgba(236, 72, 153, 0.32);
+}
+html.light .bubble-pro.assistant {
+  background:
+    linear-gradient(135deg, rgba(34, 211, 238, 0.06), rgba(0, 0, 0, 0.01)),
+    rgba(255, 255, 255, 0.92);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Pro Max prompt chip — clickable suggestion row above the input */
+.prompt-chip-pro {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    background 0.18s ease;
+}
+.prompt-chip-pro:hover {
+  border-color: rgba(236, 72, 153, 0.45);
+  color: var(--neo-magenta);
+  background: rgba(236, 72, 153, 0.06);
+  transform: translateY(-1px);
+}
+.prompt-chip-pro .lead {
+  color: var(--neo-magenta);
+  font-weight: 600;
+}
+html.light .prompt-chip-pro {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+html.light .prompt-chip-pro:hover {
+  background: rgba(236, 72, 153, 0.06);
+}
+
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .aurora, .text-burn, .text-signal, .text-ember, .text-sunrise, .text-deep,

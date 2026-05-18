@@ -148,35 +148,66 @@ export function Message({
   const blocks = parseContent(content);
 
   return (
-    <div
-      className={`chat-bubble ${role}`}
-      style={{ marginBottom: 14 }}
-    >
+    <div className={`bubble-pro ${role}`}>
       {role === "assistant" && (
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 8,
-            marginBottom: 10,
+            gap: 10,
+            marginBottom: 12,
             paddingBottom: 10,
-            borderBottom: "1px solid var(--border-subtle)",
+            borderBottom: "1px solid rgba(255,255,255,0.06)",
           }}
         >
           <span
+            aria-hidden
             style={{
-              width: 18,
-              height: 18,
-              borderRadius: 4,
-              background: "linear-gradient(135deg, var(--accent), var(--accent-hover))",
-              display: "inline-block",
-              boxShadow: "0 0 8px var(--accent-glow)",
+              width: 22,
+              height: 22,
+              borderRadius: 6,
+              background: "var(--gradient-burn)",
+              backgroundSize: "200% 200%",
+              animation: "gradientShift 5s ease-in-out infinite",
+              boxShadow: "0 0 16px rgba(236, 72, 153, 0.4)",
             }}
           />
-          <span className="mono-label">harshith</span>
+          <span
+            className="mono"
+            style={{
+              fontSize: 11,
+              textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              color: "var(--text-muted)",
+            }}
+          >
+            harshith
+          </span>
           {streaming && (
-            <span className="mono-label" style={{ marginLeft: "auto", color: "var(--accent)" }}>
-              ● streaming
+            <span
+              className="mono"
+              style={{
+                marginLeft: "auto",
+                color: "var(--neo-magenta)",
+                fontSize: 11,
+                textTransform: "uppercase",
+                letterSpacing: "0.14em",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <span
+                aria-hidden
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: "var(--neo-magenta)",
+                  boxShadow: "var(--glow-magenta)",
+                }}
+              />
+              streaming
             </span>
           )}
         </div>
@@ -204,10 +235,10 @@ export function Message({
                 key={idx}
                 type="button"
                 onClick={() => onSuggestion?.(block.text)}
-                className="prompt-chip"
-                style={{ marginTop: 8, marginRight: 8 }}
+                className="prompt-chip-pro"
+                style={{ marginTop: 8, marginRight: 8, fontSize: 11.5 }}
               >
-                <span style={{ color: "var(--accent)" }}>›</span> {block.text}
+                <span className="lead">›</span> {block.text}
               </button>
             );
           }

@@ -1,25 +1,26 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { Message } from "./message";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
 const SUGGESTED_PROMPTS = [
   "What have you shipped this year?",
-  "What's your most ambitious project?",
   "Tell me about Cockpit",
   "What's your stack?",
   "Are you open to roles?",
   "Show me PipeCode",
+  "What's the Forge?",
 ];
 
 const ROTATING_PLACEHOLDERS = [
-  "Ask me what I've built…",
-  "Try: 'what's your most ambitious project?'",
-  "Try: 'tell me about Claude Hub'",
-  "Try: 'are you open to roles?'",
-  "Try: 'what stack do you use?'",
+  "ask anything — projects, OSS, stack, roles…",
+  "try: what's your most ambitious project?",
+  "try: tell me about Claude Hub",
+  "try: are you open to roles?",
+  "try: what's the governance suite?",
 ];
 
 export function Chat({ initialPrompt }: { initialPrompt?: string }) {
@@ -115,9 +116,8 @@ export function Chat({ initialPrompt }: { initialPrompt?: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialPrompt]);
 
-  // Self-demonstrate: auto-fire a representative question on first visit so
-  // the chat actually shows itself working without requiring a click. Guarded
-  // by sessionStorage so the user doesn't get re-played on every refresh.
+  // Self-demonstrate: auto-fire a representative question on first visit so the
+  // chat shows itself working without requiring a click. Guarded by sessionStorage.
   useEffect(() => {
     if (initialPrompt) return;
     if (messages.length > 0 || streaming) return;
@@ -125,7 +125,6 @@ export function Chat({ initialPrompt }: { initialPrompt?: string }) {
     try {
       if (sessionStorage.getItem("autoseed-done") === "1") return;
     } catch {
-      /* ignore — private mode, just don't auto-seed */
       return;
     }
     const t = setTimeout(() => {
@@ -135,7 +134,7 @@ export function Chat({ initialPrompt }: { initialPrompt?: string }) {
         /* ignore */
       }
       send("What have you shipped this year?");
-    }, 1600);
+    }, 1800);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -154,16 +153,16 @@ export function Chat({ initialPrompt }: { initialPrompt?: string }) {
   };
 
   return (
-    <div className="chat-shell">
+    <div style={{ width: "100%", maxWidth: 820, margin: "0 auto" }}>
       {messages.length === 0 ? (
-        <EmptyState onPrompt={send} placeholderIdx={placeholderIdx} />
+        <PromptStrip onPrompt={send} />
       ) : (
-        <div style={{ marginBottom: 24 }}>
+        <div style={{ marginBottom: 18, textAlign: "left" }}>
           {messages.map((m, i) => (
             <Message
               key={i}
               role={m.role}
-              content={m.content || (streaming && i === messages.length - 1 ? "" : "")}
+              content={m.content || ""}
               streaming={streaming && i === messages.length - 1}
               onSuggestion={send}
             />
@@ -172,148 +171,127 @@ export function Chat({ initialPrompt }: { initialPrompt?: string }) {
         </div>
       )}
 
-      <div style={{ position: "sticky", bottom: 16, zIndex: 10 }}>
-        <div style={{ position: "relative" }}>
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={onKeyDown}
-            placeholder={ROTATING_PLACEHOLDERS[placeholderIdx]}
-            rows={1}
-            className="chat-input"
-            style={{ minHeight: 56, maxHeight: 180 }}
-          />
-          <button
-            type="button"
-            onClick={() => send(input)}
-            disabled={!input.trim() || streaming}
-            className="chat-send"
-            aria-label="Send"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
-          </button>
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: 8,
-            padding: "0 6px",
-            fontSize: 11,
-            color: "var(--text-dim)",
-          }}
-          className="mono"
+      <div style={{ position: "relative" }}>
+        <textarea
+          ref={inputRef}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={onKeyDown}
+          placeholder={ROTATING_PLACEHOLDERS[placeholderIdx]}
+          rows={1}
+          className="chat-pro-input"
+          style={{ minHeight: 70, maxHeight: 180, textAlign: "left" }}
+        />
+        <button
+          type="button"
+          onClick={() => send(input)}
+          disabled={!input.trim() || streaming}
+          className="chat-pro-send"
+          aria-label="Send"
         >
-          <span>
-            <kbd
+          <ArrowRight size={18} strokeWidth={2.6} aria-hidden />
+        </button>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: 10,
+          padding: "0 6px",
+          fontSize: 10.5,
+          color: "var(--text-dim)",
+          fontFamily: "var(--font-mono)",
+          letterSpacing: "0.04em",
+        }}
+      >
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <span aria-hidden style={{ display: "inline-flex", alignItems: "center" }}>
+            <span
               style={{
-                padding: "2px 6px",
-                background: "var(--surface)",
-                border: "1px solid var(--border)",
-                borderRadius: 4,
-                fontSize: 10,
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "var(--neo-lime)",
+                boxShadow: "var(--glow-lime)",
+                marginRight: 6,
               }}
-            >
-              ⌘K
-            </kbd>{" "}
-            focus ·{" "}
-            <kbd
-              style={{
-                padding: "2px 6px",
-                background: "var(--surface)",
-                border: "1px solid var(--border)",
-                borderRadius: 4,
-                fontSize: 10,
-              }}
-            >
-              Enter
-            </kbd>{" "}
-            send
+            />
+            powered by claude haiku
           </span>
-          {messages.length > 0 && (
-            <button
-              onClick={reset}
-              style={{
-                background: "transparent",
-                border: "none",
-                color: "var(--text-muted)",
-                cursor: "pointer",
-                fontFamily: "var(--font-mono)",
-                fontSize: 11,
-                textTransform: "uppercase",
-                letterSpacing: "0.06em",
-              }}
-            >
-              reset
-            </button>
-          )}
-        </div>
+          <span style={{ color: "var(--text-dim)" }}>·</span>
+          <kbd
+            style={{
+              padding: "2px 6px",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 4,
+              fontSize: 10,
+            }}
+          >
+            ⌘K
+          </kbd>
+          <span>focus</span>
+          <span style={{ color: "var(--text-dim)" }}>·</span>
+          <kbd
+            style={{
+              padding: "2px 6px",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 4,
+              fontSize: 10,
+            }}
+          >
+            Enter
+          </kbd>
+          <span>send</span>
+        </span>
+        {messages.length > 0 && (
+          <button
+            onClick={reset}
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "var(--text-muted)",
+              cursor: "pointer",
+              fontFamily: "var(--font-mono)",
+              fontSize: 10.5,
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+            }}
+          >
+            reset
+          </button>
+        )}
       </div>
     </div>
   );
 }
 
-function EmptyState({
-  onPrompt,
-  placeholderIdx,
-}: {
-  onPrompt: (t: string) => void;
-  placeholderIdx: number;
-}) {
+function PromptStrip({ onPrompt }: { onPrompt: (t: string) => void }) {
   return (
-    <div style={{ paddingTop: 40, paddingBottom: 32, animation: "fadeInUp 0.6s ease-out both" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 24 }}>
-        <span className="status-dot" />
-        <span className="mono-label">available · open to senior/staff roles</span>
-      </div>
-
-      <h1
-        className="display"
-        style={{
-          fontSize: "clamp(40px, 7vw, 72px)",
-          margin: "0 0 18px",
-          color: "var(--text-primary)",
-        }}
-      >
-        Hi, I'm Harshith.
-        <br />
-        Ask me what I've{" "}
-        <span className="under-accent" style={{ color: "var(--accent)" }}>
-          built
-        </span>
-        .
-      </h1>
-
-      <p
-        style={{
-          color: "var(--text-secondary)",
-          fontSize: 17,
-          lineHeight: 1.55,
-          maxWidth: 540,
-          margin: "0 0 28px",
-        }}
-      >
-        Senior data engineer by day, indie AI builder by night. I ship with Claude.
-        This page is a chat — type anything below, or pick a starter ↓
-      </p>
-
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-        {SUGGESTED_PROMPTS.map((p) => (
-          <button
-            key={p}
-            type="button"
-            onClick={() => onPrompt(p)}
-            className="prompt-chip"
-          >
-            {p}
-          </button>
-        ))}
-      </div>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 8,
+        justifyContent: "center",
+        marginBottom: 14,
+        animation: "fadeInUp 0.5s ease-out both",
+      }}
+    >
+      {SUGGESTED_PROMPTS.map((p) => (
+        <button
+          key={p}
+          type="button"
+          onClick={() => onPrompt(p)}
+          className="prompt-chip-pro"
+        >
+          <ChevronRight size={12} strokeWidth={2.4} aria-hidden className="lead" />
+          {p}
+        </button>
+      ))}
     </div>
   );
 }
