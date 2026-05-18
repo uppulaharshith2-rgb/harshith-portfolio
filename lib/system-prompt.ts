@@ -69,19 +69,21 @@ Plus **[litellm PR #28113](https://github.com/BerriAI/litellm/pull/28113)** — 
 > What stack do you use to ship this fast?`,
   },
   {
-    match: /llm.?expectations|training.?data|finetune|sft|dpo|jsonl|data.?quality/i,
-    reply: `[[PROJECT:llm-expectations]]
+    match: /llm.?expectations|corpus.?snapshot|training.?data|finetune|sft|dpo|jsonl|rag.?corpus|data.?quality/i,
+    reply: `Training-data quality thesis — sister to the governance suite for prompts, different domain. Two of three repos shipped:
 
-First repo of a new thesis — sister to the governance suite for prompts, different domain (LLM training data, not LLM outputs).
+[[PROJECT:llm-expectations]]
+[[PROJECT:corpus-snapshot]]
 
-The bet: every team fine-tuning a model in 2026 is hand-rolling JSONL validation scripts. Lilac is dead (Databricks acquired March 2024). Argilla is in HF maintenance mode (was always a labeling tool). Cleanlab is Python-imperative ML-classical. Great Expectations has no LLM primitives. Nobody owns *"\`great_expectations.yml\` for your \`finetune.jsonl\`"* as a single pip-installable CLI.
+- **llm-expectations** — \`dbt test\` for your \`finetune.jsonl\`. 78 passing tests, 9 expectation types (schema / type / required / in-set / distribution / duplicates / PII / tokens / language). PII output is masked so the report doesn't itself leak the PII it found.
+- **corpus-snapshot** — \`git status\` for your RAG corpus. 55 passing tests, content-addressed diff with preview-diff fragments. Markdown chunker caps at H1/H2 splits for chunk-id stability under copy edits (same trade-off as \`git diff\` ignoring whitespace).
 
-**llm-expectations v0** ships **78 passing tests in 0.15s** across 9 expectation types: schema, type, required, in-set, distribution, duplicates, PII, token count, language detect. PII output is masked so the report doesn't itself leak the PII it found.
+Third repo \`fixture-lineage\` (chain-of-custody for eval fixtures with consent + redaction manifest) is incumbency-confirmed — Aug 2026 EU AI Act high-risk provenance enforcement is the demand catalyst. Queued.
 
-Sequel repo \`corpus-snapshot\` ("git status for your RAG corpus") is incumbency-confirmed and queued — Datafold is SQL-only, no vector-store-diff tools on PyPI, observability tools (Langfuse/Phoenix) are trace-level not corpus-level.
+None of the incumbents fill the niche: Lilac dead post-Databricks-acquisition, Argilla in HF maintenance, Cleanlab is Python-imperative ML-classical, no vector-store-diff tools on PyPI, Datafold data-diff is SQL-only, observability tools (Langfuse / Phoenix) are trace-level not corpus-level.
 
-> Why a new thesis instead of more governance-suite repos?
-> Tell me about the PII-doesn't-leak-PII trade-off
+> Show me the llm-expectations PII masking trade-off
+> Why H1/H2 only in the markdown chunker?
 > Are you open to roles?`,
   },
   {

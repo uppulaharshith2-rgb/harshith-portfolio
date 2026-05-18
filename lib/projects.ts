@@ -243,6 +243,30 @@ export const PROJECTS: Project[] = [
     collection: "training-data-quality",
   },
   {
+    slug: "corpus-snapshot",
+    name: "corpus-snapshot",
+    tagline: "`git status` for your RAG corpus. Snapshot + diff source documents into a content-addressed state file. Composes with llm-expectations.",
+    oneLiner:
+      "Second repo of the training-data-quality thesis. Every production RAG postmortem includes 'we re-embedded the corpus and the answers got worse' — this catches it.",
+    description:
+      "Public Python package. CLI: `corpus-snapshot snapshot ./docs` content-addresses every chunk into `.corpus-snapshot/state.json`; `corpus-snapshot diff v1 v2` emits a markdown report of added/removed/modified chunks with preview-diff fragments. Three built-in chunkers: markdown (heading-aware, H1/H2 only for id-stability under copy edits), JSONL (line or configurable key field), plain text (paragraph window fallback). Local-FS only in v0; the schema (`state.json`) is the lock-in artifact. v0.2 adds pluggable iterator adapter (LangChain Document, LlamaIndex Node), Pinecone/Weaviate fetch adapters, embedding-aware semantic similarity, and a GitHub Action.",
+    status: "live",
+    category: "library",
+    liveUrl: "https://github.com/uppulaharshith2-rgb/corpus-snapshot",
+    repoUrl: "https://github.com/uppulaharshith2-rgb/corpus-snapshot",
+    techStack: ["Python 3.10+", "Click", "PyYAML", "pytest", "stdlib hashing"],
+    highlights: [
+      "55 tests passing in 0.10s — 1031 LOC source under the 1200-LOC ceiling",
+      "Three built-in chunkers (markdown heading-aware, JSONL line/keyed, plain paragraph-window)",
+      "Honest design trade-off — markdown chunker caps at H1/H2 splits (not H1-H6) to preserve chunk-id stability under copy edits. Same shape as `git diff` ignoring whitespace by default: lower granularity in exchange for less noise on cosmetic changes",
+      "Composes with llm-expectations end-to-end: `corpus-snapshot diff v1 v2 --json | jq '.modified[].path'` pipes the list of changed files into `llm-expectations check` for surgical validation",
+      "Content-hash only in v0 — embedding-aware similarity is v0.2 territory; deterministic baseline first, model overhead later",
+    ],
+    year: "2026",
+    accentColor: "#f43f5e",
+    collection: "training-data-quality",
+  },
+  {
     slug: "forge",
     name: "Forge",
     tagline: "Multi-agent dev orchestrator — Claude Code on Max plan, zero extra spend",
@@ -311,6 +335,7 @@ const MONOGRAM_OVERRIDES: Record<string, string> = {
   "prompt-freshness": "PF",
   "prompt-lineage": "PL",
   "llm-expectations": "LE",
+  "corpus-snapshot": "CS",
 };
 
 export function projectMonogram(slug: string, name: string): string {

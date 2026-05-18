@@ -117,6 +117,16 @@ Priority = Visibility + Relevance - Effort.
 - **Why this matters for the candidacy**: lives at the intersection of data engineering (the entire YAML shape mirrors `dbt schema.yml`) and AI infra (LLM-as-judge with offline mock for CI). Exact "AI Data Engineer" pitch the role bands at top labs are asking for.
 - **Strategic note**: this is the FIRST result of the OSS-landscape recalibration that said "stop competing for PR queue spots, build in uncrowded space." Within 6 hours of the recalibration, a real public artifact landed. Pattern confirmed.
 
+### 2026-05-17 — corpus-snapshot v0 public release (training-data-quality, 2nd repo)
+
+- **Repo**: https://github.com/uppulaharshith2-rgb/corpus-snapshot (MIT)
+- **Stats**: 24 files, 1964 LOC (1031 src + 687 tests + 246-line README), **55 tests passing in 0.10s**
+- **Pitch**: `git status` for your RAG corpus. Content-addresses source documents into `.corpus-snapshot/state.json`; diffs two snapshots into markdown / JSON of added / removed / modified chunks with preview-diff fragments.
+- **Honest design trade-off (6th in 6 days)**: markdown chunker caps splits at H1/H2 (not H1-H6) for chunk-id stability under copy edits — same shape as `git diff` ignoring whitespace by default. Lower granularity in exchange for less noise on cosmetic changes.
+- **Composes end-to-end with llm-expectations**: `corpus-snapshot diff v1 v2 --json | jq '.modified[].path'` → list of changed files → `llm-expectations check` for surgical validation. Two repos, one workflow demonstrated.
+- **Post-push gh-repo-view verification ran for the third repo in a row** (after prompt-lineage which silently failed, then llm-expectations which passed cleanly, now corpus-snapshot which also passed). Gate is now battle-tested.
+- **Suite progress**: training-data-quality thesis is now 2-of-3 public. fixture-lineage (incumbency-confirmed BUILD/narrow) is queued for iteration #12, then thesis closes at 3 mirroring the governance-suite-closes-at-4 discipline.
+
 ### 2026-05-17 — llm-expectations v0 public release (NEW THESIS, 1st repo)
 
 - **Repo**: https://github.com/uppulaharshith2-rgb/llm-expectations (MIT)

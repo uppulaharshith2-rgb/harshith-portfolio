@@ -11,6 +11,123 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "corpus-snapshot-git-status-for-your-rag-corpus",
+    title: "corpus-snapshot: git status for your RAG corpus",
+    excerpt:
+      "Every production RAG postmortem in 2026 includes the same line: 'we re-embedded the corpus and the answers got worse.' Today I'm shipping the tool that catches it before deploy.",
+    date: "2026-05-17",
+    tags: ["corpus-snapshot", "rag", "training-data-quality", "open-source"],
+    readTime: 7,
+    body: `Every production RAG postmortem I've read in 2026 includes the same line:
+
+> "We re-embedded the corpus and the answers got worse."
+
+The cause is almost always something nobody saw before deploy: a chunking-strategy change that subtly drifted, three documents that were silently removed from the source, a policy edit that flipped the semantics of one chunk without changing its filename. The retrieval index updates cleanly; the regression doesn't show until users complain.
+
+There are tools that watch the *traces* of your RAG system in production — Langfuse, Phoenix, Helicone, TruLens. All of them are trace-level. None of them tell you, at deploy time, **what changed in your source corpus between v1 and v2**.
+
+Vector databases (Pinecone, Weaviate, Qdrant) ship backups, not diffs. Datafold data-diff is SQL-warehouse only. Evidently explicitly tells users to "re-index and compare retrieval precision before/after" — meaning: do this work manually.
+
+[**corpus-snapshot**](https://github.com/uppulaharshith2-rgb/corpus-snapshot) just shipped — \`git status\` for your RAG corpus. 55 passing tests, 1031 LOC source, MIT.
+
+## What it does
+
+\`\`\`bash
+$ corpus-snapshot snapshot ./docs --name v1
+snapshotting ./docs ...
+  3 files, 12 chunks, 18470 bytes
+  written to .corpus-snapshot/v1/state.json
+
+# ... someone edits the corpus ...
+
+$ corpus-snapshot snapshot ./docs --name v2
+  3 files, 10 chunks, 16104 bytes
+
+$ corpus-snapshot diff v1 v2
+\`\`\`
+
+\`\`\`
+docs-v1 -> docs-v2: 3 files -> 3 files | 12 chunks -> 10 chunks
+
+  ## Added (2 chunks in 1 file)
+    + support.md#contact                 233 bytes
+    + support.md#support                  87 bytes
+
+  ## Removed (4 chunks in 1 file)
+    - faq.md#frequently-asked-questions  ...
+    - faq.md#payment                     ...
+    - faq.md#returns                     ...
+    - faq.md#shipping                    ...
+
+  ## Modified (1 chunk in 1 file)
+    ~ policy.md#refunds                  261 -> 456 bytes (+75%)
+      preview-diff:
+        - refunds processed within 7 business days
+        + refunds processed within 14 business days for orders over $500
+
+10 chunks in 3 files | 2 added | 4 removed | 1 modified | 7 unchanged
+exit 1
+\`\`\`
+
+The preview-diff is the part that makes this useful for human review. You can see in five seconds whether the modification is "fixed a typo" or "the refund policy doubled, retrain everything."
+
+The exit code (1 on any diff) means this drops straight into CI as a gate.
+
+## Three built-in chunkers
+
+- **Markdown**: heading-aware. \`policy.md#refunds\` becomes a stable chunk id that survives reordering within the file.
+- **JSONL**: one chunk per line. Configurable key field (\`--key id\`) so chunk ids survive line reordering too.
+- **Plain text** (\`.txt\`, \`.rst\`, code files): paragraph-window fallback. Configurable window size.
+
+## The honest design trade-off
+
+The markdown chunker caps splits at **H1 and H2 only**. Not H1-H6.
+
+Why? Because the first end-to-end test I ran told me. A typo in an H4 heading — \`"Pyaments"\` corrected to \`"Payments"\` — instantly cascaded the chunk id rename and showed up as one *remove* + one *add* instead of one *modify*. With H1-H6 splits, every cosmetic edit produced a "deleted-and-recreated" diff, which is the noise pattern you want to avoid.
+
+Capping at H1/H2 sacrifices granularity for **chunk-id stability under copy edits** — which is exactly the trade-off \`git diff\` makes when it ignores whitespace by default. Lower granularity, less noise on cosmetic changes, the diffs you actually care about stay visible.
+
+This is documented in the README as a deliberate choice — and configurable in v0.2 via per-extension override (\`--strategy=md:h1-h3\` for teams that want finer splits).
+
+This is the **6th honest design trade-off** I've shipped in 6 days, following [the pattern](/blog/five-v0s-five-honest-trade-offs):
+
+1. dbt-eval: faithful-mock scoring formula
+2. prompt-contracts: coerce counter (so coercions don't hide violations)
+3. prompt-freshness: binary model-alias check (no normalizer)
+4. prompt-lineage: body-string heuristic for contract → prompt linkage
+5. llm-expectations: masked PII in PII reports
+6. corpus-snapshot: H1/H2 cap for id-stability under copy edits
+
+Each ships one decision a careful reader would push back on, documented in the README as deliberate. The pattern reproduces.
+
+## Composes end-to-end with llm-expectations
+
+[\`llm-expectations\`](/projects/llm-expectations) (the first repo in this thesis) checks JSONL training files against declarative YAML expectations. \`corpus-snapshot\` (this one) tracks which chunks changed between snapshots.
+
+Together:
+
+\`\`\`bash
+# only re-validate the chunks that actually changed
+corpus-snapshot diff v1 v2 --json \\
+  | jq -r '.modified[].path' \\
+  | xargs -I{} llm-expectations check {} --suite expectations.yml
+\`\`\`
+
+That's the workflow. Two repos, one mental model, file-based composition. Same DE pattern as dbt + dbt-test: small focused tools that read each other's files.
+
+## What's next in the thesis
+
+The third repo — \`fixture-lineage\` — is [incumbency-confirmed](/blog/oss-llm-tooling-landscape-audit-may-2026) and queued. It tracks the chain-of-custody for eval fixtures: which source trace each fixture came from, what redaction was applied, which consent policy authorized the use, what the hash chain looks like across versions.
+
+EU AI Act high-risk provenance enforcement begins August 2026. Every regulated team I see is currently patchwork-rolling this with Presidio + Langfuse + spreadsheets. Nobody ships the signed-manifest tuple as a single OSS tool. That's the next build.
+
+Three repos compose into the training-data quality thesis. Same shape as the four-repo governance suite for prompts, different domain. Same v0 discipline. Same documented honest trade-offs.
+
+Try it: \`pip install corpus-snapshot\`. The README has a 30-second example with the docs-v1 → docs-v2 demo. Issues + PRs welcome.
+
+Repo: [github.com/uppulaharshith2-rgb/corpus-snapshot](https://github.com/uppulaharshith2-rgb/corpus-snapshot). MIT. 55 tests. Ship the schema; defer the engine.`,
+  },
+  {
     slug: "five-v0s-five-honest-trade-offs",
     title: "Five v0 releases, five honest trade-offs: a pattern of OSS discipline",
     excerpt:

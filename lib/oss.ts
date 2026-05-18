@@ -111,6 +111,29 @@ export const CONTRIBUTIONS: Contribution[] = [
     collection: "upstream-prs",
   },
   {
+    slug: "corpus-snapshot-v0",
+    kind: "repo",
+    title: "corpus-snapshot — git status for your RAG corpus (v0)",
+    repo: "uppulaharshith2-rgb/corpus-snapshot",
+    url: "https://github.com/uppulaharshith2-rgb/corpus-snapshot",
+    date: "2026-05-17",
+    status: "published",
+    summary:
+      "Second repo of the training-data-quality thesis (after llm-expectations). Content-addresses a directory of source documents (markdown, JSONL, plain text) into `.corpus-snapshot/state.json`; diffs two snapshots into a markdown / JSON report of added, removed, and modified chunks with preview-diff fragments. Three built-in chunkers (markdown heading-aware, JSONL line/keyed, plain paragraph-window). Composes with llm-expectations end-to-end: pipe the JSON diff into expectations check for surgical re-validation only on changed files.",
+    stats: { additions: 1964, files: 24, tests: 55 },
+    highlights: [
+      "55 tests passing in 0.10s — 1031 LOC src + 687 LOC tests, all under the 1200-LOC src budget",
+      "Honest design trade-off: markdown chunker caps splits at H1/H2 (not H1-H6) to preserve chunk-id stability under copy edits — same trade-off as `git diff` ignoring whitespace, lower granularity in exchange for less noise on cosmetic changes",
+      "Content-hash only in v0 — embedding-aware semantic similarity is v0.2 territory, the schema is what locks in",
+      "End-to-end composition with llm-expectations: `corpus-snapshot diff v1 v2 --json | jq '.modified[].path'` → list of changed files → `llm-expectations check` on only the changed JSONL",
+      "Post-push gh-repo-view verification ran (iteration #9 + #10 lesson held for the third time in a row)",
+    ],
+    whyItMatters:
+      "Every production RAG postmortem in 2026 includes the same line: 'we re-embedded the corpus and the answers got worse.' Vector DBs ship backups, not human-readable diffs. Observability tools (Langfuse, Phoenix, Helicone) are trace-level not corpus-level. Evidently explicitly tells users to do this work manually. Nobody owns the 'git status for your RAG corpus' niche — until now.",
+    tags: ["rag", "corpus-diff", "content-addressable", "python", "ai-data-engineering", "open-source-release", "training-data-quality"],
+    collection: "training-data-quality",
+  },
+  {
     slug: "llm-expectations-v0",
     kind: "repo",
     title: "llm-expectations — dbt-test for your finetune.jsonl (v0)",

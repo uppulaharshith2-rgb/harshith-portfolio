@@ -128,18 +128,23 @@ export default function AboutPage() {
             </Link>
           </li>
           <li>
-            <strong>Opening the next thesis — training-data quality.</strong>{" "}
+            <strong>Second thesis open — training-data quality, two repos shipped.</strong>{" "}
             With the governance suite closed,{" "}
             <Link href="/projects/llm-expectations" style={{ color: "var(--accent)" }}>
               llm-expectations
             </Link>{" "}
-            ships as the first repo of a sister thesis: declarative YAML data quality
-            checks for JSONL training files (SFT/DPO). Same DE-mental-model-port shape
-            as the governance suite, different un-saturated niche — Lilac dead post-
-            Databricks-acquisition, Argilla in HF maintenance, Cleanlab is classical-ML
-            imperative, Great Expectations has no LLM primitives. v0 ships 78 passing
-            tests across 9 expectation types in 0.15s. Sequel repo (corpus-snapshot —
-            git status for your RAG corpus) is incumbency-confirmed and queued.
+            (dbt-test for your finetune.jsonl — 78 tests, 9 expectation types) and{" "}
+            <Link href="/projects/corpus-snapshot" style={{ color: "var(--accent)" }}>
+              corpus-snapshot
+            </Link>{" "}
+            (git status for your RAG corpus — 55 tests, content-addressed diff with
+            preview fragments) shipped as the first two repos. Same DE-mental-model-port
+            shape as the governance suite, different un-saturated niche — Lilac dead
+            post-Databricks-acquisition, Argilla in HF maintenance, Cleanlab is
+            classical-ML imperative, no vector-store-diff tools on PyPI. Third repo
+            (`fixture-lineage` — chain-of-custody for eval fixtures with consent +
+            redaction manifest, EU AI Act demand catalyst) is incumbency-confirmed
+            and queued.
           </li>
           <li>
             <strong>Daily-use AI products I shipped solo.</strong>{" "}
