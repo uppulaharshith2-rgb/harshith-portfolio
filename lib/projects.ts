@@ -369,3 +369,23 @@ export function projectMonogram(slug: string, name: string): string {
   if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
   return name.slice(0, 2).toUpperCase();
 }
+
+/* Per-project lucide icon names. Resolved to actual components in
+   components/projects/project-icon.tsx so this file stays free of React imports
+   (server-component-safe). */
+export const PROJECT_ICON_NAMES: Record<string, string> = {
+  "claude-hub": "Sparkles",
+  cockpit: "Plane",
+  pipecode: "Database",
+  secondbrain: "Brain",
+  "secondbrain-kit": "NotebookText",
+  "ai-cost-calculator": "Calculator",
+  forge: "Hammer",
+  "dbt-eval": "FlaskConical",
+  "prompt-contracts": "ShieldCheck",
+  "prompt-freshness": "Timer",
+  "prompt-lineage": "Workflow",
+  "llm-expectations": "ClipboardCheck",
+  "corpus-snapshot": "GitCompare",
+  "fixture-lineage": "Fingerprint",
+};

@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/pro-max";
 import { CONTRIBUTIONS } from "@/lib/oss";
 import { POSTS } from "@/lib/posts";
-import { PROJECTS, projectMonogram } from "@/lib/projects";
+import { PROJECTS } from "@/lib/projects";
+import { ProjectIcon } from "@/components/projects/project-icon";
 import { ArrowDown, ArrowRight, ExternalLink, Github, Mail, Sparkles } from "lucide-react";
 import Link from "next/link";
 
@@ -224,7 +225,7 @@ export default function HomePage() {
             <TiltCard
               key={proj.slug}
               accent={proj.accentColor ?? "#cc785c"}
-              monogram={projectMonogram(proj.slug, proj.name)}
+              badge={<ProjectIcon slug={proj.slug} size={22} strokeWidth={2.2} />}
               title={proj.name}
               tagline={proj.tagline}
               tags={proj.techStack}

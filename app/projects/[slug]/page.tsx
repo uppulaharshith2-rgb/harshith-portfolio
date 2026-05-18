@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getProject, PROJECTS } from "@/lib/projects";
+import { ProjectIcon } from "@/components/projects/project-icon";
 
 export function generateStaticParams() {
   return PROJECTS.map((p) => ({ slug: p.slug }));
@@ -55,13 +56,19 @@ export default async function ProjectPage({
         <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
           <span
             style={{
-              width: 44,
-              height: 44,
-              borderRadius: 10,
+              width: 52,
+              height: 52,
+              borderRadius: 12,
               background: `linear-gradient(135deg, ${accent}, ${accent}66)`,
-              boxShadow: `0 0 18px ${accent}44`,
+              boxShadow: `0 0 22px ${accent}55, inset 0 1px 0 rgba(255,255,255,0.15)`,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
             }}
-          />
+          >
+            <ProjectIcon slug={project.slug} size={26} strokeWidth={2.2} />
+          </span>
           <div>
             <div className="mono-label" style={{ marginBottom: 4 }}>
               · {project.category} · {project.status} · {project.year}
@@ -242,15 +249,32 @@ export default async function ProjectPage({
               className="proj-card"
               style={{ display: "block", padding: 14 }}
             >
-              <div
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "var(--text-primary)",
-                  marginBottom: 4,
-                }}
-              >
-                {p.name}
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                <span
+                  style={{
+                    width: 26,
+                    height: 26,
+                    borderRadius: 6,
+                    background: `linear-gradient(135deg, ${p.accentColor}, ${p.accentColor}66)`,
+                    boxShadow: `0 0 10px ${p.accentColor}44, inset 0 1px 0 rgba(255,255,255,0.15)`,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <ProjectIcon slug={p.slug} size={13} strokeWidth={2.4} />
+                </span>
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "var(--text-primary)",
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {p.name}
+                </div>
               </div>
               <div
                 style={{

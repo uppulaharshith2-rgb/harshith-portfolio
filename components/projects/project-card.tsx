@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { CSSProperties } from "react";
 import { ArrowUpRight, ExternalLink } from "lucide-react";
-import { Project, projectMonogram } from "@/lib/projects";
+import { Project } from "@/lib/projects";
+import { ProjectIcon } from "@/components/projects/project-icon";
 
 const STATUS_COPY: Record<Project["status"], { label: string; color: string }> = {
   live: { label: "Live", color: "var(--neo-lime)" },
@@ -39,10 +40,9 @@ export function ProjectCard({ project, embedded = false }: { project: Project; e
             boxShadow: `0 0 24px ${accent}55, inset 0 1px 0 rgba(255,255,255,0.15)`,
             width: 42,
             height: 42,
-            fontSize: 14,
           }}
         >
-          {projectMonogram(project.slug, project.name)}
+          <ProjectIcon slug={project.slug} size={20} strokeWidth={2.2} />
         </span>
 
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>

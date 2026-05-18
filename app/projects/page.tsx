@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { PROJECTS, projectMonogram } from "@/lib/projects";
+import { PROJECTS } from "@/lib/projects";
+import { ProjectIcon } from "@/components/projects/project-icon";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -158,24 +159,19 @@ export default function ProjectsPage() {
                   className="surface-hover"
                 >
                   <span
-                    className="mono"
                     style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: 6,
-                      background: `linear-gradient(135deg, ${p.accentColor}, ${p.accentColor}55)`,
-                      boxShadow: `0 0 8px ${p.accentColor}33`,
+                      width: 34,
+                      height: 34,
+                      borderRadius: 8,
+                      background: `linear-gradient(135deg, ${p.accentColor}, ${p.accentColor}66)`,
+                      boxShadow: `0 0 12px ${p.accentColor}55, inset 0 1px 0 rgba(255,255,255,0.15)`,
                       display: "inline-flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: 12,
-                      fontWeight: 600,
-                      color: "#fff",
-                      letterSpacing: "0.04em",
                       flexShrink: 0,
                     }}
                   >
-                    {projectMonogram(p.slug, p.name)}
+                    <ProjectIcon slug={p.slug} size={16} strokeWidth={2.2} />
                   </span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div
@@ -183,7 +179,7 @@ export default function ProjectsPage() {
                         fontSize: 15,
                         fontWeight: 600,
                         color: "var(--text-primary)",
-                        letterSpacing: "-0.01em",
+                        letterSpacing: "-0.015em",
                       }}
                     >
                       {p.name}
@@ -260,24 +256,19 @@ export default function ProjectsPage() {
                   }}
                 >
                   <span
-                    className="mono"
                     style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: 6,
-                      background: `linear-gradient(135deg, ${p.accentColor}, ${p.accentColor}55)`,
-                      boxShadow: `0 0 12px ${p.accentColor}33`,
+                      width: 36,
+                      height: 36,
+                      borderRadius: 8,
+                      background: `linear-gradient(135deg, ${p.accentColor}, ${p.accentColor}66)`,
+                      boxShadow: `0 0 14px ${p.accentColor}55, inset 0 1px 0 rgba(255,255,255,0.15)`,
                       display: "inline-flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: 12,
-                      fontWeight: 600,
-                      color: "#fff",
-                      letterSpacing: "0.04em",
                       flexShrink: 0,
                     }}
                   >
-                    {projectMonogram(p.slug, p.name)}
+                    <ProjectIcon slug={p.slug} size={18} strokeWidth={2.2} />
                   </span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div

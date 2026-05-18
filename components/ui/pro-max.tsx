@@ -150,7 +150,7 @@ export function Marquee({
 
 export function TiltCard({
   accent,
-  monogram,
+  badge,
   title,
   tagline,
   tags,
@@ -162,7 +162,7 @@ export function TiltCard({
   span = 2,
 }: {
   accent: string;
-  monogram: string;
+  badge: ReactNode;
   title: string;
   tagline: string;
   tags: string[];
@@ -230,7 +230,7 @@ export function TiltCard({
               boxShadow: `0 0 28px ${accent}55, inset 0 1px 0 rgba(255,255,255,0.15)`,
             }}
           >
-            {monogram}
+            {badge}
           </span>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
             <span className="live-dot">
