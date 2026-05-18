@@ -93,6 +93,29 @@ up: "[[index]]"
 - [x] `BUILD_SKILL` **corpus-snapshot v0 SHIPPED** — github.com/uppulaharshith2-rgb/corpus-snapshot, 24 files, 1964 LOC (1031 src + 687 tests + 246 README), **55 tests passing in 0.10s**. Three chunkers (markdown heading-aware, JSONL line/keyed, plain paragraph-window). Post-push gh-repo-view verification ran (iteration #9+10 lesson held for 3rd time). Honest trade-off: markdown chunker caps at H1/H2 (not H1-H6) for chunk-id stability under copy edits — same trade-off as `git diff` ignoring whitespace. Composes end-to-end with llm-expectations via `diff --json | jq '.modified[].path' → llm-expectations check`. 2026-05-17.
 - [ ] `BUILD_SKILL` **fixture-lineage — INCUMBENCY-CONFIRMED BUILD (narrow), iteration #12 candidate** — 2026-05-17 incumbency check: Langfuse has source pointer 1 (via `sourceTraceId`), Presidio has redaction step 2 output (but no manifest), Transcend has consent 3 (not wired to fixtures), DVC has version chain 4 (not LLM-eval-aware). **No incumbent ships the full tuple** {fixture_id → source_trace_id + redaction_step_manifest + consent_policy_id + parent_fixture_hash} as a single signed append-only artifact. Aug 2026 EU AI Act high-risk provenance enforcement is a real demand catalyst. v0 scope: CLI `fixture-lineage record` accepts source pointer (URI or Langfuse trace ID), applies redaction step from YAML pipeline (delegating to Presidio), emits signed manifest entry into git-friendly `.fixture-lineage/` directory. Manifest schema: source_uri, redactor_versions, before_hash, after_hash, consent_policy_ref, parent_fixture_hash, timestamp, signer. One integration in v0: Langfuse trace → fixture (extending their existing `sourceTraceId`). v0.2 defers: Phoenix + promptfoo adapters, consent policy DSL, `fixture-lineage verify` for audit-time chain replay. Explicitly OUT of v0: full GDPR right-to-be-forgotten propagation, OneTrust/Transcend bidirectional sync — those are enterprise upsells, not OSS wedge. ~8h target. Anchor post: "Chain-of-custody for LLM eval fixtures — the missing manifest layer before EU AI Act enforcement."
 
+### Tier 1.0 — POLISH PIVOT (iterations #13-17, 2-week plan)
+
+> Strategy research agent verdict 2026-05-17: **Option B (polish pivot)**. Every candidate for thesis #3 fails incumbency check — Lance owns Iceberg-for-embeddings, Ray Data LLM owns declarative-map-prompt with vLLM/SGLang backends, Unity Catalog Business Semantics + DataHub Gen 3 own AI artifact catalog, OpenTelemetry GenAI semantic conventions are an ecosystem not a gap, Astronomer Data Agents already eat the Airflow-Claude operator niche. **A third thesis without un-saturated wedge would dilute the suite-discipline asset.** Polish reinforces; the honesty-trade-off story ("we shipped stubs, named them stubs, now they're real") only works if the stubs actually get replaced.
+
+- [ ] **iteration #13 — PyPI publish all 7 packages (1-2 days, highest leverage)**: dbt-eval, prompt-contracts, prompt-freshness, prompt-lineage, llm-expectations, corpus-snapshot, fixture-lineage. Use uv + Trusted Publishing OIDC. Single reusable `release.yml` workflow template per repo. Verify `pip install <name>` returns correct artifact for each. THE ADOPTION GATE — every "pip install" example in every README currently 404s. Unlocks every downstream awesome-list, blog post, and casual reader.
+
+- [ ] **iteration #14 — Real backends, two highest-scope (3 days)**: tiktoken backend for llm-expectations v0.2 (real token counts, no more ±15% char/4 approximation); real Presidio backend for fixture-lineage v0.2 (named in v0 honest-trade-off as the upgrade path). Both close the "stub → real" honesty loop named in v0 READMEs.
+
+- [ ] **iteration #15 — Real backends, two visual-impact (3 days)**: embedding-aware similarity for corpus-snapshot v0.2 (semantic diff vs content-hash); force-directed graph view for prompt-lineage v0.2 (the visualization the static HTML deferred).
+
+- [ ] **iteration #16 — GitHub Actions, Marketplace distribution (2-3 days)**: `prompt-lineage-diff-action` + `corpus-snapshot-diff-action`, both submitted to GitHub Marketplace. PR-comment diffs are how dbt/Atlas got initial pull. Same UX pattern Adaline/LangSmith charge $99/mo for — these are free + MIT.
+
+- [ ] **iteration #17 — Anchor longform essay (2-3 days)**: "The case for porting dbt to LLM infra." 4000-5000 word piece timed to the PyPI + Marketplace ship moments — pitches adoption with a foundation that survives scrutiny (because by then, `pip install dbt-eval` actually works and the GitHub Marketplace Actions exist). Reuses Option C's highest-leverage move WITHOUT fragmenting before the polish work landed.
+
+### REJECTED for iteration #13+ — open thesis #3 (Option A)
+
+Verdict: every candidate fails incumbency, would dilute suite discipline. Documented for future reference so we don't re-litigate:
+- ~~Iceberg-for-embeddings~~ → Lance owns it end-to-end (file format + table format + catalog spec, Apache-2)
+- ~~Declarative-map-prompt at scale~~ → Ray Data LLM + `build_llm_processor` with vLLM/SGLang backends
+- ~~AI artifact catalog/metadata layer~~ → Unity Catalog Business Semantics + DataHub Gen 3
+- ~~LLM cost attribution~~ → OpenTelemetry GenAI semantic conventions are the standard; tools route through that ecosystem
+- ~~Airflow-Claude operator~~ → Astronomer Data Agents shipped Apache-2.0 Q1 2026
+
 ### Tier 1.5 — three-repo dbt-style governance suite for prompts (companion to dbt-eval)
 
 > Research agent's iteration #5 finding: extend dbt-eval into a **coherent governance suite** (define a contract → diff changes in CI → track freshness over time) rather than competing with promptfoo / DeepEval / Phoenix on assertions. The pitch becomes one sentence at every recruiter call: "I'm building the dbt-style governance layer for prompts."
