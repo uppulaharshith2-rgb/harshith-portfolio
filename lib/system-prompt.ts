@@ -69,21 +69,21 @@ Plus **[litellm PR #28113](https://github.com/BerriAI/litellm/pull/28113)** — 
 > What stack do you use to ship this fast?`,
   },
   {
-    match: /llm.?expectations|corpus.?snapshot|training.?data|finetune|sft|dpo|jsonl|rag.?corpus|data.?quality/i,
-    reply: `Training-data quality thesis — sister to the governance suite for prompts, different domain. Two of three repos shipped:
+    match: /llm.?expectations|corpus.?snapshot|fixture.?lineage|training.?data|finetune|sft|dpo|jsonl|rag.?corpus|data.?quality|chain.?of.?custody|eu.?ai.?act/i,
+    reply: `**Training-data quality thesis — closed at 3.** All public, all MIT:
 
 [[PROJECT:llm-expectations]]
 [[PROJECT:corpus-snapshot]]
+[[PROJECT:fixture-lineage]]
 
-- **llm-expectations** — \`dbt test\` for your \`finetune.jsonl\`. 78 passing tests, 9 expectation types (schema / type / required / in-set / distribution / duplicates / PII / tokens / language). PII output is masked so the report doesn't itself leak the PII it found.
-- **corpus-snapshot** — \`git status\` for your RAG corpus. 55 passing tests, content-addressed diff with preview-diff fragments. Markdown chunker caps at H1/H2 splits for chunk-id stability under copy edits (same trade-off as \`git diff\` ignoring whitespace).
+- **llm-expectations** — \`dbt test\` for your \`finetune.jsonl\`. 78 passing tests. PII output is masked so the report doesn't itself leak PII.
+- **corpus-snapshot** — \`git status\` for your RAG corpus. 55 passing tests. Markdown chunker caps at H1/H2 for chunk-id stability under copy edits.
+- **fixture-lineage** — Ed25519-signed chain-of-custody for eval fixtures (source trace + redaction pipeline + consent policy + parent hash). 64 passing tests. Aug 2026 EU AI Act high-risk provenance enforcement is the demand catalyst.
 
-Third repo \`fixture-lineage\` (chain-of-custody for eval fixtures with consent + redaction manifest) is incumbency-confirmed — Aug 2026 EU AI Act high-risk provenance enforcement is the demand catalyst. Queued.
+**~200 combined tests across 3 v0s in 6 days**, mirroring the governance-suite-closes-at-4 discipline. None of the incumbents fill the niche: Lilac dead post-Databricks-acquisition, Argilla in HF maintenance, no vector-store-diff tools on PyPI, no incumbent ships the signed-fixture-manifest tuple.
 
-None of the incumbents fill the niche: Lilac dead post-Databricks-acquisition, Argilla in HF maintenance, Cleanlab is Python-imperative ML-classical, no vector-store-diff tools on PyPI, Datafold data-diff is SQL-only, observability tools (Langfuse / Phoenix) are trace-level not corpus-level.
-
-> Show me the llm-expectations PII masking trade-off
-> Why H1/H2 only in the markdown chunker?
+> Tell me about the keys-on-disk trade-off
+> How do the three repos compose?
 > Are you open to roles?`,
   },
   {

@@ -117,6 +117,15 @@ Priority = Visibility + Relevance - Effort.
 - **Why this matters for the candidacy**: lives at the intersection of data engineering (the entire YAML shape mirrors `dbt schema.yml`) and AI infra (LLM-as-judge with offline mock for CI). Exact "AI Data Engineer" pitch the role bands at top labs are asking for.
 - **Strategic note**: this is the FIRST result of the OSS-landscape recalibration that said "stop competing for PR queue spots, build in uncrowded space." Within 6 hours of the recalibration, a real public artifact landed. Pattern confirmed.
 
+### 2026-05-17 — fixture-lineage v0 public release (training-data-quality, 3rd / THESIS CLOSED)
+
+- **Repo**: https://github.com/uppulaharshith2-rgb/fixture-lineage (MIT)
+- **Stats**: 32 files, 2575 LOC (1500 src + 1075 test + 356-line README), **64 tests passing in 0.09s**, CI matrix on Python 3.10/3.11/3.12
+- **Pitch**: Chain-of-custody for LLM eval fixtures. Ed25519-signed manifest tying every fixture to its source trace, redaction pipeline output, consent policy reference, and parent fixture hash. Append-only JSONL store, git-mergeable, independently verifiable. Tamper-test included.
+- **Thesis-closing moment**: Training-data-quality thesis now CLOSED at 3 (llm-expectations + corpus-snapshot + fixture-lineage = ~197 combined tests). Mirrors governance-suite-closes-at-4 discipline. **Two theses, 7 v0s, 7 documented honest design trade-offs, ~430 combined tests across 9 public OSS repos in 6 days.**
+- **Honest design trade-off #7**: keys-on-disk in v0 with loud README warning + `Signer` boundary structured for future KMS/HSM plug-in. Same dev-surface-first pattern cosign + sops followed early. Interactive password prompt would block the 30-second example flow; stub KmsSigner alongside disk would violate the no-stubs-in-shipped-code rule.
+- **Post-push verification gate now battle-tested 4-for-4**. Caught one silent-no-push (prompt-lineage), held clean across llm-expectations + corpus-snapshot + fixture-lineage. Will codify as mandatory in every future impl-agent brief.
+
 ### 2026-05-17 — corpus-snapshot v0 public release (training-data-quality, 2nd repo)
 
 - **Repo**: https://github.com/uppulaharshith2-rgb/corpus-snapshot (MIT)

@@ -128,23 +128,41 @@ export default function AboutPage() {
             </Link>
           </li>
           <li>
-            <strong>Second thesis open — training-data quality, two repos shipped.</strong>{" "}
-            With the governance suite closed,{" "}
+            <strong>Second thesis CLOSED at 3 — training-data quality, all public.</strong>{" "}
+            Three repos shipped in six days:{" "}
             <Link href="/projects/llm-expectations" style={{ color: "var(--accent)" }}>
               llm-expectations
             </Link>{" "}
-            (dbt-test for your finetune.jsonl — 78 tests, 9 expectation types) and{" "}
+            (dbt-test for finetune.jsonl — 78 tests, 9 expectation types, masked PII
+            in PII reports),{" "}
             <Link href="/projects/corpus-snapshot" style={{ color: "var(--accent)" }}>
               corpus-snapshot
             </Link>{" "}
-            (git status for your RAG corpus — 55 tests, content-addressed diff with
-            preview fragments) shipped as the first two repos. Same DE-mental-model-port
-            shape as the governance suite, different un-saturated niche — Lilac dead
-            post-Databricks-acquisition, Argilla in HF maintenance, Cleanlab is
-            classical-ML imperative, no vector-store-diff tools on PyPI. Third repo
-            (`fixture-lineage` — chain-of-custody for eval fixtures with consent +
-            redaction manifest, EU AI Act demand catalyst) is incumbency-confirmed
-            and queued.
+            (git status for RAG corpus — 55 tests, H1/H2 cap for chunk-id stability),
+            and{" "}
+            <Link href="/projects/fixture-lineage" style={{ color: "var(--accent)" }}>
+              fixture-lineage
+            </Link>{" "}
+            (Ed25519 chain-of-custody for eval fixtures — 64 tests, EU AI Act Aug 2026
+            demand catalyst). Same DE-mental-model-port shape as the governance suite;
+            different un-saturated niche (Lilac dead post-Databricks-acquisition,
+            Argilla in HF maintenance, no vector-store-diff on PyPI, no incumbent
+            ships the signed-fixture-manifest tuple).
+          </li>
+          <li>
+            <strong>Two theses, 7 v0 releases, 7 documented honest design trade-offs
+            in 6 days.</strong>{" "}
+            Pattern: each v0 ships one decision a careful reader would push back on,
+            documented in the README as deliberate.{" "}
+            <Link href="/blog/five-v0s-five-honest-trade-offs" style={{ color: "var(--accent)" }}>
+              The reproducible discipline
+            </Link>
+            : faithful-mock scoring (dbt-eval), coerce counter (prompt-contracts),
+            binary alias check (prompt-freshness), body-string heuristic (prompt-lineage),
+            masked PII in PII reports (llm-expectations), H1/H2 cap (corpus-snapshot),
+            keys-on-disk dev-surface (fixture-lineage). The pattern is the moat — five
+            v0s with documented honest trade-offs is the artifact a strong reader
+            screenshots into a recruiter Slack channel.
           </li>
           <li>
             <strong>Daily-use AI products I shipped solo.</strong>{" "}

@@ -111,6 +111,29 @@ export const CONTRIBUTIONS: Contribution[] = [
     collection: "upstream-prs",
   },
   {
+    slug: "fixture-lineage-v0",
+    kind: "repo",
+    title: "fixture-lineage — chain-of-custody for LLM eval fixtures (v0, thesis-closer)",
+    repo: "uppulaharshith2-rgb/fixture-lineage",
+    url: "https://github.com/uppulaharshith2-rgb/fixture-lineage",
+    date: "2026-05-17",
+    status: "published",
+    summary:
+      "Third and FINAL repo of the training-data-quality thesis. Ed25519-signed manifest tying every eval fixture to its source trace, redaction pipeline output, consent policy reference, and parent fixture hash. Append-only JSONL log, git-mergeable, independently verifiable. CLI: `record` (source → redaction → manifest entry), `verify-chain` (walk signatures + parent_hash continuity, detect tampering), plus `init-keys` / `list` / `show`. Demand catalyst: August 2026 EU AI Act high-risk provenance enforcement.",
+    stats: { additions: 2575, files: 32, tests: 64 },
+    highlights: [
+      "64 tests passing in 0.09s (8 test files), CI matrix across Python 3.10 / 3.11 / 3.12",
+      "Tamper-test included in examples/: records → verifies ok → corrupts manifest signer field → verify-chain returns FAIL with the specific reason ('signature does not verify against payload + signer')",
+      "7th honest design trade-off in 7 v0s: keys-on-disk with loud README warning + `Signer` boundary structured for future KMS/HSM plug-in. Same dev-surface-first pattern cosign + sops followed early",
+      "Source adapter for Langfuse (lazy requests import, falls back gracefully if no LANGFUSE_HOST) — the one integration v0 ships, with Phoenix + promptfoo adapters explicitly named in v0.2 roadmap",
+      "Post-push gh-repo-view verification ran (4-for-4 streak — the gate has caught one silent-no-push and held cleanly across the four most recent releases)",
+    ],
+    whyItMatters:
+      "Closes the training-data-quality thesis at 3 repos (mirroring the governance-suite-closes-at-4 discipline). Two coherent theses now closed, both built with the same v0-discipline pattern (ship the schema, defer the engine, document one honest design trade-off). 7 v0s in 6 days, 7 trade-offs documented, ~430 combined passing tests across the 9 public OSS repos. The Aug 2026 EU AI Act enforcement is a real demand catalyst — every regulated team currently patchwork-rolls this with Presidio + Langfuse + spreadsheets. fixture-lineage is the OSS technical layer; legal attestation stays with the vendor/auditor relationship (same pattern as SBOM tools).",
+    tags: ["fixture-lineage", "ed25519-signing", "chain-of-custody", "eu-ai-act", "training-data-quality", "thesis-closer"],
+    collection: "training-data-quality",
+  },
+  {
     slug: "corpus-snapshot-v0",
     kind: "repo",
     title: "corpus-snapshot — git status for your RAG corpus (v0)",

@@ -11,6 +11,110 @@ export type Post = {
 
 export const POSTS: Post[] = [
   {
+    slug: "two-theses-seven-v0s-seven-trade-offs-six-days",
+    title: "Two theses, seven v0 releases, seven honest trade-offs, six days",
+    excerpt:
+      "I shipped two coherent OSS theses in six days. Both closed at the right number. Each repo documented one design decision a careful reader would push back on. The pattern is the moat.",
+    date: "2026-05-17",
+    tags: ["open-source", "retrospective", "v0-discipline", "thesis-cadence", "process"],
+    readTime: 11,
+    body: `Six days ago I had a [chat-first portfolio site](/), [three small public OSS repos](/oss), and a [forge loop](/projects/forge) that scheduled agents nightly. Today I have nine public OSS repos, two coherent theses both closed at the right number, and seven documented honest design trade-offs spread across seven v0 releases.
+
+This is the retrospective. The pattern is what compounds. The pattern is the moat.
+
+## The two theses
+
+**Governance suite for prompts — closed at 4 repos:**
+
+| Repo | Role | Tests |
+|---|---|---|
+| [dbt-eval](https://github.com/uppulaharshith2-rgb/dbt-eval) | declare what good output looks like | 41 |
+| [prompt-contracts](https://github.com/uppulaharshith2-rgb/prompt-contracts) | enforce it at runtime | 55 |
+| [prompt-freshness](https://github.com/uppulaharshith2-rgb/prompt-freshness) | per-(prompt, model) staleness | 57 |
+| [prompt-lineage](https://github.com/uppulaharshith2-rgb/prompt-lineage) | dbt-docs for prompts (navigation) | 78 |
+
+**Training-data quality — closed at 3 repos:**
+
+| Repo | Role | Tests |
+|---|---|---|
+| [llm-expectations](https://github.com/uppulaharshith2-rgb/llm-expectations) | dbt-test for your finetune.jsonl | 78 |
+| [corpus-snapshot](https://github.com/uppulaharshith2-rgb/corpus-snapshot) | git status for your RAG corpus | 55 |
+| [fixture-lineage](https://github.com/uppulaharshith2-rgb/fixture-lineage) | Ed25519 chain-of-custody for eval fixtures | 64 |
+
+**~430 combined passing tests across the seven v0 releases.** Each repo cites the others in its README. Each thesis ports a mental model every analytics engineer already knows (dbt schema.yml, dbt-test, dbt-docs, dbt-source-freshness, Great Expectations) to LLM infrastructure. Each thesis closed when adding one more would have diluted the story.
+
+## The seven honest design trade-offs
+
+The thing I'm proudest of isn't the count. It's that **every single v0 shipped one specific design decision a careful reader would push back on, documented in the README as a deliberate choice**. Not hidden. Not papered over. Named.
+
+1. **dbt-eval — faithful-mock scoring formula.** The default Jaccard score gave 0.43 / 0.45 on aligned cases; the example demo would have failed every case. Switched to \`0.5 * coverage + 0.5 * jaccard\` which rewards short focused rationales — closer to how a real LLM judge thinks anyway. Documented as a deliberate mock-teaches-the-right-pattern choice.
+
+2. **prompt-contracts — separate \`coerced\` counter.** Coerce mode silently fixes trivially-wrong outputs (strip code fences, parse trailing commas, coerce stringified primitives). The natural failure mode: dashboards report "all passed" while prompts drift toward sloppy output. Fix: separate counter alongside \`passed\` in \`.contract_stats\`. The metric is visible without complicating the public API.
+
+3. **prompt-freshness — binary model-alias check.** When you bump \`claude-sonnet-4-6 → claude-sonnet-4-7\`, all prior evaluations flip to STALE. No normalizer for "known-equivalent" aliases. The user owns the alias string by design — a normalizer would be subtly wrong in both directions (sometimes collapsing different-actually models, sometimes not).
+
+4. **prompt-lineage — body-string heuristic for contract→prompt linkage.** The \`@prompt_contract\` decorator doesn't declare which prompt it enforces. Two options: execute the user's code (fragile) or demand a \`prompt=\` kwarg (intrusive). The trade: regex-match for \`.md\` path string literals inside the decorated function body, with explicit \`prompt=\` kwarg as forward-compat. Unlinked contracts surface visibly as "unenforced" status — opt-in fragile, not silent.
+
+5. **llm-expectations — masked PII in PII reports.** The natural way to write a PII violation report is "found credit card 4532-0151... in record 18." But that report *is* PII. Paste it in Slack, and you've exfiltrated the data you were trying to catch. Fix: mask matched values (\`j***@example.com\`, \`***66\`) before they ever appear in terminal or JSON output. Categorisation preserved, value sanitized. Report is safe to share anywhere.
+
+6. **corpus-snapshot — H1/H2 cap on markdown chunker.** The first end-to-end test surfaced the problem: an H4 typo (\`"Pyaments"\` → \`"Payments"\`) instantly cascaded the chunk id rename and showed up as one *remove* + one *add* instead of one *modify*. Capping splits at H1/H2 sacrifices granularity for chunk-id stability under copy edits. Same trade-off \`git diff\` makes when it ignores whitespace by default: lower granularity, less noise on cosmetic changes.
+
+7. **fixture-lineage — keys-on-disk dev surface.** Ed25519 signing keys live in \`.fixture-lineage/keys/\` with file permissions. The alternatives were interactive password prompt (blocks the 30-second example flow) or shipping a stub \`KmsSigner\` alongside disk (violates "no stubs in shipped code"). Same dev-surface-first pattern cosign and sops followed in their early days. The README spends a full section naming this trade-off rather than papering over it; \`Signer\` boundary is structured for a v1.x KMS/HSM plug-in.
+
+## The pattern, generalized
+
+Every trade-off has the same shape:
+
+1. **Identify the obvious-feature that almost shipped.** A normalizer for aliases. A third \`passed_with_coercion\` state. An AST walker for decorators. A raw-value PII report. A force-directed graph. Encrypted PEM keys with interactive password.
+2. **Notice the failure mode the obvious feature introduces.** Subtly-wrong normalization. Complicated API. Fragile execution. Exfiltration via the lint output. Render complexity that swallows the schema work. Friction wall that breaks the 30-second example.
+3. **Pick the explicit / honest alternative.** User owns the alias. Separate counter. Documented heuristic + opt-out. Masked-by-default with explicit unmask. Table-first with graph in v0.2. Disk-keys with loud README warning + Signer boundary.
+4. **Document it in the README as deliberate.** Name the trade-off. Name what was rejected. Name the v0.x upgrade path.
+
+A v0 with seven honest trade-offs reads as **confident discipline**, not "I didn't finish." It's the artifact a strong reader screenshots into a recruiter Slack channel. It's the pattern that compounds in a way "shipped 7 repos" alone does not.
+
+## What "closing at the right number" actually meant
+
+I almost extended both theses past the right number.
+
+After dbt-eval + prompt-contracts + prompt-freshness shipped, the obvious move was "ship two more — golden-diff for CI and prompt-lineage for navigation." Instead, [prompt-lineage subsumed golden-diff's value](/blog/dbt-docs-for-prompts) via a \`diff main..HEAD\` subcommand — and the suite closed at 4. The fifth repo would have diluted the story without filling a missing capability.
+
+After llm-expectations + corpus-snapshot shipped, the obvious move was "ship llm-cost-tracker as the third repo." But [the incumbency check](/blog/oss-llm-tooling-landscape-audit-may-2026) flagged OpenTelemetry GenAI semantic conventions as the actual standard — a third repo there would have competed with an ecosystem. Instead, fixture-lineage (chain-of-custody for eval fixtures) was the third repo, riding the August 2026 EU AI Act demand catalyst — and the thesis closed at 3.
+
+Closing at the right number is harder than shipping more. The number has to come from a research agent recommendation, not from "I ran out of ideas." Both numbers were defended in writing before they were lived.
+
+## What changed about the loop while building
+
+The forge loop driving this isn't the one I started with. Three discipline rules ended up codified after the failures that triggered them:
+
+- **30-min incumbency check before every BUILD_SKILL.** Saved committing to 2 of 3 originally-planned next-thesis repos. Cleanlab/Lilac/Argilla wouldn't have stayed un-saturated; checked first, pivoted to the actually-open niches.
+- **Post-push \`gh repo view\` verification gate.** prompt-lineage built locally and never pushed; the impl agent reported "shipped" but the repo didn't exist publicly. The verification step is now mandatory; held cleanly across the next four releases (llm-expectations + corpus-snapshot + fixture-lineage all 4-for-4).
+- **Strategic recalibration as an explicit action type.** When three OSS_PR impl agents in a row [correctly abandoned duplicates](/blog/research-agents-that-abandon-discipline-as-a-feature), the loop wrote down a strategic note ("stop competing for fresh-issue PR queues; build new OSS in uncrowded space") and changed its priorities. The 7 v0s after that note are direct evidence the recalibration was right.
+
+A loop that doesn't catch its own failures isn't a loop. A loop that codifies the failure mode into the next brief template is.
+
+## What comes next — the polish pivot
+
+After fixture-lineage closes thesis #2, the [strategy research agent](/blog/oss-llm-tooling-landscape-audit-may-2026) ran incumbency on five candidates for thesis #3. **Every one failed:**
+
+- Iceberg-for-embeddings → Lance owns it (Apache-2)
+- Declarative-map-prompt at scale → Ray Data LLM + \`build_llm_processor\` with vLLM/SGLang backends
+- AI artifact catalog → Unity Catalog Business Semantics + DataHub Gen 3
+- LLM cost attribution → OpenTelemetry GenAI semantic conventions are the standard
+- Airflow-Claude operator → Astronomer Data Agents shipped Apache-2.0 Q1 2026
+
+A third thesis without an un-saturated wedge would have diluted the suite-discipline asset. So the next two weeks pivot to polish: PyPI publishing for all 7 governance + training-data packages, real backends shipped (tiktoken for llm-expectations, Presidio for fixture-lineage, embeddings for corpus-snapshot, force-graph for prompt-lineage), GitHub Marketplace Actions for the diff workflows, an anchor longform essay timed to the ship moments.
+
+The polish phase closes the honesty-trade-off loop. We shipped stubs, named them stubs, now they get to be real. That's the next post.
+
+## The lesson worth stealing
+
+If you're a solo OSS contributor and you have a coherent thesis, the question isn't "how many repos can I ship?" It's "what's the right number, why is it that number, and what's the documented trade-off in each v0 that proves I had taste rather than time?"
+
+Seven v0s with seven trade-offs is the artifact. Two theses both closing at the right number is the discipline. The forge loop that codifies each failure into the next brief is the multiplier.
+
+The pattern is reproducible. The pattern is the moat.`,
+  },
+  {
     slug: "corpus-snapshot-git-status-for-your-rag-corpus",
     title: "corpus-snapshot: git status for your RAG corpus",
     excerpt:

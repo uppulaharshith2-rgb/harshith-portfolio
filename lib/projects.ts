@@ -267,6 +267,30 @@ export const PROJECTS: Project[] = [
     collection: "training-data-quality",
   },
   {
+    slug: "fixture-lineage",
+    name: "fixture-lineage",
+    tagline: "Chain-of-custody for LLM eval fixtures. Signed Ed25519 manifest tying every fixture to source trace + redaction pipeline + consent policy + parent fixture hash.",
+    oneLiner:
+      "Third and final repo of the training-data-quality thesis. The signed-manifest tuple no incumbent ships — EU AI Act Aug 2026 demand catalyst.",
+    description:
+      "Public Python package. CLI: `fixture-lineage record SOURCE --redactors PIPE.yml --consent POLICY.yml` accepts a source pointer (local file or Langfuse trace ID), runs the redaction pipeline (regex baseline in v0, Presidio plugin path documented), emits a signed Ed25519 manifest entry into a git-friendly `.fixture-lineage/manifest.jsonl`. `verify-chain` walks parent_fixture_hash pointers, confirms signatures, and detects tampering. Append-only JSONL log — no database, no SaaS, no model downloads. Composes with llm-expectations and corpus-snapshot as the chain-of-custody layer above source validation and corpus diffing.",
+    status: "live",
+    category: "library",
+    liveUrl: "https://github.com/uppulaharshith2-rgb/fixture-lineage",
+    repoUrl: "https://github.com/uppulaharshith2-rgb/fixture-lineage",
+    techStack: ["Python 3.10+", "Click", "PyYAML", "cryptography (Ed25519)", "pytest"],
+    highlights: [
+      "64 tests passing in 0.09s — 1500 LOC source at the budget cap, full tamper-test demo included",
+      "Ed25519 signing with append-only JSONL manifest store; `verify-chain` catches signature tampering AND parent_hash discontinuity",
+      "Honest design trade-off — keys-on-disk in v0 with a loud README warning + structured `Signer` boundary for future KMS/HSM plug-in. Same dev-surface-first pattern that cosign and sops followed in their early days; interactive password prompt would block the 30-second example flow",
+      "Source adapters: local file + Langfuse trace fetch (lazy `requests` import, falls back to stub if no LANGFUSE_HOST set)",
+      "Closes the training-data-quality thesis at 3 — mirrors the governance-suite-closes-at-4 'stop while the story is tight' discipline",
+    ],
+    year: "2026",
+    accentColor: "#facc15",
+    collection: "training-data-quality",
+  },
+  {
     slug: "forge",
     name: "Forge",
     tagline: "Multi-agent dev orchestrator — Claude Code on Max plan, zero extra spend",
@@ -336,6 +360,7 @@ const MONOGRAM_OVERRIDES: Record<string, string> = {
   "prompt-lineage": "PL",
   "llm-expectations": "LE",
   "corpus-snapshot": "CS",
+  "fixture-lineage": "FL",
 };
 
 export function projectMonogram(slug: string, name: string): string {
