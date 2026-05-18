@@ -68,9 +68,10 @@
   --glow-lime: 0 0 24px rgba(163, 230, 53, 0.35);
   --glow-amber: 0 0 24px rgba(251, 191, 36, 0.35);
 
-  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --font-sans: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
+  /* --font-sans, --font-mono, --font-display are set by next/font via the
+     className on <html> in layout.tsx. Don't redeclare them here — doing so
+     overrides next/font's values with an undefined reference and the whole
+     declaration falls back to the browser default (Times). */
 }
 
 html.light {
