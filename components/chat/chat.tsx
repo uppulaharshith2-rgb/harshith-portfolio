@@ -116,29 +116,6 @@ export function Chat({ initialPrompt }: { initialPrompt?: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialPrompt]);
 
-  // Self-demonstrate: auto-fire a representative question on first visit so the
-  // chat shows itself working without requiring a click. Guarded by sessionStorage.
-  useEffect(() => {
-    if (initialPrompt) return;
-    if (messages.length > 0 || streaming) return;
-    if (typeof window === "undefined") return;
-    try {
-      if (sessionStorage.getItem("autoseed-done") === "1") return;
-    } catch {
-      return;
-    }
-    const t = setTimeout(() => {
-      try {
-        sessionStorage.setItem("autoseed-done", "1");
-      } catch {
-        /* ignore */
-      }
-      send("What have you shipped this year?");
-    }, 1800);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();

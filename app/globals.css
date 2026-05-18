@@ -317,21 +317,55 @@ body {
   transform: translateY(-1px);
 }
 
-/* Project card (embedded in chat) */
+/* Project card — Pro Max embedded variant.
+   Glass surface, per-card accent halo on hover, no JS rotate so it can stack
+   inside chat bubbles. The --card-accent var is set per-instance for the halo. */
 .proj-card {
+  position: relative;
   display: block;
-  padding: 18px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  transition: all 0.18s ease;
+  padding: 20px;
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+    rgba(15, 15, 15, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   text-decoration: none;
   color: inherit;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    border-color 0.3s ease,
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease;
+}
+.proj-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--card-accent, var(--gradient-burn));
+  opacity: 0;
+  filter: blur(16px);
+  transition: opacity 0.4s ease;
 }
 .proj-card:hover {
-  border-color: var(--accent-border);
-  background: var(--surface-hover);
+  border-color: rgba(255, 255, 255, 0.16);
   transform: translateY(-2px);
+  box-shadow: 0 24px 50px -28px rgba(0, 0, 0, 0.65);
+}
+.proj-card:hover::before {
+  opacity: 0.45;
+}
+html.light .proj-card {
+  background:
+    linear-gradient(135deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.005)),
+    rgba(255, 255, 255, 0.92);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+html.light .proj-card:hover {
+  border-color: rgba(0, 0, 0, 0.16);
+  box-shadow: 0 24px 50px -30px rgba(0, 0, 0, 0.18);
 }
 
 /* Markdown-ish content */
